@@ -3369,7 +3369,15 @@ dialog :link {
   width: 200px;
 }
 
+/* Hide Open File button in menu */
+#secondaryOpenFile {
+  display: none !important;
+}
 
+/* Hide sidebar buttons (Thumbnails, Outline, Attachments, Layers) */
+#toolbarSidebarLeft {
+  display: none !important;
+}
 /* Hide download and print buttons */
 #print,
 #download,
