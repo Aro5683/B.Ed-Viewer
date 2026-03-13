@@ -1,14 +1,13 @@
 const DB_NAME = "pdf-cache";
-const STORE = "files";
+const STORE = "pdfs";
 
 function openDB() {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const req = indexedDB.open(DB_NAME, 1);
     req.onupgradeneeded = () => {
       req.result.createObjectStore(STORE);
     };
     req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
   });
 }
 
@@ -21,6 +20,7 @@ async function savePDF(url, blob) {
 async function getPDF(url) {
   const db = await openDB();
   const tx = db.transaction(STORE, "readonly");
+
   return new Promise(resolve => {
     const req = tx.objectStore(STORE).get(url);
     req.onsuccess = () => resolve(req.result);
@@ -28,10 +28,9 @@ async function getPDF(url) {
 }
 
 async function loadPDF(url) {
-  let cached = await getPDF(url);
+  const cached = await getPDF(url);
 
   if (cached) {
-    console.log("Loaded from cache");
     return URL.createObjectURL(cached);
   }
 
@@ -39,6 +38,5 @@ async function loadPDF(url) {
   const blob = await res.blob();
   await savePDF(url, blob);
 
-  console.log("Downloaded and cached");
   return URL.createObjectURL(blob);
 }
