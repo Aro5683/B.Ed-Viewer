@@ -32,7 +32,19 @@ See https://github.com/adobe-type-tools/cmap-resources
 <script src="../build/pdf.js"></script>
 
     <link rel="stylesheet" href="viewer.css">
-<script src="cache.js"></script>
+<script src="offline.js"></script>
+      <script>
+(async () => {
+  const params = new URLSearchParams(window.location.search);
+  const file = params.get("file");
+  if (!file) return;
+
+  const cached = await loadPDF(file);
+
+  const newURL = window.location.pathname + "?file=" + encodeURIComponent(cached);
+  window.history.replaceState({}, "", newURL);
+})();
+</script>
   <script src="viewer.js"></script>
   </head>
 
