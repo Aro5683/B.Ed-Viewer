@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B.Ed Vault</title>
+
+<style>
+
+body{
+font-family:Arial;
+margin:0;
+background:#eef2f6;
+}
+
+.header{
+background:#2563eb;
+color:white;
+padding:15px;
+text-align:center;
+font-size:20px;
+}
+
+.container{
+max-width:800px;
+margin:auto;
+padding:20px;
+}
+
+#search{
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #ccc;
+margin-bottom:15px;
+}
+
+.sem{
+font-weight:bold;
+margin-top:20px;
+}
+
+.card{
+display:flex;
+justify-content:space-between;
+background:white;
+padding:14px;
+border-radius:10px;
+margin-bottom:8px;
+}
+
+.btn{
+background:#2563eb;
+color:white;
+border:none;
+padding:6px 12px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.viewer{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:black;
+display:none;
+}
+
+.viewer iframe{
+width:100%;
+height:100%;
+border:none;
+}
+
+.close{
+position:absolute;
+top:10px;
+right:10px;
+background:white;
+padding:5px 10px;
+border-radius:6px;
+cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">B.Ed Vault</div>
+
+<div class="container">
+
+<input id="search" placeholder="Search materials..." onkeyup="search()">
+
+<div id="list"></div>
+
+</div>
+
+<div class="viewer" id="viewer">
+<div class="close" onclick="closePDF()">Close</div>
+<iframe id="frame"></iframe>
+</div>
+
+<script>
+
+const baseURL="web/PDFs/"
+
+const books=[
+
+["First Semester"],
+
+["BD1CE Unit-1 ENG","Nagarajan","BD1CE Unit-1 ENG.pdf"],
+["BD1CE Unit-2 ENG","Nagarajan","BD1CE Unit-2 ENG.pdf"],
+["BD1CE Unit-3 ENG","Nagarajan","BD1CE Unit-3 ENG.pdf"],
+
+["Second Semester"],
+
+["BD2EE Unit-1 TAM","Nagarajan","BD2EE Unit-1.pdf"]
+
+]
+
+let container=document.getElementById("list")
+
+books.forEach(b=>{
+
+if(b.length==1){
+
+container.innerHTML+=`<div class="sem">${b[0]}</div>`
+
+}else{
+
+let url=baseURL+encodeURIComponent(b[2])
+
+container.innerHTML+=`
+
+<div class="card">
+
+<div>
+<div>${b[0]}</div>
+<small>${b[1]}</small>
+</div>
+
+<button class="btn"
+data-url="${url}"
+onclick="openPDF(this)">
+Open
+</button>
+
+</div>
+
+`
+
+}
+
+})
+
+function search(){
+
+let s=document.getElementById("search").value.toLowerCase()
+
+document.querySelectorAll(".card").forEach(c=>{
+
+c.style.display=
+c.innerText.toLowerCase().includes(s)
+?"flex":"none"
+
+})
+
+}
+
+function openPDF(btn){
+
+let url=btn.dataset.url
+
+let viewer="web/viewer.html?file="+encodeURIComponent(url)
+
+document.getElementById("viewer").style.display="block"
+
+document.getElementById("frame").src=viewer
+
+}
+
+function closePDF(){
+
+document.getElementById("viewer").style.display="none"
+
+document.getElementById("frame").src=""
+
+}
+
+</script>
+
+</body>
+</html>
