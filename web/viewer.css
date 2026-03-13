@@ -3369,6 +3369,14 @@ dialog :link {
   width: 200px;
 }
 
+
+/* Hide download and print buttons */
+#print,
+#download,
+#secondaryPrint,
+#secondaryDownload {
+  display: none !important;
+}
 #documentPropertiesDialog {
   text-align: left;
 }
