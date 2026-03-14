@@ -145,7 +145,12 @@ window.history.replaceState({}, "", newURL)
             </div>
           </div>
         </div>
-
+<button id="closeViewerBtn"
+class="toolbarButton"
+title="Close Viewer"
+tabindex="50">
+<span>Close</span>
+</button>
         <div class="editorParamsToolbar hidden doorHangerRight" id="editorStampParamsToolbar">
           <div class="editorParamsToolbarContainer">
             <button id="editorStampAddImage" class="secondaryToolbarButton" title="Add image" tabindex="105" data-l10n-id="editor_stamp_add_image">
@@ -483,5 +488,19 @@ window.history.replaceState({}, "", newURL)
     <div id="printContainer"></div>
 
     <input type="file" id="fileInput" class="hidden">
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+let btn = document.getElementById("closeViewerBtn");
+
+if(btn){
+btn.onclick = function(){
+
+window.history.back();
+
+};
+}
+
+});</script>
   </body>
 </html>
