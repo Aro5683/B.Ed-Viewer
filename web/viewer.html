@@ -145,12 +145,7 @@ window.history.replaceState({}, "", newURL)
             </div>
           </div>
         </div>
-<button id="closeViewerBtn"
-class="toolbarButton"
-title="Close Viewer"
-tabindex="50">
-<span>Close</span>
-</button>
+
         <div class="editorParamsToolbar hidden doorHangerRight" id="editorStampParamsToolbar">
           <div class="editorParamsToolbarContainer">
             <button id="editorStampAddImage" class="secondaryToolbarButton" title="Add image" tabindex="105" data-l10n-id="editor_stamp_add_image">
@@ -286,7 +281,12 @@ tabindex="50">
                 <button id="download" class="toolbarButton hiddenMediumView" title="Save" tabindex="33" data-l10n-id="save">
                   <span data-l10n-id="save_label">Save</span>
                 </button>
-
+<button id="closeViewer"
+class="toolbarButton"
+title="Close Viewer"
+tabindex="50">
+<span>✕</span>
+</button>
                 <div class="verticalToolbarSeparator hiddenMediumView"></div>
 
                 <div id="editorModeButtons" class="splitToolbarButton toggled" role="radiogroup">
