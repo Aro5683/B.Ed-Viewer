@@ -6,56 +6,96 @@
 
 <style>
 
+*{box-sizing:border-box}
+
 body{
-font-family:Arial;
 margin:0;
+font-family:Inter,Segoe UI,Arial;
 background:#eef2f6;
 }
 
+/* HEADER */
+
 .header{
-background:#2563eb;
+background:#42A5F5;
 color:white;
-padding:15px;
-text-align:center;
+padding:16px;
 font-size:20px;
+font-weight:600;
+text-align:center;
+position:sticky;
+top:0;
+z-index:100;
 }
+
+/* CONTAINER */
 
 .container{
 max-width:800px;
 margin:auto;
-padding:20px;
+padding:18px;
 }
+
+/* SEARCH */
 
 #search{
 width:100%;
-padding:10px;
-border-radius:8px;
-border:1px solid #ccc;
-margin-bottom:15px;
+padding:12px;
+border-radius:10px;
+border:1px solid #ddd;
+margin-bottom:18px;
+font-size:15px;
 }
 
+/* SEMESTER */
+
 .sem{
-font-weight:bold;
-margin-top:20px;
+font-weight:600;
+font-size:16px;
+padding:10px 4px;
+margin-top:12px;
+color:#444;
 }
+
+/* FILE CARD */
 
 .card{
 display:flex;
 justify-content:space-between;
-background:white;
+align-items:center;
 padding:14px;
 border-radius:10px;
-margin-bottom:8px;
+background:#fafafa;
+border:1px solid #eee;
+margin-bottom:10px;
 }
 
+.card:hover{
+background:#f3f7ff;
+}
+
+.card small{
+font-size:12px;
+color:#777;
+}
+
+/* BUTTON */
+
 .btn{
-background:#2563eb;
+background:#42A5F5;
 color:white;
 border:none;
-padding:6px 12px;
-border-radius:6px;
+padding:8px 16px;
+border-radius:8px;
 cursor:pointer;
+font-size:14px;
 }
+
+.btn:hover{
+background:#1e88e5;
+}
+
+/* VIEWER */
 
 .viewer{
 position:fixed;
@@ -65,6 +105,7 @@ width:100%;
 height:100%;
 background:black;
 display:none;
+z-index:9999;
 }
 
 .viewer iframe{
@@ -78,9 +119,10 @@ position:absolute;
 top:10px;
 right:10px;
 background:white;
-padding:5px 10px;
+padding:6px 12px;
 border-radius:6px;
 cursor:pointer;
+font-size:14px;
 }
 
 </style>
@@ -123,7 +165,7 @@ const books=[
 
 let container=document.getElementById("list")
 
-books.forEach(b=>{
+books.forEach((b,i)=>{
 
 if(b.length==1){
 
@@ -132,6 +174,11 @@ container.innerHTML+=`<div class="sem">${b[0]}</div>`
 }else{
 
 let url=baseURL+encodeURIComponent(b[2])
+let id="file"+i
+
+let status=localStorage.getItem(id)
+
+let text=status?"Open":"Download"
 
 container.innerHTML+=`
 
@@ -143,9 +190,10 @@ container.innerHTML+=`
 </div>
 
 <button class="btn"
+data-id="${id}"
 data-url="${url}"
-onclick="openPDF(this)">
-Open
+onclick="handleBtn(this)">
+${text}
 </button>
 
 </div>
@@ -170,9 +218,37 @@ c.innerText.toLowerCase().includes(s)
 
 }
 
-function openPDF(btn){
+function handleBtn(btn){
 
+let id=btn.dataset.id
 let url=btn.dataset.url
+
+if(localStorage.getItem(id)){
+
+openPDF(url)
+return
+
+}
+
+/* fake download */
+
+btn.innerText="Downloading..."
+btn.disabled=true
+
+setTimeout(()=>{
+
+localStorage.setItem(id,"true")
+
+btn.innerText="Open"
+btn.disabled=false
+
+openPDF(url)
+
+},1000)
+
+}
+
+function openPDF(url){
 
 let viewer="web/viewer.html?file="+url
 
