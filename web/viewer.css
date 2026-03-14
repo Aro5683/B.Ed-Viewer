@@ -1975,54 +1975,51 @@
 }
 
 :root {
-  --dir-factor: 1;
-  --inline-start: left;
-  --inline-end: right;
-
-  --sidebar-width: 200px;
-  --sidebar-transition-duration: 200ms;
-  --sidebar-transition-timing-function: ease;
-
-  --toolbar-icon-opacity: 0.7;
-  --doorhanger-icon-opacity: 0.9;
-
---main-color: black;
-        /* --body-bg-color: rgba(42, 42, 46, 1); */
-        --progressBar-color: #0060df;
-        --progressBar-bg-color: rgba(40, 40, 43, 1);
-        --progressBar-blend-color: rgba(20, 68, 133, 1);
-        /* --scrollbar-color: rgba(121, 121, 123, 1); */
-        --scrollbar-bg-color: rgba(35, 35, 39, 1);
-        --toolbar-icon-bg-color: rgba(255, 255, 255, 1);
-        --toolbar-icon-hover-bg-color: rgba(255, 255, 255, 1);
-        /* --sidebar-narrow-bg-color: rgba(42, 42, 46, 0.9); */
-        --sidebar-toolbar-bg-color: rgba(50, 50, 52, 1);
-        --toolbar-bg-color: #42A5F5;
-        /* --toolbar-border-color: rgba(12, 12, 13, 1); */
-        --button-hover-color: #3161a0;
-        --toggled-btn-color: rgba(255, 255, 255, 1);
-        --toggled-btn-bg-color: rgba(0, 0, 0, 0.3);
-        --toggled-hover-active-btn-color: rgba(0, 0, 0, 0.4);
-        /* --dropdown-btn-bg-color: rgba(74, 74, 79, 1); */
-        --separator-color: rgba(0, 0, 0, 0.3);
-        /* --field-color: rgba(250, 250, 250, 1); */
-        /* --field-bg-color: rgba(64, 64, 68, 1); */
-        /* --field-border-color: rgba(115, 115, 115, 1); */
-        --treeitem-color: rgba(255, 255, 255, 0.8);
-        --treeitem-bg-color: rgba(255, 255, 255, 0.15);
-        --treeitem-hover-color: rgba(255, 255, 255, 0.9);
-        --treeitem-selected-color: rgba(255, 255, 255, 0.9);
-        --treeitem-selected-bg-color: rgba(255, 255, 255, 0.25);
-        --thumbnail-hover-color: rgba(255, 255, 255, 0.1);
-        --thumbnail-selected-color: rgba(255, 255, 255, 0.2);
-        /* --doorhanger-bg-color: rgba(74, 74, 79, 1); */
-        /* --doorhanger-border-color: rgba(39, 39, 43, 1); */
-        /* --doorhanger-hover-color: rgba(249, 249, 250, 1); */
-        /* --doorhanger-hover-bg-color: rgba(93, 94, 98, 1); */
-        /* --doorhanger-separator-color: rgba(92, 92, 97, 1); */
-        /* --dialog-button-bg-color: rgba(92, 92, 97, 1); */
-        /* --dialog-button-hover-bg-color: rgba(115, 115, 115, 1); */
-        --loading-icon: url(images/loading-dark.svg);
+    --dir-factor: 1;
+    --inline-start: left;
+    --inline-end: right;
+    --sidebar-width: 200px;
+    --sidebar-transition-duration: 200ms;
+    --sidebar-transition-timing-function: ease;
+    --toolbar-icon-opacity: 0.7;
+    --doorhanger-icon-opacity: 0.9;
+    --main-color: rgba(255, 255, 255, 1);
+    /* --body-bg-color: rgba(42, 42, 46, 1); */
+    --progressBar-color: #0060df;
+    --progressBar-bg-color: rgba(40, 40, 43, 1);
+    --progressBar-blend-color: rgba(20, 68, 133, 1);
+    /* --scrollbar-color: rgba(121, 121, 123, 1); */
+    --scrollbar-bg-color: rgba(35, 35, 39, 1);
+    --toolbar-icon-bg-color: rgba(255, 255, 255, 1);
+    --toolbar-icon-hover-bg-color: rgba(255, 255, 255, 1);
+    /* --sidebar-narrow-bg-color: rgba(42, 42, 46, 0.9); */
+    --sidebar-toolbar-bg-color: rgba(50, 50, 52, 1);
+    --toolbar-bg-color: #42A5F5;
+    /* --toolbar-border-color: rgba(12, 12, 13, 1); */
+    --button-hover-color: #3161a0;
+    --toggled-btn-color: rgba(255, 255, 255, 1);
+    --toggled-btn-bg-color: rgba(0, 0, 0, 0.3);
+    --toggled-hover-active-btn-color: rgba(0, 0, 0, 0.4);
+    /* --dropdown-btn-bg-color: rgba(74, 74, 79, 1); */
+    --separator-color: rgba(0, 0, 0, 0.3);
+    --field-color: rgba(250, 250, 250, 1);
+    /* --field-bg-color: rgba(64, 64, 68, 1); */
+    /* --field-border-color: rgba(115, 115, 115, 1); */
+    --treeitem-color: rgba(255, 255, 255, 0.8);
+    --treeitem-bg-color: rgba(255, 255, 255, 0.15);
+    --treeitem-hover-color: rgba(255, 255, 255, 0.9);
+    --treeitem-selected-color: rgba(255, 255, 255, 0.9);
+    --treeitem-selected-bg-color: rgba(255, 255, 255, 0.25);
+    --thumbnail-hover-color: rgba(255, 255, 255, 0.1);
+    --thumbnail-selected-color: rgba(255, 255, 255, 0.2);
+    /* --doorhanger-bg-color: rgba(74, 74, 79, 1); */
+    /* --doorhanger-border-color: rgba(39, 39, 43, 1); */
+    /* --doorhanger-hover-color: rgba(249, 249, 250, 1); */
+    /* --doorhanger-hover-bg-color: rgba(93, 94, 98, 1); */
+    /* --doorhanger-separator-color: rgba(92, 92, 97, 1); */
+    /* --dialog-button-bg-color: rgba(92, 92, 97, 1); */
+    /* --dialog-button-hover-bg-color: rgba(115, 115, 115, 1); */
+    --loading-icon: url(images/loading-dark.svg);
   
   --treeitem-expanded-icon: url(images/treeitem-expanded.svg);
   --treeitem-collapsed-icon: url(images/treeitem-collapsed.svg);
@@ -2074,27 +2071,27 @@
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --main-color: black;
+        --main-color: #35324d;
         /* --body-bg-color: rgba(42, 42, 46, 1); */
         --progressBar-color: #0060df;
         --progressBar-bg-color: rgba(40, 40, 43, 1);
         --progressBar-blend-color: rgba(20, 68, 133, 1);
         /* --scrollbar-color: rgba(121, 121, 123, 1); */
-        --scrollbar-bg-color: rgba(35, 35, 39, 1);
-        --toolbar-icon-bg-color: rgba(255, 255, 255, 1);
-        --toolbar-icon-hover-bg-color: rgba(255, 255, 255, 1);
+        /* --scrollbar-bg-color: rgba(35, 35, 39, 1); */
+        --toolbar-icon-bg-color: rgb(2 22 50);
+        --toolbar-icon-hover-bg-color: #f1f5f9;
         --sidebar-narrow-bg-color: rgba(42, 42, 46, 0.9);
         --sidebar-toolbar-bg-color: rgba(50, 50, 52, 1);
-        --toolbar-bg-color: #42A5F5;
-        /* --toolbar-border-color: rgba(12, 12, 13, 1); */
-        --button-hover-color: rgba(102, 102, 103, 1);
-        --toggled-btn-color: rgba(255, 255, 255, 1);
+        --toolbar-bg-color: #b1bcc5;
+        --toolbar-border-color: rgba(12, 12, 13, 1);
+        /* --button-hover-color: rgba(102, 102, 103, 1); */
+        /* --toggled-btn-color: rgba(255, 255, 255, 1); */
         --toggled-btn-bg-color: rgba(0, 0, 0, 0.3);
-        --toggled-hover-active-btn-color: rgba(0, 0, 0, 0.4);
+        --toggled-hover-active-btn-color: rgba(121, 121, 123, 1);
         /* --dropdown-btn-bg-color: rgba(74, 74, 79, 1); */
-        --separator-color: rgba(0, 0, 0, 0.3);
+        /* --separator-color: rgba(0, 0, 0, 0.3); */
         /* --field-color: rgba(250, 250, 250, 1); */
-        /* --field-bg-color: rgba(64, 64, 68, 1); */
+        --field-bg-color: #2e67b3;
         /* --field-border-color: rgba(115, 115, 115, 1); */
         --treeitem-color: rgba(255, 255, 255, 0.8);
         --treeitem-bg-color: rgba(255, 255, 255, 0.15);
@@ -2103,10 +2100,10 @@
         --treeitem-selected-bg-color: rgba(255, 255, 255, 0.25);
         --thumbnail-hover-color: rgba(255, 255, 255, 0.1);
         --thumbnail-selected-color: rgba(255, 255, 255, 0.2);
-        /* --doorhanger-bg-color: rgba(74, 74, 79, 1); */
+        --doorhanger-bg-color: #cae2f5;
         /* --doorhanger-border-color: rgba(39, 39, 43, 1); */
-        /* --doorhanger-hover-color: rgba(249, 249, 250, 1); */
-        /* --doorhanger-hover-bg-color: rgba(93, 94, 98, 1); */
+        --doorhanger-hover-color: rgba(255, 255, 255, 1);
+        --doorhanger-hover-bg-color: #0060df;
         /* --doorhanger-separator-color: rgba(92, 92, 97, 1); */
         /* --dialog-button-bg-color: rgba(92, 92, 97, 1); */
         /* --dialog-button-hover-bg-color: rgba(115, 115, 115, 1); */
