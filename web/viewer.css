@@ -1986,7 +1986,7 @@
   --toolbar-icon-opacity: 0.7;
   --doorhanger-icon-opacity: 0.9;
 
- --main-color: black;
+--main-color: black;
         /* --body-bg-color: rgba(42, 42, 46, 1); */
         --progressBar-color: #0060df;
         --progressBar-bg-color: rgba(40, 40, 43, 1);
@@ -1995,11 +1995,11 @@
         --scrollbar-bg-color: rgba(35, 35, 39, 1);
         --toolbar-icon-bg-color: rgba(255, 255, 255, 1);
         --toolbar-icon-hover-bg-color: rgba(255, 255, 255, 1);
-        --sidebar-narrow-bg-color: rgba(42, 42, 46, 0.9);
+        /* --sidebar-narrow-bg-color: rgba(42, 42, 46, 0.9); */
         --sidebar-toolbar-bg-color: rgba(50, 50, 52, 1);
         --toolbar-bg-color: #42A5F5;
         /* --toolbar-border-color: rgba(12, 12, 13, 1); */
-        --button-hover-color: rgba(102, 102, 103, 1);
+        --button-hover-color: #3161a0;
         --toggled-btn-color: rgba(255, 255, 255, 1);
         --toggled-btn-bg-color: rgba(0, 0, 0, 0.3);
         --toggled-hover-active-btn-color: rgba(0, 0, 0, 0.4);
