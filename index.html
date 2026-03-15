@@ -446,12 +446,15 @@ c.style.display=c.innerText.toLowerCase().includes(s)?"flex":"none"
 
 function openPDF(file){
 
-viewer.style.display="block"
+let url = base + encodeURIComponent(file)
 
-frame.src=base+file
+let viewerURL = "web/viewer.html?file=" + url
+
+document.getElementById("viewer").style.display="block"
+
+document.getElementById("frame").src = viewerURL
 
 }
-
 function closePDF(){
 
 viewer.style.display="none"
