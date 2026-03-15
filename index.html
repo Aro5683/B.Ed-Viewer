@@ -1,101 +1,127 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
 <title>B.Ed Vault</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
 
-*{box-sizing:border-box}
+:root{
+--primary:#3b82f6;
+--bg:#f4f7fb;
+--card:#ffffff;
+--text:#1f2937;
+--shadow:0 10px 25px rgba(0,0,0,0.08);
+}
+
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+font-family:Segoe UI,Arial;
+}
 
 body{
-margin:0;
-font-family:Inter,Segoe UI,Arial;
-background:#eef2f6;
+background:var(--bg);
+color:var(--text);
 }
 
 /* HEADER */
 
-.header{
-background:#42A5F5;
+header{
+background:var(--primary);
 color:white;
 padding:16px;
 font-size:20px;
 font-weight:600;
 text-align:center;
-position:sticky;
-top:0;
-z-index:100;
 }
 
-/* CONTAINER */
+/* LOGIN */
 
-.container{
+.login{
+max-width:400px;
+margin:60px auto;
+background:white;
+padding:25px;
+border-radius:12px;
+box-shadow:var(--shadow);
+}
+
+.login input,
+.login select{
+width:100%;
+padding:12px;
+margin-bottom:12px;
+border-radius:8px;
+border:1px solid #ddd;
+}
+
+.login button{
+width:100%;
+padding:12px;
+background:var(--primary);
+color:white;
+border:none;
+border-radius:8px;
+font-weight:600;
+cursor:pointer;
+}
+
+/* PAGE */
+
+.page{
+display:none;
 max-width:800px;
 margin:auto;
 padding:18px;
+padding-bottom:90px;
+}
+
+.page.active{
+display:block;
 }
 
 /* SEARCH */
 
-#search{
+.search{
 width:100%;
 padding:12px;
 border-radius:10px;
 border:1px solid #ddd;
-margin-bottom:18px;
-font-size:15px;
+margin-bottom:12px;
 }
 
-/* SEMESTER */
-
-.sem{
-font-weight:600;
-font-size:16px;
-padding:10px 4px;
-margin-top:12px;
-color:#444;
-}
-
-/* FILE CARD */
+/* CARD */
 
 .card{
+background:var(--card);
+border-radius:12px;
+padding:14px;
+margin-bottom:12px;
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:14px;
-border-radius:10px;
-background:#fafafa;
-border:1px solid #eee;
-margin-bottom:10px;
+box-shadow:var(--shadow);
 }
-
-.card:hover{
-background:#f3f7ff;
-}
-
-.card small{
-font-size:12px;
-color:#777;
-}
-
-/* BUTTON */
 
 .btn{
-background:#42A5F5;
+background:var(--primary);
 color:white;
 border:none;
-padding:8px 16px;
+padding:8px 14px;
 border-radius:8px;
 cursor:pointer;
-font-size:14px;
 }
 
-.btn:hover{
-background:#1e88e5;
-}
-
-/* VIEWER */
+/* PDF VIEWER */
 
 .viewer{
 position:fixed;
@@ -105,7 +131,7 @@ width:100%;
 height:100%;
 background:black;
 display:none;
-z-index:9999;
+z-index:999;
 }
 
 .viewer iframe{
@@ -122,259 +148,404 @@ background:white;
 padding:6px 12px;
 border-radius:6px;
 cursor:pointer;
-font-size:14px;
 }
 
-/* INTERNET POPUP */
+/* NAV */
 
-.popup{
+.nav{
 position:fixed;
-top:0;
+bottom:0;
 left:0;
 width:100%;
-height:100%;
-background:rgba(0,0,0,0.5);
-display:none;
-align-items:center;
-justify-content:center;
-z-index:10000;
-}
-
-.popupBox{
 background:white;
-padding:20px;
-border-radius:10px;
-width:260px;
-text-align:center;
+border-top:1px solid #ddd;
+display:flex;
+justify-content:space-around;
+padding:10px 0;
 }
 
-.popupTitle{
-font-weight:bold;
-font-size:18px;
-margin-bottom:10px;
-}
-
-.popupText{
-font-size:14px;
-margin-bottom:15px;
-}
-
-.popup button{
-background:#42A5F5;
-color:white;
+.nav button{
+background:none;
 border:none;
-padding:8px 16px;
-border-radius:6px;
-cursor:pointer;
+font-size:12px;
+display:flex;
+flex-direction:column;
+align-items:center;
+position:relative;
+}
+
+.nav i{
+font-size:18px;
+margin-bottom:3px;
+}
+
+/* BADGE */
+
+.badge{
+position:absolute;
+top:-4px;
+right:6px;
+background:red;
+color:white;
+font-size:10px;
+padding:2px 6px;
+border-radius:10px;
+display:none;
+}
+
+/* NOTICE */
+
+.noticeCard{
+background:white;
+border-radius:12px;
+padding:14px;
+margin-bottom:12px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:var(--shadow);
+border-left:4px solid var(--primary);
+}
+
+.noticeCard.new{
+border-left:4px solid red;
+background:#fff5f5;
 }
 
 </style>
+
 </head>
 
 <body>
 
-<div class="header">B.Ed Vault</div>
+<header>
+<i class="fa-solid fa-graduation-cap"></i>
+B.Ed Vault
+</header>
 
-<div class="container">
+<!-- LOGIN -->
 
-<input id="search" placeholder="Search materials..." onkeyup="search()">
+<div id="loginPage" class="login">
 
-<div id="list"></div>
+<h2 style="text-align:center;margin-bottom:15px;">
+Login
+</h2>
+
+<input id="name" placeholder="Your Name">
+
+<select id="semester">
+<option value="">Select Semester</option>
+<option>Semester 1</option>
+<option>Semester 2</option>
+<option>Semester 3</option>
+<option>Semester 4</option>
+</select>
+
+<button onclick="sendLogin()">
+Login via WhatsApp
+</button>
 
 </div>
+
+<!-- HOME -->
+
+<div id="home" class="page">
+
+<div class="card">
+<div>
+<i class="fa-solid fa-book"></i>
+Study Notes
+</div>
+
+<button class="btn" onclick="showPage('notes')">
+Open
+</button>
+
+</div>
+
+<div class="card">
+<div>
+<i class="fa-solid fa-bell"></i>
+TNTEU Updates
+</div>
+
+<button class="btn" onclick="showPage('notices')">
+Open
+</button>
+
+</div>
+
+</div>
+
+<!-- NOTES -->
+
+<div id="notes" class="page">
+
+<h3 id="semTitle"></h3>
+
+<input
+class="search"
+id="search"
+placeholder="Search notes..."
+onkeyup="searchNotes()"
+
+>
+
+<div id="noteList"></div>
+
+</div>
+
+<!-- NOTICES -->
+
+<div id="notices" class="page">
+
+<h3>TNTEU Notifications</h3>
+
+<div id="noticeList">Loading...</div>
+
+</div>
+
+<!-- PDF VIEWER -->
 
 <div class="viewer" id="viewer">
-<div class="close" onclick="closePDF()">Close</div>
+
+<div class="close" onclick="closePDF()">
+Close
+</div>
+
 <iframe id="frame"></iframe>
+
 </div>
 
-<!-- INTERNET POPUP -->
+<!-- NAV -->
 
-<div id="internetPopup" class="popup">
-<div class="popupBox">
-<div class="popupTitle">Internet Required</div>
-<div class="popupText">Please turn on internet to download this file.</div>
-<button onclick="closePopup()">Close</button>
-</div>
+<div class="nav">
+
+<button onclick="showPage('home')">
+<i class="fa-solid fa-house"></i>
+Home
+</button>
+
+<button onclick="showPage('notes')">
+<i class="fa-solid fa-book"></i>
+Notes
+</button>
+
+<button onclick="showPage('notices')" style="position:relative">
+<i class="fa-solid fa-bell"></i>
+Updates
+<span id="noticeBadge" class="badge">1</span>
+</button>
+
 </div>
 
 <script>
 
-const baseURL="PDFs/"
+/* LOGIN */
+
+function sendLogin(){
+
+let name=document.getElementById("name").value
+let semester=document.getElementById("semester").value
+
+if(!name || !semester){
+
+alert("Fill all details")
+return
+
+}
+
+localStorage.setItem("semester",semester)
+localStorage.setItem("logged","yes")
+
+let msg=
+`B.Ed Vault Login
+
+Name: ${name}
+Semester: ${semester}
+
+Please activate.`
+
+let url="https://wa.me/919655969516?text="+encodeURIComponent(msg)
+
+window.open(url)
+
+location.reload()
+
+}
+
+/* CHECK LOGIN */
+
+if(localStorage.getItem("logged")){
+
+loginPage.style.display="none"
+home.classList.add("active")
+
+}
+
+/* NOTES DATA */
+
+const base="pdfs/"
 
 const books=[
 
-["First Semester"],
+{sem:"Semester 1",title:"BD1CE Unit 1 ENG",file:"BD1CE Unit-1 ENG.pdf"},
+{sem:"Semester 1",title:"BD1CE Unit 2 ENG",file:"BD1CE Unit-2 ENG.pdf"},
 
-["BD1CE Unit-1 ENG","Nagarajan","BD1CE Unit-1 ENG.pdf"],
-["BD1CE Unit-1 TAM","Nagarajan","BD1CE Unit-1 TAM.pdf"],
-["BD1CE Unit-2 ENG","Nagarajan","BD1CE Unit-2 ENG.pdf"],
-["BD1CE Unit-2 TAM","Nagarajan","BD1CE Unit-2 TAM.pdf"],
-["BD1CE Unit-3 ENG","Nagarajan","BD1CE Unit-3 ENG.pdf"],
-["BD1CE Unit-3 TAM","Nagarajan","BD1CE Unit-3 TAM.pdf"],
-["BD1CE Unit-4 ENG","Nagarajan","BD1CE Unit-4 ENG.pdf"],
-["BD1CE Unit-4 TAM","Nagarajan","BD1CE Unit-4 TAM.pdf"],
-["BD1CE Unit-5 ENG","Nagarajan","BD1CE Unit-5 ENG.pdf"],
-["BD1CE Unit-5 TAM","Nagarajan","BD1CE Unit-5 TAM.pdf"],
-["BD1CE Unit-6 ENG","Nagarajan","BD1CE Unit-6 ENG.pdf"],
-["BD1CE Unit-6 TAM","Nagarajan","BD1CE Unit-6 TAM.pdf"],
-["BD1CE Unit-7 ENG","Nagarajan","BD1CE Unit-7 ENG.pdf"],
-["BD1CE Unit-7 TAM","Nagarajan","BD1CE Unit-7 TAM.pdf"],
-
-["BD1EP Unit-1 TAM","Nagarajan","BD1EP Unit-1 TAM.pdf"],
-["BD1EP Unit-2 ENG","Nagarajan","BD1EP Unit-2 ENG.pdf"],
-["BD1EP Unit-2 TAM","Nagarajan","BD1EP Unit-2 TAM.pdf"],
-["BD1EP Unit-3 ENG","Nagarajan","BD1EP Unit-3 ENG.pdf"],
-["BD1EP Unit-3 TAM","Nagarajan","BD1EP Unit-3 TAM.pdf"],
-["BD1EP Unit-4 ENG","Nagarajan","BD1EP Unit-4 ENG.pdf"],
-["BD1EP Unit-4 TAM","Nagarajan","BD1EP Unit-4 TAM.pdf"],
-["BD1EP Unit-5 ENG","Nagarajan","BD1EP Unit-5 ENG.pdf"],
-["BD1EP Unit-5 TAM","Nagarajan","BD1EP Unit-5 TAM.pdf"],
-
-["BD1LC Unit-1 ENG","Nagarajan","BD1LC Unit-1 ENG.pdf"],
-["BD1LC Unit-1 TAM","Nagarajan","BD1LC Unit-1 TAM.pdf"],
-["BD1LC Unit-2 ENG","Nagarajan","BD1LC Unit-2 ENG.pdf"],
-["BD1LC Unit-2 TAM","Nagarajan","BD1LC Unit-2 TAM.pdf"],
-["BD1LC Unit-3 ENG","Nagarajan","BD1LC Unit-3 ENG.pdf"],
-["BD1LC Unit-3 TAM","Nagarajan","BD1LC Unit-3 TAM.pdf"],
-["BD1LC Unit-4 ENG","Nagarajan","BD1LC Unit-4 ENG.pdf"],
-["BD1LC Unit-4 TAM","Nagarajan","BD1LC Unit-4 TAM.pdf"],
-["BD1LC Unit-5 ENG","Nagarajan","BD1LC Unit-5 ENG.pdf"],
-["BD1LC Unit-5 TAM","Nagarajan","BD1LC Unit-5 TAM.pdf"],
-
-["BD1TL Unit-1 ENG","Nagarajan","BD1TL Unit-1 ENG.pdf"],
-["BD1TL Unit-1 TAM","Nagarajan","BD1TL Unit-1 TAM.pdf"],
-["BD1TL Unit-2 ENG","Nagarajan","BD1TL Unit-2 ENG.pdf"],
-["BD1TL Unit-2 TAM","Nagarajan","BD1TL Unit-2 TAM.pdf"],
-["BD1TL Unit-3 ENG","Nagarajan","BD1TL Unit-3 ENG.pdf"],
-["BD1TL Unit-3 TAM","Nagarajan","BD1TL Unit-3 TAM.pdf"],
-["BD1TL Unit-4 ENG","Nagarajan","BD1TL Unit-4 ENG.pdf"],
-["BD1TL Unit-4 TAM","Nagarajan","BD1TL Unit-4 TAM.pdf"],
-["BD1TL Unit-5 ENG","Nagarajan","BD1TL Unit-5 ENG.pdf"],
-["BD1TL Unit-5 TAM","Nagarajan","BD1TL Unit-5 TAM.pdf"],
-["Second Semester"],
-
-["BD2EE Unit-1 TAM","Nagarajan","BD2EE Unit-1.pdf"]
+{sem:"Semester 2",title:"BD2EE Unit 1 TAM",file:"BD2EE Unit-1.pdf"}
 
 ]
 
-let container=document.getElementById("list")
+let userSem=localStorage.getItem("semester")
 
-books.forEach((b,i)=>{
+document.getElementById("semTitle").innerText=userSem+" Notes"
 
-if(b.length==1){
+let list=document.getElementById("noteList")
 
-container.innerHTML+=`<div class="sem">${b[0]}</div>`
+books.forEach(b=>{
 
-}else{
+if(b.sem!==userSem) return
 
-let url=baseURL+encodeURIComponent(b[2])
-let id="file"+i
-
-let status=localStorage.getItem(id)
-
-let text=status?"Open":"Download"
-
-container.innerHTML+=`
+list.innerHTML+=`
 
 <div class="card">
 
 <div>
-<div>${b[0]}</div>
-<small>${b[1]}</small>
+
+<i class="fa-solid fa-file-pdf" style="color:#e11d48"></i>
+
+${b.title}
+
 </div>
 
-<button class="btn"
-data-id="${id}"
-data-url="${url}"
-onclick="handleBtn(this)">
-${text}
+<button class="btn" onclick="openPDF('${b.file}')">
+Open
 </button>
 
 </div>
 
 `
 
-}
-
 })
 
-function search(){
+/* SEARCH */
+
+function searchNotes(){
 
 let s=document.getElementById("search").value.toLowerCase()
 
-document.querySelectorAll(".card").forEach(c=>{
+document.querySelectorAll("#noteList .card").forEach(c=>{
 
-c.style.display=
-c.innerText.toLowerCase().includes(s)
-?"flex":"none"
+c.style.display=c.innerText.toLowerCase().includes(s)?"flex":"none"
 
 })
 
 }
 
-function handleBtn(btn){
+/* PDF VIEWER */
 
-let id=btn.dataset.id
-let url=btn.dataset.url
+function openPDF(file){
 
-if(localStorage.getItem(id)){
+viewer.style.display="block"
 
-openPDF(url)
-return
-
-}
-
-/* CHECK INTERNET */
-
-if(!navigator.onLine){
-
-document.getElementById("internetPopup").style.display="flex"
-return
-
-}
-
-/* FAKE DOWNLOAD */
-
-btn.innerText="Downloading..."
-btn.disabled=true
-
-setTimeout(()=>{
-
-localStorage.setItem(id,"true")
-
-btn.innerText="Open"
-btn.disabled=false
-
-openPDF(url)
-
-},1000)
-
-}
-
-function openPDF(url){
-
-let viewer="web/viewer.html?file="+url
-
-document.getElementById("viewer").style.display="block"
-
-document.getElementById("frame").src=viewer
+frame.src=base+file
 
 }
 
 function closePDF(){
 
-document.getElementById("viewer").style.display="none"
+viewer.style.display="none"
 
-document.getElementById("frame").src=""
+frame.src=""
+
+}
+
+/* PAGE SWITCH */
+
+function showPage(p){
+
+document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"))
+
+document.getElementById(p).classList.add("active")
+
+if(p==="notices"){
+noticeBadge.style.display="none"
+}
 
 }
 
-function closePopup(){
+/* TNTEU NOTIFICATIONS */
 
-document.getElementById("internetPopup").style.display="none"
+async function loadNotices(){
+
+const proxy="https://api.codetabs.com/v1/proxy/?quest="
+
+const target="https://www.tnteu.ac.in/notifications.php?nid=5"
+
+try{
+
+const res=await fetch(proxy+encodeURIComponent(target))
+const html=await res.text()
+
+const doc=new DOMParser().parseFromString(html,"text/html")
+
+const links=doc.querySelectorAll(".sectionWrapper a")
+
+let output=""
+let saved=localStorage.getItem("lastNotice")
+let first=""
+
+links.forEach((a,i)=>{
+
+if(i>12)return
+
+let title=a.innerText.trim()
+
+let url="https://www.tnteu.ac.in/"+a.getAttribute("href")
+
+if(i===0) first=title
+
+let isNew=(saved && saved!==title && i===0)
+
+output+=`
+
+<div class="noticeCard ${isNew?'new':''}">
+
+<div>
+
+<i class="fa-solid fa-bullhorn"></i>
+${title}
+${isNew?'<span style="color:red;font-size:11px;margin-left:6px">NEW</span>':''}
+
+</div>
+
+<button class="btn" onclick="window.open('${url}')">
+Open
+</button>
+
+</div>
+
+`
+
+})
+
+noticeList.innerHTML=output
+
+if(saved && saved!==first){
+noticeBadge.style.display="block"
+}
+
+localStorage.setItem("lastNotice",first)
+
+}catch{
+
+noticeList.innerHTML="Unable to load notifications."
 
 }
+
+}
+
+loadNotices()
 
 </script>
 
