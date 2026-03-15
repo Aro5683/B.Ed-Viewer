@@ -792,14 +792,19 @@ const PDFViewerApplication = {
       this.passwordPrompt.setUpdateCallback(updateCallback, reason);
       this.passwordPrompt.open();
     };
-    loadingTask.onProgress = ({
-      loaded,
-      total
-    }) => {
-      this.progress(loaded / total);
-    };
+  loadingTask.onProgress = ({ loaded, total }) => {
+
+let percent = Math.round((loaded / total) * 100);
+
+document.getElementById("progressFill").style.width = percent + "%";
+document.getElementById("progressText").innerText = percent + "%";
+
+};
     return loadingTask.promise.then(pdfDocument => {
-      this.load(pdfDocument);
+
+document.getElementById("downloadPopup").style.display="none";
+
+this.load(pdfDocument);
     }, reason => {
       if (loadingTask !== this.pdfLoadingTask) {
         return undefined;
