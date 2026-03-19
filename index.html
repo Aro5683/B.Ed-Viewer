@@ -394,9 +394,22 @@ c.style.display=c.innerText.toLowerCase().includes(s)?"flex":"none";
 
 /* PDF VIEWER */
 function openPDF(file){
-let url=base+encodeURIComponent(file);
-frame.src="web/viewer.html?file="+url;
-viewer.style.display="block";
+
+let encoded = encodeURIComponent(file);
+
+/* FULL RELATIVE PATH */
+let pdfURL = "web/PDFs/" + encoded;
+
+/* IMPORTANT: use full origin for GitHub */
+let fullURL = window.location.origin + "/" + pdfURL;
+
+/* FINAL VIEWER URL */
+let viewerURL = "web/viewer.html?file=" + encodeURIComponent(fullURL);
+
+/* OPEN */
+document.getElementById("viewer").style.display = "block";
+document.getElementById("frame").src = viewerURL;
+
 }
 function closePDF(){
 viewer.style.display="none";
