@@ -1,189 +1,176 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>B.Ed Vault</title>
+<title>B.Ed Vault Pro</title>
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
 
 :root{
---primary:#3b82f6;
---bg:#f4f7fb;
+--primary:#2563eb;
+--accent:#6366f1;
+--bg:#eef2ff;
 --card:#ffffff;
---text:#1f2937;
---shadow:0 10px 25px rgba(0,0,0,0.08);
+--text:#1e293b;
+--shadow:0 20px 50px rgba(0,0,0,0.08);
 }
 
-*{
-box-sizing:border-box;
-margin:0;
-padding:0;
-font-family:Segoe UI,Arial;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
 
 body{
-background:var(--bg);
+background:linear-gradient(135deg,#eef2ff,#e0e7ff);
 color:var(--text);
 }
 
-/* HEADER */
-
-header{
-background:var(--primary);
+/* PREMIUM HEADER */
+.header{
+padding:20px;
+background:linear-gradient(135deg,#2563eb,#6366f1);
 color:white;
-padding:16px;
-font-size:20px;
-font-weight:600;
-text-align:center;
+border-bottom-left-radius:25px;
+border-bottom-right-radius:25px;
+box-shadow:0 10px 30px rgba(0,0,0,0.1);
 }
 
-/* LOGIN */
+.header h1{
+font-size:20px;
+font-weight:600;
+}
 
-.login{
-max-width:400px;
-margin:60px auto;
+.header p{
+font-size:12px;
+opacity:0.8;
+margin-top:4px;
+}
+
+/* REGISTER */
+.register{
+max-width:420px;
+margin:30px auto;
 background:white;
 padding:25px;
-border-radius:12px;
+border-radius:20px;
 box-shadow:var(--shadow);
 }
 
-.login input,
-.login select{
+/* INPUT */
+.input-group{
+position:relative;
+margin-bottom:14px;
+}
+
+.input-group i{
+position:absolute;
+top:14px;
+left:14px;
+color:#64748b;
+}
+
+.input-group input,
+.input-group select{
 width:100%;
-padding:12px;
-margin-bottom:12px;
-border-radius:8px;
+padding:13px 12px 13px 42px;
+border-radius:12px;
 border:1px solid #ddd;
 }
 
-.login button{
+/* BUTTON */
+.primary-btn{
 width:100%;
-padding:12px;
-background:var(--primary);
-color:white;
+padding:14px;
 border:none;
-border-radius:8px;
+border-radius:14px;
+background:linear-gradient(135deg,var(--primary),var(--accent));
+color:white;
 font-weight:600;
-cursor:pointer;
 }
 
 /* PAGE */
+.page{display:none;padding:18px;padding-bottom:100px;}
+.page.active{display:block;}
 
-.page{
-display:none;
-max-width:800px;
-margin:auto;
-padding:18px;
-padding-bottom:90px;
+/* SEARCH BAR */
+.search-box{
+margin-bottom:15px;
+position:relative;
 }
 
-.page.active{
-display:block;
-}
-
-/* SEARCH */
-
-.search{
+.search-box input{
 width:100%;
-padding:12px;
-border-radius:10px;
-border:1px solid #ddd;
-margin-bottom:12px;
-}
-
-/* CARD */
-
-.card{
-background:var(--card);
+padding:12px 40px;
 border-radius:12px;
-padding:14px;
-margin-bottom:12px;
-display:flex;
-justify-content:space-between;
-align-items:center;
+border:none;
 box-shadow:var(--shadow);
 }
 
+.search-box i{
+position:absolute;
+top:12px;
+left:12px;
+color:#64748b;
+}
+
+/* CARD */
+.card{
+background:white;
+padding:16px;
+border-radius:16px;
+margin-bottom:12px;
+box-shadow:var(--shadow);
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+/* BUTTON */
 .btn{
 background:var(--primary);
 color:white;
 border:none;
-padding:8px 14px;
-border-radius:8px;
-cursor:pointer;
-}
-
-/* PDF VIEWER */
-
-.viewer{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:black;
-display:none;
-z-index:999;
-}
-
-.viewer iframe{
-width:100%;
-height:100%;
-border:none;
-}
-
-.close{
-position:absolute;
-top:10px;
-right:10px;
-background:white;
-padding:6px 12px;
-border-radius:6px;
-cursor:pointer;
+padding:8px 12px;
+border-radius:10px;
 }
 
 /* NAV */
-
 .nav{
 position:fixed;
-bottom:0;
-left:0;
-width:100%;
+bottom:10px;
+left:50%;
+transform:translateX(-50%);
+width:90%;
+max-width:420px;
 background:white;
-border-top:1px solid #ddd;
-display:flex;
+border-radius:20px;
+display:none;
 justify-content:space-around;
-padding:10px 0;
+padding:10px;
+box-shadow:0 10px 30px rgba(0,0,0,0.2);
 }
 
 .nav button{
-background:none;
 border:none;
-font-size:12px;
+background:none;
 display:flex;
 flex-direction:column;
 align-items:center;
+font-size:11px;
 position:relative;
 }
 
 .nav i{
 font-size:18px;
-margin-bottom:3px;
+color:var(--primary);
 }
 
 /* BADGE */
-
 .badge{
 position:absolute;
-top:-4px;
+top:-3px;
 right:6px;
 background:red;
 color:white;
@@ -194,361 +181,252 @@ display:none;
 }
 
 /* NOTICE */
-
-.noticeCard{
+.notice{
 background:white;
-border-radius:12px;
-padding:14px;
+padding:16px;
+border-radius:16px;
 margin-bottom:12px;
-display:flex;
-justify-content:space-between;
-align-items:center;
 box-shadow:var(--shadow);
-border-left:4px solid var(--primary);
 }
 
-.noticeCard.new{
-border-left:4px solid red;
-background:#fff5f5;
+/* POPUP */
+.popup{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.5);
+display:none;
+justify-content:center;
+align-items:center;
+z-index:999;
+}
+
+.popup-box{
+background:white;
+padding:25px;
+border-radius:18px;
+width:85%;
+max-width:320px;
+text-align:center;
+}
+
+.popup button{
+margin-top:15px;
+padding:10px;
+border:none;
+border-radius:10px;
+background:var(--primary);
+color:white;
 }
 
 </style>
-
 </head>
 
 <body>
 
-<header>
-<i class="fa-solid fa-graduation-cap"></i>
-B.Ed Vault
-</header>
+<!-- HEADER -->
+<div class="header">
+<h1>🎓 B.Ed Vault</h1>
+<p>Your Smart Study Companion</p>
+</div>
 
-<!-- LOGIN -->
+<!-- REGISTER -->
+<div id="registerPage" class="register">
 
-<div id="loginPage" class="login">
+<h2 style="text-align:center;margin-bottom:15px;">Register</h2>
 
-<h2 style="text-align:center;margin-bottom:15px;">
-Login
-</h2>
+<div class="input-group"><i class="fa fa-user"></i><input id="name" placeholder="Name"></div>
+<div class="input-group"><i class="fa fa-calendar"></i><input id="dob" type="date"></div>
 
-<input id="name" placeholder="Your Name">
+<div class="input-group">
+<i class="fa fa-venus-mars"></i>
+<select id="gender"><option value="">Gender</option><option>Male</option><option>Female</option></select>
+</div>
 
+<div class="input-group"><i class="fa fa-school"></i><input id="college" placeholder="College"></div>
+<div class="input-group"><i class="fa fa-location-dot"></i><input id="district" placeholder="District"></div>
+<div class="input-group"><i class="fa fa-phone"></i><input id="phone" placeholder="Phone"></div>
+
+<div class="input-group">
+<i class="fa fa-layer-group"></i>
 <select id="semester">
-<option value="">Select Semester</option>
+<option value="">Semester</option>
 <option>Semester 1</option>
 <option>Semester 2</option>
 <option>Semester 3</option>
 <option>Semester 4</option>
 </select>
+</div>
 
-<button onclick="sendLogin()">
-Login via WhatsApp
-</button>
+<label><input type="checkbox" id="agree"> Agree</label><br><br>
+
+<button class="primary-btn" onclick="registerUser()">Register</button>
 
 </div>
 
 <!-- HOME -->
-
 <div id="home" class="page">
 
 <div class="card">
-<div>
-<i class="fa-solid fa-book"></i>
-Study Notes
-</div>
-
-<button class="btn" onclick="showPage('notes')">
-Open
-</button>
-
+📚 Study Notes
+<button class="btn" onclick="showPage('notes')">Open</button>
 </div>
 
 <div class="card">
-<div>
-<i class="fa-solid fa-bell"></i>
-TNTEU Updates
-</div>
-
-<button class="btn" onclick="showPage('notices')">
-Open
-</button>
-
+🔔 TNTEU Updates
+<button class="btn" onclick="showPage('notices')">Open</button>
 </div>
 
 </div>
 
 <!-- NOTES -->
-
 <div id="notes" class="page">
 
 <h3 id="semTitle"></h3>
 
-<input
-class="search"
-id="search"
-placeholder="Search notes..."
-onkeyup="searchNotes()"
-
->
+<div class="search-box">
+<i class="fa fa-search"></i>
+<input id="search" placeholder="Search notes..." onkeyup="searchNotes()">
+</div>
 
 <div id="noteList"></div>
 
 </div>
 
 <!-- NOTICES -->
-
 <div id="notices" class="page">
-
-<h3>TNTEU Notifications</h3>
-
-<div id="noticeList">Loading...</div>
-
-</div>
-
-<!-- PDF VIEWER -->
-
-<div class="viewer" id="viewer">
-
-<div class="close" onclick="closePDF()">
-Close
-</div>
-
-<iframe id="frame"></iframe>
-
+<h3>Updates</h3>
+<div id="noticeList"></div>
 </div>
 
 <!-- NAV -->
+<div id="nav" class="nav">
+<button onclick="showPage('home')"><i class="fa fa-house"></i>Home</button>
+<button onclick="showPage('notes')"><i class="fa fa-book"></i>Notes</button>
+<button onclick="showPage('notices')"><i class="fa fa-bell"></i>Updates<span id="badge" class="badge">1</span></button>
+</div>
 
-<div class="nav">
-
-<button onclick="showPage('home')">
-<i class="fa-solid fa-house"></i>
-Home
-</button>
-
-<button onclick="showPage('notes')">
-<i class="fa-solid fa-book"></i>
-Notes
-</button>
-
-<button onclick="showPage('notices')" style="position:relative">
-<i class="fa-solid fa-bell"></i>
-Updates
-<span id="noticeBadge" class="badge">1</span>
-</button>
-
+<!-- POPUP -->
+<div id="popup" class="popup">
+<div class="popup-box">
+<div id="popupMsg"></div>
+<button onclick="closePopup()">OK</button>
+</div>
 </div>
 
 <script>
 
-/* LOGIN */
+const SCRIPT_URL="PASTE_URL";
 
-function sendLogin(){
+/* POPUP */
+function showPopup(msg){
+popupMsg.innerText=msg;
+popup.style.display="flex";
+}
+function closePopup(){popup.style.display="none";}
 
-let name=document.getElementById("name").value
-let semester=document.getElementById("semester").value
+/* REGISTER */
+function registerUser(){
+let data={
+name:name.value,dob:dob.value,gender:gender.value,
+college:college.value,district:district.value,
+phone:phone.value,semester:semester.value
+};
 
-if(!name || !semester){
-
-alert("Fill all details")
-return
-
+if(Object.values(data).includes("")||!agree.checked){
+showPopup("Fill all fields");
+return;
 }
 
-localStorage.setItem("semester",semester)
-localStorage.setItem("logged","yes")
+localStorage.setItem("user",JSON.stringify(data));
 
-let msg=
-`B.Ed Vault Login
+fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",body:JSON.stringify(data)});
 
-Name: ${name}
-Semester: ${semester}
-
-Please activate.`
-
-let url="https://wa.me/919655969516?text="+encodeURIComponent(msg)
-
-window.open(url)
-
-location.reload()
-
+showPopup("🎉 Registered Successfully!");
+setTimeout(()=>location.reload(),1500);
 }
 
-/* CHECK LOGIN */
-
-if(localStorage.getItem("logged")){
-
-loginPage.style.display="none"
-home.classList.add("active")
-
+/* AUTO LOGIN */
+let user=JSON.parse(localStorage.getItem("user"));
+if(user){
+registerPage.style.display="none";
+nav.style.display="flex";
+home.classList.add("active");
 }
 
-/* NOTES DATA */
-
-const base="PDFs/"
-
+/* NOTES */
 const books=[
-
 {sem:"Semester 1",title:"BD1CE Unit 1 ENG",file:"BD1CE Unit-1 ENG.pdf"},
 {sem:"Semester 1",title:"BD1CE Unit 2 ENG",file:"BD1CE Unit-2 ENG.pdf"},
-
 {sem:"Semester 2",title:"BD2EE Unit 1 TAM",file:"BD2EE Unit-1.pdf"}
+];
 
-]
-
-let userSem=localStorage.getItem("semester")
-
-document.getElementById("semTitle").innerText=userSem+" Notes"
-
-let list=document.getElementById("noteList")
+if(user){
+semTitle.innerText=user.semester+" Notes";
 
 books.forEach(b=>{
+if(b.sem!==user.semester)return;
 
-if(b.sem!==userSem) return
-
-list.innerHTML+=`
-
-<div class="card">
-
-<div>
-
-<i class="fa-solid fa-file-pdf" style="color:#e11d48"></i>
-
-${b.title}
-
-</div>
-
-<button class="btn" onclick="openPDF('${b.file}')">
-Open
-</button>
-
-</div>
-
-`
-
-})
+noteList.innerHTML+=`
+<div class="card">${b.title}
+<button class="btn" onclick="openPDF('${b.file}')">Open</button>
+</div>`;
+});
+}
 
 /* SEARCH */
-
 function searchNotes(){
-
-let s=document.getElementById("search").value.toLowerCase()
-
+let s=search.value.toLowerCase();
 document.querySelectorAll("#noteList .card").forEach(c=>{
-
-c.style.display=c.innerText.toLowerCase().includes(s)?"flex":"none"
-
-})
-
+c.style.display=c.innerText.toLowerCase().includes(s)?"flex":"none";
+});
 }
 
-/* PDF VIEWER */
-
+/* OPEN PDF */
 function openPDF(file){
-
-let url = base + encodeURIComponent(file)
-
-let viewerURL = "web/viewer.html?file=" + url
-
-document.getElementById("viewer").style.display="block"
-
-document.getElementById("frame").src = viewerURL
-
-}
-function closePDF(){
-
-viewer.style.display="none"
-
-frame.src=""
-
+let url="web/PDFs/"+encodeURIComponent(file);
+window.location.href="web/viewer.html?file="+url;
 }
 
-/* PAGE SWITCH */
-
+/* NAV */
 function showPage(p){
-
-document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"))
-
-document.getElementById(p).classList.add("active")
-
-if(p==="notices"){
-noticeBadge.style.display="none"
+document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+document.getElementById(p).classList.add("active");
+if(p==="notices") badge.style.display="none";
 }
 
-}
-
-/* TNTEU NOTIFICATIONS */
-
+/* NOTICES */
 async function loadNotices(){
+const proxy="https://api.codetabs.com/v1/proxy/?quest=";
+const target="https://www.tnteu.ac.in/notifications.php?nid=5";
 
-const proxy="https://api.codetabs.com/v1/proxy/?quest="
+let res=await fetch(proxy+encodeURIComponent(target));
+let html=await res.text();
+let doc=new DOMParser().parseFromString(html,"text/html");
+let links=doc.querySelectorAll(".sectionWrapper a");
 
-const target="https://www.tnteu.ac.in/notifications.php?nid=5"
-
-try{
-
-const res=await fetch(proxy+encodeURIComponent(target))
-const html=await res.text()
-
-const doc=new DOMParser().parseFromString(html,"text/html")
-
-const links=doc.querySelectorAll(".sectionWrapper a")
-
-let output=""
-let saved=localStorage.getItem("lastNotice")
-let first=""
+let first="",saved=localStorage.getItem("lastNotice"),out="";
 
 links.forEach((a,i)=>{
+if(i>10)return;
+let title=a.innerText;
+let url="https://www.tnteu.ac.in/"+a.getAttribute("href");
+if(i===0) first=title;
 
-if(i>12)return
+out+=`<div class="notice">${title}
+<button class="btn" onclick="window.open('${url}')">View</button>
+</div>`;
+});
 
-let title=a.innerText.trim()
+noticeList.innerHTML=out;
 
-let url="https://www.tnteu.ac.in/"+a.getAttribute("href")
-
-if(i===0) first=title
-
-let isNew=(saved && saved!==title && i===0)
-
-output+=`
-
-<div class="noticeCard ${isNew?'new':''}">
-
-<div>
-
-<i class="fa-solid fa-bullhorn"></i>
-${title}
-${isNew?'<span style="color:red;font-size:11px;margin-left:6px">NEW</span>':''}
-
-</div>
-
-<button class="btn" onclick="window.open('${url}')">
-Open
-</button>
-
-</div>
-
-`
-
-})
-
-noticeList.innerHTML=output
-
-if(saved && saved!==first){
-noticeBadge.style.display="block"
+if(saved&&saved!==first) badge.style.display="block";
+localStorage.setItem("lastNotice",first);
 }
 
-localStorage.setItem("lastNotice",first)
-
-}catch{
-
-noticeList.innerHTML="Unable to load notifications."
-
-}
-
-}
-
-loadNotices()
+loadNotices();
 
 </script>
 
