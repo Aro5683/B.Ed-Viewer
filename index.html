@@ -10,7 +10,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-
 :root{
 --primary:#2563eb;
 --accent:#6366f1;
@@ -34,10 +33,11 @@ color:white;
 border-bottom-left-radius:25px;
 border-bottom-right-radius:25px;
 box-shadow:var(--shadow);
+text-align:center;
 }
 
 .header h1{font-size:20px;}
-.header p{font-size:12px;opacity:0.8;}
+.header p{font-size:12px;opacity:0.9;margin-top:4px;}
 
 /* REGISTER */
 .register{
@@ -69,83 +69,125 @@ padding:13px;
 border:none;
 border-radius:12px;
 background:linear-gradient(90deg,var(--primary),var(--accent));
-color:white;font-weight:600;
+color:white;
+font-weight:600;
+cursor:pointer;
 }
 
 /* PAGE */
-.page{display:none;padding:16px;padding-bottom:90px;}
+.page{display:none;padding:16px;padding-bottom:100px;}
 .page.active{display:block;}
 
 /* SEARCH */
 .search{
-width:100%;padding:12px;border-radius:10px;
-border:1px solid #ddd;margin-bottom:12px;
+width:100%;
+padding:12px;
+border-radius:10px;
+border:1px solid #ddd;
+margin-bottom:12px;
 }
 
 /* CARD */
 .card{
-background:white;border-radius:16px;padding:16px;
+background:white;
+border-radius:16px;
+padding:16px;
 margin-bottom:12px;
-display:flex;justify-content:space-between;
+display:flex;
+justify-content:space-between;
 align-items:center;
 box-shadow:var(--shadow);
 }
 
-/* BUTTON */
 .btn{
 background:var(--primary);
-color:white;border:none;padding:8px 12px;
+color:white;
+border:none;
+padding:8px 12px;
 border-radius:8px;
+cursor:pointer;
 }
 
 /* NAV */
 .nav{
-position:fixed;bottom:10px;left:50%;
+position:fixed;
+bottom:10px;
+left:50%;
 transform:translateX(-50%);
-width:90%;max-width:420px;
-background:white;border-radius:20px;
-display:none;justify-content:space-around;
+width:90%;
+max-width:420px;
+background:white;
+border-radius:20px;
+display:none;
+justify-content:space-around;
 padding:10px;
 box-shadow:0 10px 25px rgba(0,0,0,0.2);
 }
+
 .nav button{
-border:none;background:none;
-display:flex;flex-direction:column;
-align-items:center;font-size:11px;
+border:none;
+background:none;
+display:flex;
+flex-direction:column;
+align-items:center;
+font-size:11px;
 position:relative;
 }
+
 .nav i{font-size:18px;color:var(--primary);}
 
 /* BADGE */
 .badge{
-position:absolute;top:-3px;right:6px;
-background:red;color:white;font-size:10px;
-padding:2px 6px;border-radius:10px;display:none;
+position:absolute;
+top:-3px;
+right:6px;
+background:red;
+color:white;
+font-size:10px;
+padding:2px 6px;
+border-radius:10px;
+display:none;
 }
 
 /* NOTICE */
 .notice{
-background:white;padding:14px;
-border-radius:14px;margin-bottom:10px;
+background:white;
+padding:14px;
+border-radius:14px;
+margin-bottom:10px;
 box-shadow:var(--shadow);
 }
 
 /* POPUP */
 .popup{
-position:fixed;top:0;left:0;width:100%;height:100%;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
 background:rgba(0,0,0,0.5);
-display:none;justify-content:center;align-items:center;
+display:none;
+justify-content:center;
+align-items:center;
 z-index:999;
 }
 .popup-box{
-background:white;padding:20px;border-radius:16px;
-text-align:center;width:300px;
+background:white;
+padding:20px;
+border-radius:16px;
+text-align:center;
+width:300px;
 }
 .popup button{
-margin-top:10px;padding:10px;
-background:var(--primary);color:white;
-border:none;border-radius:8px;
+margin-top:10px;
+padding:10px;
+background:var(--primary);
+color:white;
+border:none;
+border-radius:8px;
 }
+
+/* CHECKBOX */
 .checkbox{
 display:flex;
 align-items:center;
@@ -166,17 +208,10 @@ margin:10px 0;
 <!-- REGISTER -->
 <div id="registerPage" class="register">
 
-<h2>Student Registration</h2>
+<h2 style="text-align:center;margin-bottom:10px;">Student Registration</h2>
 
-<div class="input">
-<i class="fa fa-user"></i>
-<input id="name" placeholder="Full Name">
-</div>
-
-<div class="input">
-<i class="fa fa-calendar"></i>
-<input id="dob" type="date">
-</div>
+<div class="input"><i class="fa fa-user"></i><input id="name" placeholder="Full Name"></div>
+<div class="input"><i class="fa fa-calendar"></i><input id="dob" type="date"></div>
 
 <div class="input">
 <i class="fa fa-venus-mars"></i>
@@ -188,25 +223,14 @@ margin:10px 0;
 </select>
 </div>
 
-<div class="input">
-<i class="fa fa-school"></i>
-<input id="college" placeholder="College Name">
-</div>
-
-<div class="input">
-<i class="fa fa-location-dot"></i>
-<input id="district" placeholder="District">
-</div>
-
-<div class="input">
-<i class="fa fa-phone"></i>
-<input id="phone" placeholder="Phone Number">
-</div>
+<div class="input"><i class="fa fa-school"></i><input id="college" placeholder="College"></div>
+<div class="input"><i class="fa fa-location-dot"></i><input id="district" placeholder="District"></div>
+<div class="input"><i class="fa fa-phone"></i><input id="phone" placeholder="Phone"></div>
 
 <div class="input">
 <i class="fa fa-layer-group"></i>
 <select id="semester">
-<option value="">Select Semester</option>
+<option value="">Semester</option>
 <option>Semester 1</option>
 <option>Semester 2</option>
 <option>Semester 3</option>
@@ -272,13 +296,19 @@ popup.style.display="flex";
 /* REGISTER */
 function registerUser(){
 
+let nameVal = document.getElementById("name").value.trim();
+
 let data={
-name:name.value,dob:dob.value,gender:gender.value,
-college:college.value,district:district.value,
-phone:phone.value,semester:semester.value
+name:nameVal,
+dob:dob.value,
+gender:gender.value,
+college:college.value,
+district:district.value,
+phone:phone.value,
+semester:semester.value
 };
 
-if(Object.values(data).includes("")||!agree.checked){
+if(!nameVal || Object.values(data).includes("") || !agree.checked){
 showPopup("Fill all fields");
 return;
 }
@@ -295,23 +325,26 @@ showPopup("🎉 Registration Success!");
 setTimeout(()=>location.reload(),1500);
 }
 
-/* LOGIN */
+/* LOAD USER AFTER DOM */
+window.addEventListener("DOMContentLoaded",()=>{
+
 let user=JSON.parse(localStorage.getItem("user"));
 
 if(user){
+
+welcomeText.innerText="Welcome, "+(user.name || "Student");
+
 registerPage.style.display="none";
 nav.style.display="flex";
 home.classList.add("active");
-}
 
-/* NOTES */
+/* LOAD NOTES */
 const books=[
 {sem:"Semester 1",title:"BD1CE Unit 1 ENG",file:"BD1CE Unit-1 ENG.pdf"},
 {sem:"Semester 1",title:"BD1CE Unit 2 ENG",file:"BD1CE Unit-2 ENG.pdf"},
 {sem:"Semester 2",title:"BD2EE Unit 1 TAM",file:"BD2EE Unit-1.pdf"}
 ];
 
-if(user){
 semTitle.innerText=user.semester+" Notes";
 
 books.forEach(b=>{
@@ -323,7 +356,10 @@ ${b.title}
 <button class="btn" onclick="openPDF('${b.file}')">Open</button>
 </div>`;
 });
+
 }
+
+});
 
 /* SEARCH */
 function searchNotes(){
@@ -333,14 +369,14 @@ c.style.display=c.innerText.toLowerCase().includes(s)?"flex":"none";
 });
 }
 
+/* PDF FIXED (NO BLOB ISSUE) */
 function openPDF(file){
 
-let url = "https://aro5683.github.io/B.Ed-Viewer/web/PDFs/" + file;
+let url="https://aro5683.github.io/B.Ed-Viewer/web/PDFs/"+file;
 
-/* ONLY encode full URL ONCE */
-let viewerURL = "web/viewer.html?file=" + encodeURIComponent(url);
+let viewerURL="web/viewer.html?file="+encodeURIComponent(url);
 
-window.location.href = viewerURL;
+window.location.href=viewerURL;
 
 }
 
@@ -351,7 +387,7 @@ document.getElementById(p).classList.add("active");
 if(p==="notices") badge.style.display="none";
 }
 
-/* NOTICES */
+/* NOTIFICATIONS */
 async function loadNotices(){
 
 const proxy="https://api.codetabs.com/v1/proxy/?quest=";
@@ -390,28 +426,6 @@ localStorage.setItem("lastNotice",first);
 
 loadNotices();
 
-  
-window.addEventListener("DOMContentLoaded", () => {
-
-let user = JSON.parse(localStorage.getItem("user"));
-
-if(user){
-
-document.getElementById("welcomeText").innerText =
-"Welcome, " + user.name;
-
-/* hide register */
-document.getElementById("registerPage").style.display="none";
-
-/* show nav */
-document.getElementById("nav").style.display="flex";
-
-/* show home */
-document.getElementById("home").classList.add("active");
-
-}
-
-});
 </script>
 
 </body>
