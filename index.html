@@ -153,29 +153,54 @@ border:none;border-radius:8px;
 <body>
 
 <div class="header">
-<h1>🎓 B.Ed Vault</h1>
+<h1><i class="fa-solid fa-graduation-cap"></i> B.Ed Vault</h1>
 <p>Smart Study App</p>
 </div>
 
 <!-- REGISTER -->
 <div id="registerPage" class="register">
 
-<h3 style="text-align:center;margin-bottom:10px;">Register</h3>
+<h2>Student Registration</h2>
 
-<div class="input"><i class="fa fa-user"></i><input id="name" placeholder="Name"></div>
-<div class="input"><i class="fa fa-calendar"></i><input id="dob" type="date"></div>
-
-<div class="input">
-<select id="gender"><option value="">Gender</option><option>Male</option><option>Female</option></select>
+<div class="input-group">
+<i class="fa fa-user"></i>
+<input id="name" placeholder="Full Name">
 </div>
 
-<div class="input"><input id="college" placeholder="College"></div>
-<div class="input"><input id="district" placeholder="District"></div>
-<div class="input"><input id="phone" placeholder="Phone"></div>
+<div class="input-group">
+<i class="fa fa-calendar"></i>
+<input id="dob" type="date">
+</div>
 
-<div class="input">
+<div class="input-group">
+<i class="fa fa-venus-mars"></i>
+<select id="gender">
+<option value="">Gender</option>
+<option>Male</option>
+<option>Female</option>
+<option>Other</option>
+</select>
+</div>
+
+<div class="input-group">
+<i class="fa fa-school"></i>
+<input id="college" placeholder="College Name">
+</div>
+
+<div class="input-group">
+<i class="fa fa-location-dot"></i>
+<input id="district" placeholder="District">
+</div>
+
+<div class="input-group">
+<i class="fa fa-phone"></i>
+<input id="phone" placeholder="Phone Number">
+</div>
+
+<div class="input-group">
+<i class="fa fa-layer-group"></i>
 <select id="semester">
-<option value="">Semester</option>
+<option value="">Select Semester</option>
 <option>Semester 1</option>
 <option>Semester 2</option>
 <option>Semester 3</option>
@@ -183,7 +208,10 @@ border:none;border-radius:8px;
 </select>
 </div>
 
-<label><input type="checkbox" id="agree"> Agree terms</label>
+<div class="checkbox">
+<input type="checkbox" id="agree">
+<label>I agree to Terms</label>
+</div>
 
 <button class="primary-btn" onclick="registerUser()">Register</button>
 
