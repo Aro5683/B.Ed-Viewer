@@ -97,13 +97,14 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 box-shadow:var(--shadow);
+  font-size:14px;
 }
 
 .btn{
 background:var(--primary);
 color:white;
 border:none;
-padding:8px 12px;
+padding:4px 12px;
 border-radius:8px;
 cursor:pointer;
 }
@@ -157,7 +158,9 @@ border-radius:14px;
 margin-bottom:10px;
 box-shadow:var(--shadow);
 }
-
+.notice{
+font-size:14px; /* change this value */
+}
 /* POPUP */
 .popup{
 position:fixed;
@@ -249,13 +252,13 @@ margin:10px 0;
 
 <!-- HOME -->
 <div id="home" class="page">
-<div class="card">📚 Notes <button class="btn" onclick="showPage('notes')">Open</button></div>
-<div class="card">🔔 Updates <button class="btn" onclick="showPage('notices')">Open</button></div>
+<div class="card"><i class="fa fa-book"> Notes <button class="btn" onclick="showPage('notes')">Open</button></div>
+<div class="card"><i class="fa fa-bell"> Updates <button class="btn" onclick="showPage('notices')">Open</button></div>
 </div>
 
 <!-- NOTES -->
 <div id="notes" class="page">
-<h3 id="semTitle"></h3>
+<h3 id="semTitle"></h3><br/>
 <input id="search" class="search" placeholder="Search..." onkeyup="searchNotes()">
 <div id="noteList"></div>
 </div>
