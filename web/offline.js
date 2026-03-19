@@ -2,7 +2,7 @@ const DB_NAME = "pdf-cache";
 const STORE = "pdfs";
 const META = "meta";
 
-/* OPEN DB */
+/* OPEN DATABASE */
 function openDB() {
   return new Promise((resolve) => {
     const req = indexedDB.open(DB_NAME, 2);
@@ -23,56 +23,42 @@ function openDB() {
   });
 }
 
-/* GET FIFO ORDER LIST */
-function getMetaList(meta) {
+/* GET ORDER LIST */
+function getOrder(meta) {
   return new Promise((resolve) => {
     const req = meta.get("order");
     req.onsuccess = () => resolve(req.result || []);
   });
 }
 
-/* SAVE PDF (FIFO LOGIC) */
+/* SAVE PDF WITH FIFO */
 async function savePDF(url, blob) {
+
   const db = await openDB();
   const tx = db.transaction([STORE, META], "readwrite");
 
   const store = tx.objectStore(STORE);
   const meta = tx.objectStore(META);
 
-  let list = await getMetaList(meta);
+  let order = await getOrder(meta);
 
-  try {
-    /* TRY SAVE */
-    store.put(blob, url);
+  /* LIMIT (important for stability) */
+  const MAX_FILES = 30;
 
-    /* ADD TO ORDER */
-    list.push(url);
-    meta.put(list, "order");
-
-  } catch (e) {
-
-    console.warn("Storage full, applying FIFO delete...");
-
-    if (list.length > 0) {
-
-      /* REMOVE OLDEST */
-      const oldest = list.shift();
-      store.delete(oldest);
-
-      /* SAVE UPDATED LIST */
-      meta.put(list, "order");
-
-      /* SAVE AGAIN */
-      store.put(blob, url);
-
-      list.push(url);
-      meta.put(list, "order");
-    }
+  if (order.length >= MAX_FILES) {
+    const oldest = order.shift(); // remove first
+    store.delete(oldest);
   }
+
+  store.put(blob, url);
+
+  order.push(url);
+  meta.put(order, "order");
 }
 
 /* GET PDF */
 async function getPDF(url) {
+
   const db = await openDB();
   const tx = db.transaction(STORE, "readonly");
 
@@ -82,24 +68,50 @@ async function getPDF(url) {
   });
 }
 
-/* MAIN LOADER */
+/* LOAD PDF (MAIN FUNCTION) */
 async function loadPDF(url) {
 
-  /* CHECK CACHE */
+  /* 1️⃣ CHECK CACHE */
   const cached = await getPDF(url);
 
   if (cached) {
-    console.log("📦 Loaded from cache:", url);
+    console.log("⚡ Loaded from cache");
     return URL.createObjectURL(cached);
   }
 
-  /* DOWNLOAD */
-  console.log("🌐 Fetching PDF:", url);
+  console.log("🌐 Fetching PDF...");
 
-  const res = await fetch(url);
-  const blob = await res.blob();
+  /* 2️⃣ FETCH WITH PROGRESS SUPPORT */
+  const response = await fetch(url);
 
-  /* SAVE WITH FIFO */
+  const reader = response.body.getReader();
+  const contentLength = +response.headers.get("Content-Length");
+
+  let received = 0;
+  let chunks = [];
+
+  while(true){
+    const {done, value} = await reader.read();
+    if(done) break;
+
+    chunks.push(value);
+    received += value.length;
+
+    /* PROGRESS UI (if exists) */
+    if(contentLength){
+      let percent = Math.floor((received / contentLength) * 100);
+
+      let fill = document.getElementById("progressFill");
+      let text = document.getElementById("progressText");
+
+      if(fill) fill.style.width = percent + "%";
+      if(text) text.innerText = percent + "%";
+    }
+  }
+
+  const blob = new Blob(chunks, { type: "application/pdf" });
+
+  /* 3️⃣ SAVE (FIFO) */
   await savePDF(url, blob);
 
   return URL.createObjectURL(blob);
