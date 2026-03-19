@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>B.Ed Vault</title>
+<title>B.Ed Vault Pro</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -27,7 +27,7 @@ background:linear-gradient(135deg,#eef2ff,#e0e7ff);
 color:var(--text);
 }
 
-/* PREMIUM HEADER */
+/* HEADER */
 .header{
 padding:20px;
 background:linear-gradient(135deg,#2563eb,#6366f1);
@@ -37,16 +37,8 @@ border-bottom-right-radius:25px;
 box-shadow:0 10px 30px rgba(0,0,0,0.1);
 }
 
-.header h1{
-font-size:20px;
-font-weight:600;
-}
-
-.header p{
-font-size:12px;
-opacity:0.8;
-margin-top:4px;
-}
+.header h1{font-size:20px;}
+.header p{font-size:12px;opacity:0.8;}
 
 /* REGISTER */
 .register{
@@ -58,7 +50,6 @@ border-radius:20px;
 box-shadow:var(--shadow);
 }
 
-/* INPUT */
 .input-group{
 position:relative;
 margin-bottom:14px;
@@ -79,7 +70,6 @@ border-radius:12px;
 border:1px solid #ddd;
 }
 
-/* BUTTON */
 .primary-btn{
 width:100%;
 padding:14px;
@@ -94,12 +84,8 @@ font-weight:600;
 .page{display:none;padding:18px;padding-bottom:100px;}
 .page.active{display:block;}
 
-/* SEARCH BAR */
-.search-box{
-margin-bottom:15px;
-position:relative;
-}
-
+/* SEARCH */
+.search-box{position:relative;margin-bottom:15px;}
 .search-box input{
 width:100%;
 padding:12px 40px;
@@ -107,12 +93,10 @@ border-radius:12px;
 border:none;
 box-shadow:var(--shadow);
 }
-
 .search-box i{
 position:absolute;
 top:12px;
 left:12px;
-color:#64748b;
 }
 
 /* CARD */
@@ -189,6 +173,32 @@ margin-bottom:12px;
 box-shadow:var(--shadow);
 }
 
+/* VIEWER */
+.viewer{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:black;
+display:none;
+z-index:999;
+}
+.viewer iframe{
+width:100%;
+height:100%;
+border:none;
+}
+.close{
+position:absolute;
+top:10px;
+right:10px;
+background:white;
+padding:8px 12px;
+border-radius:8px;
+cursor:pointer;
+}
+
 /* POPUP */
 .popup{
 position:fixed;
@@ -200,25 +210,21 @@ background:rgba(0,0,0,0.5);
 display:none;
 justify-content:center;
 align-items:center;
-z-index:999;
+z-index:1000;
 }
-
 .popup-box{
 background:white;
 padding:25px;
 border-radius:18px;
-width:85%;
-max-width:320px;
 text-align:center;
 }
-
 .popup button{
-margin-top:15px;
+margin-top:10px;
 padding:10px;
 border:none;
-border-radius:10px;
 background:var(--primary);
 color:white;
+border-radius:8px;
 }
 
 </style>
@@ -226,31 +232,26 @@ color:white;
 
 <body>
 
-<!-- HEADER -->
 <div class="header">
-<h1><i class="fa-solid fa-graduation-cap"></i>B.Ed Vault</h1>
+<h1>🎓 B.Ed Vault</h1>
 <p>Your Smart Study Companion</p>
 </div>
 
 <!-- REGISTER -->
 <div id="registerPage" class="register">
 
-<h2 style="text-align:center;margin-bottom:15px;">Register</h2>
-
 <div class="input-group"><i class="fa fa-user"></i><input id="name" placeholder="Name"></div>
 <div class="input-group"><i class="fa fa-calendar"></i><input id="dob" type="date"></div>
 
 <div class="input-group">
-<i class="fa fa-venus-mars"></i>
 <select id="gender"><option value="">Gender</option><option>Male</option><option>Female</option></select>
 </div>
 
-<div class="input-group"><i class="fa fa-school"></i><input id="college" placeholder="College"></div>
-<div class="input-group"><i class="fa fa-location-dot"></i><input id="district" placeholder="District"></div>
-<div class="input-group"><i class="fa fa-phone"></i><input id="phone" placeholder="Phone"></div>
+<div class="input-group"><input id="college" placeholder="College"></div>
+<div class="input-group"><input id="district" placeholder="District"></div>
+<div class="input-group"><input id="phone" placeholder="Phone"></div>
 
 <div class="input-group">
-<i class="fa fa-layer-group"></i>
 <select id="semester">
 <option value="">Semester</option>
 <option>Semester 1</option>
@@ -288,7 +289,7 @@ color:white;
 
 <div class="search-box">
 <i class="fa fa-search"></i>
-<input id="search" placeholder="Search notes..." onkeyup="searchNotes()">
+<input id="search" placeholder="Search..." onkeyup="searchNotes()">
 </div>
 
 <div id="noteList"></div>
@@ -297,7 +298,6 @@ color:white;
 
 <!-- NOTICES -->
 <div id="notices" class="page">
-<h3>Updates</h3>
 <div id="noticeList"></div>
 </div>
 
@@ -306,6 +306,12 @@ color:white;
 <button onclick="showPage('home')"><i class="fa fa-house"></i>Home</button>
 <button onclick="showPage('notes')"><i class="fa fa-book"></i>Notes</button>
 <button onclick="showPage('notices')"><i class="fa fa-bell"></i>Updates<span id="badge" class="badge">1</span></button>
+</div>
+
+<!-- VIEWER -->
+<div class="viewer" id="viewer">
+<div class="close" onclick="closePDF()">Close</div>
+<iframe id="frame"></iframe>
 </div>
 
 <!-- POPUP -->
@@ -319,6 +325,7 @@ color:white;
 <script>
 
 const SCRIPT_URL="PASTE_URL";
+const base="web/PDFs/";
 
 /* POPUP */
 function showPopup(msg){
@@ -329,6 +336,7 @@ function closePopup(){popup.style.display="none";}
 
 /* REGISTER */
 function registerUser(){
+
 let data={
 name:name.value,dob:dob.value,gender:gender.value,
 college:college.value,district:district.value,
@@ -384,10 +392,15 @@ c.style.display=c.innerText.toLowerCase().includes(s)?"flex":"none";
 });
 }
 
-/* OPEN PDF */
+/* PDF VIEWER */
 function openPDF(file){
-let url="web/PDFs/"+encodeURIComponent(file);
-window.location.href="web/viewer.html?file="+url;
+let url=base+encodeURIComponent(file);
+frame.src="web/viewer.html?file="+url;
+viewer.style.display="block";
+}
+function closePDF(){
+viewer.style.display="none";
+frame.src="";
 }
 
 /* NAV */
@@ -397,7 +410,7 @@ document.getElementById(p).classList.add("active");
 if(p==="notices") badge.style.display="none";
 }
 
-/* NOTICES */
+/* NOTIFICATIONS */
 async function loadNotices(){
 const proxy="https://api.codetabs.com/v1/proxy/?quest=";
 const target="https://www.tnteu.ac.in/notifications.php?nid=5";
