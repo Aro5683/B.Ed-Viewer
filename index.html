@@ -372,11 +372,13 @@ c.style.display=c.innerText.toLowerCase().includes(s)?"flex":"none";
 /* PDF FIXED (NO BLOB ISSUE) */
 function openPDF(file){
 
-let url="https://aro5683.github.io/B.Ed-Viewer/web/PDFs/"+file;
+let url = "https://aro5683.github.io/B.Ed-Viewer/web/PDFs/" + file;
 
-let viewerURL="web/viewer.html?file="+encodeURIComponent(url);
+/* encode ONLY once */
+let viewerURL = "web/viewer.html?file=" + encodeURIComponent(url);
 
-window.location.href=viewerURL;
+/* IMPORTANT: NEVER use blob */
+window.location.href = viewerURL;
 
 }
 
