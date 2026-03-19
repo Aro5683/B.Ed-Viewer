@@ -335,12 +335,12 @@ c.style.display=c.innerText.toLowerCase().includes(s)?"flex":"none";
 
 function openPDF(file){
 
-let url="https://aro5683.github.io/B.Ed-Viewer/web/PDFs/"+encodeURIComponent(file);
+let url = "https://aro5683.github.io/B.Ed-Viewer/web/PDFs/" + file;
 
-/* encode full URL */
-let viewerURL="web/viewer.html?file="+encodeURIComponent(url);
+/* ONLY encode full URL ONCE */
+let viewerURL = "web/viewer.html?file=" + encodeURIComponent(url);
 
-window.location.href=viewerURL;
+window.location.href = viewerURL;
 
 }
 
@@ -389,10 +389,29 @@ localStorage.setItem("lastNotice",first);
 }
 
 loadNotices();
+
+  
+window.addEventListener("DOMContentLoaded", () => {
+
+let user = JSON.parse(localStorage.getItem("user"));
+
 if(user){
+
 document.getElementById("welcomeText").innerText =
 "Welcome, " + user.name;
+
+/* hide register */
+document.getElementById("registerPage").style.display="none";
+
+/* show nav */
+document.getElementById("nav").style.display="flex";
+
+/* show home */
+document.getElementById("home").classList.add("active");
+
 }
+
+});
 </script>
 
 </body>
