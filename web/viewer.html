@@ -22,16 +22,13 @@ const file = params.get("file")
 
 if(!file) return
 
+/* DO NOT change URL to blob */
 const cached = await loadPDF(file)
 
-const newURL =
-window.location.pathname +
-"?file=" +
-encodeURIComponent(cached)
+/* just load internally */
+window.DEFAULT_URL = cached
 
-window.history.replaceState({}, "", newURL)
-
-})()
+})();
 
 </script>
   <script src="viewer.js"></script>
