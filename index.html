@@ -146,7 +146,13 @@ margin-top:10px;padding:10px;
 background:var(--primary);color:white;
 border:none;border-radius:8px;
 }
-
+.checkbox{
+display:flex;
+align-items:center;
+gap:8px;
+font-size:13px;
+margin:10px 0;
+}
 </style>
 </head>
 
@@ -154,7 +160,7 @@ border:none;border-radius:8px;
 
 <div class="header">
 <h1><i class="fa-solid fa-graduation-cap"></i> B.Ed Vault</h1>
-<p>Smart Study App</p>
+<p id="welcomeText">Smart Study App</p>
 </div>
 
 <!-- REGISTER -->
@@ -162,17 +168,17 @@ border:none;border-radius:8px;
 
 <h2>Student Registration</h2>
 
-<div class="input-group">
+<div class="input">
 <i class="fa fa-user"></i>
 <input id="name" placeholder="Full Name">
 </div>
 
-<div class="input-group">
+<div class="input">
 <i class="fa fa-calendar"></i>
 <input id="dob" type="date">
 </div>
 
-<div class="input-group">
+<div class="input">
 <i class="fa fa-venus-mars"></i>
 <select id="gender">
 <option value="">Gender</option>
@@ -182,22 +188,22 @@ border:none;border-radius:8px;
 </select>
 </div>
 
-<div class="input-group">
+<div class="input">
 <i class="fa fa-school"></i>
 <input id="college" placeholder="College Name">
 </div>
 
-<div class="input-group">
+<div class="input">
 <i class="fa fa-location-dot"></i>
 <input id="district" placeholder="District">
 </div>
 
-<div class="input-group">
+<div class="input">
 <i class="fa fa-phone"></i>
 <input id="phone" placeholder="Phone Number">
 </div>
 
-<div class="input-group">
+<div class="input">
 <i class="fa fa-layer-group"></i>
 <select id="semester">
 <option value="">Select Semester</option>
@@ -327,10 +333,15 @@ c.style.display=c.innerText.toLowerCase().includes(s)?"flex":"none";
 });
 }
 
-/* OPEN PDF */
 function openPDF(file){
+
 let url="https://aro5683.github.io/B.Ed-Viewer/web/PDFs/"+encodeURIComponent(file);
-window.location.href="web/viewer.html?file="+url;
+
+/* encode full URL */
+let viewerURL="web/viewer.html?file="+encodeURIComponent(url);
+
+window.location.href=viewerURL;
+
 }
 
 /* NAV */
@@ -378,7 +389,10 @@ localStorage.setItem("lastNotice",first);
 }
 
 loadNotices();
-
+if(user){
+document.getElementById("welcomeText").innerText =
+"Welcome, " + user.name;
+}
 </script>
 
 </body>
