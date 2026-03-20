@@ -71,7 +71,6 @@ async function getPDF(url) {
 /* LOAD PDF (MAIN FUNCTION) */
 async function loadPDF(url) {
 
-  /* 1️⃣ CHECK CACHE */
   const cached = await getPDF(url);
 
   if (cached) {
@@ -81,38 +80,31 @@ async function loadPDF(url) {
 
   console.log("🌐 Fetching PDF...");
 
-  /* 2️⃣ FETCH WITH PROGRESS SUPPORT */
   const response = await fetch(url);
 
-  const reader = response.body.getReader();
-  const contentLength = +response.headers.get("Content-Length");
+  const blob = await response.blob();
 
-  let received = 0;
-  let chunks = [];
-
-  while(true){
-    const {done, value} = await reader.read();
-    if(done) break;
-
-    chunks.push(value);
-    received += value.length;
-
-    /* PROGRESS UI (if exists) */
-    if(contentLength){
-      let percent = Math.floor((received / contentLength) * 100);
-
-      let fill = document.getElementById("progressFill");
-      let text = document.getElementById("progressText");
-
-      if(fill) fill.style.width = percent + "%";
-      if(text) text.innerText = percent + "%";
-    }
-  }
-
-  const blob = new Blob(chunks, { type: "application/pdf" });
-
-  /* 3️⃣ SAVE (FIFO) */
+  /* SAVE */
   await savePDF(url, blob);
 
   return URL.createObjectURL(blob);
 }
+
+const reader = response.body.getReader();
+let received = 0;
+const contentLength = +response.headers.get('Content-Length');
+
+let chunks = [];
+
+while(true){
+  const {done, value} = await reader.read();
+  if(done) break;
+
+  chunks.push(value);
+  received += value.length;
+
+  let percent = Math.round((received / contentLength) * 100);
+  document.getElementById("progressText").innerText = percent + "%";
+}
+
+const blob = new Blob(chunks);
