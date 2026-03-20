@@ -22,10 +22,10 @@ const file = params.get("file")
 
 if(!file) return
 
-/* DO NOT change URL to blob */
+/* LOAD FROM CACHE OR FETCH */
 const cached = await loadPDF(file)
 
-/* just load internally */
+/* IMPORTANT: SET PDF.js SOURCE DIRECTLY */
 window.DEFAULT_URL = cached
 
 })();
