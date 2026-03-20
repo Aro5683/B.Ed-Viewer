@@ -2327,6 +2327,7 @@ body {
 }
 
 .toolbar {
+  display:none;
   position: relative;
   inset-inline: 0;
   z-index: 9999;
