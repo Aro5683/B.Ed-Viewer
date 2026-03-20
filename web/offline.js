@@ -23,7 +23,7 @@ function openDB() {
   });
 }
 
-/* GET ORDER LIST */
+/* GET ORDER */
 function getOrder(meta) {
   return new Promise((resolve) => {
     const req = meta.get("order");
@@ -31,7 +31,7 @@ function getOrder(meta) {
   });
 }
 
-/* SAVE PDF WITH FIFO */
+/* SAVE PDF (FIFO) */
 async function savePDF(url, blob) {
 
   const db = await openDB();
@@ -42,11 +42,10 @@ async function savePDF(url, blob) {
 
   let order = await getOrder(meta);
 
-  /* LIMIT (important for stability) */
   const MAX_FILES = 30;
 
   if (order.length >= MAX_FILES) {
-    const oldest = order.shift(); // remove first
+    const oldest = order.shift();
     store.delete(oldest);
   }
 
@@ -68,43 +67,57 @@ async function getPDF(url) {
   });
 }
 
-/* LOAD PDF (MAIN FUNCTION) */
+/* LOAD PDF */
 async function loadPDF(url) {
 
   const cached = await getPDF(url);
 
+  /* ✅ OFFLINE CACHE */
   if (cached) {
     console.log("⚡ Loaded from cache");
     return URL.createObjectURL(cached);
   }
 
-  console.log("🌐 Fetching PDF...");
+  /* ❌ NO INTERNET */
+  if (!navigator.onLine) {
+    document.getElementById("progressText").innerText = "Offline ❌";
+    throw new Error("No internet");
+  }
+
+  console.log("🌐 Downloading...");
 
   const response = await fetch(url);
 
-  const blob = await response.blob();
+  const contentLength = +response.headers.get('Content-Length') || 0;
 
-  /* SAVE */
+  const reader = response.body.getReader();
+
+  let received = 0;
+  let chunks = [];
+
+  while (true) {
+
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    chunks.push(value);
+    received += value.length;
+
+    /* PROGRESS UI */
+    if (contentLength) {
+      let percent = Math.round((received / contentLength) * 100);
+
+      let el = document.getElementById("progressText");
+      if (el) el.innerText = percent + "%";
+    }
+
+  }
+
+  const blob = new Blob(chunks);
+
   await savePDF(url, blob);
+
+  document.getElementById("progressText").innerText = "Saved Offline ✅";
 
   return URL.createObjectURL(blob);
 }
-
-const reader = response.body.getReader();
-let received = 0;
-const contentLength = +response.headers.get('Content-Length');
-
-let chunks = [];
-
-while(true){
-  const {done, value} = await reader.read();
-  if(done) break;
-
-  chunks.push(value);
-  received += value.length;
-
-  let percent = Math.round((received / contentLength) * 100);
-  document.getElementById("progressText").innerText = percent + "%";
-}
-
-const blob = new Blob(chunks);
