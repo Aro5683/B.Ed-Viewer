@@ -13,23 +13,32 @@
 
     <link rel="stylesheet" href="viewer.css">
 <script src="offline.js"></script>
-    <script>
+   <script>
+document.addEventListener("DOMContentLoaded", async () => {
 
-(async () => {
+  const params = new URLSearchParams(window.location.search);
+  const file = params.get("file");
 
-const params = new URLSearchParams(window.location.search)
-const file = params.get("file")
+  if (!file) return;
 
-if(!file) return
+  try {
 
-/* LOAD FROM CACHE OR FETCH */
-const cached = await loadPDF(file)
+    /* LOAD FROM CACHE OR FETCH */
+    const cached = await loadPDF(file);
 
-/* IMPORTANT: SET PDF.js SOURCE DIRECTLY */
-window.DEFAULT_URL = cached
+    /* FORCE PDF.js TO LOAD FILE */
+    window.PDFViewerApplicationOptions.set("defaultUrl", cached);
 
-})();
+    /* WAIT UNTIL PDF.js READY */
+    if (window.PDFViewerApplication) {
+      window.PDFViewerApplication.open(cached);
+    }
 
+  } catch (e) {
+    console.error("PDF Load Error:", e);
+  }
+
+});
 </script>
   <script src="viewer.js"></script>
   </head>
