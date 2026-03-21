@@ -335,7 +335,7 @@ let user=JSON.parse(localStorage.getItem("user"));
 
 if(user){
 
-welcomeText.innerText="Welcome, "+(user.name || "Student")+(user.college);
+welcomeText.innerText = "Welcome, " + (user.name || "Student") + "\n" + (user.college || "");
 
 registerPage.style.display="none";
 nav.style.display="flex";
