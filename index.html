@@ -323,319 +323,211 @@ margin:10px 0;
 
 <script>
 
-const SCRIPT_URL="https://script.google.com/macros/s/AKfycbxEZ3BH3uCBTw9jwx5FruvMoM8iAHDcdd8c8q17aPmluubQPT3mytgg7kR9fS7a7NqM/exec";
+const SCRIPT_URL = "YOUR_GOOGLE_SCRIPT_URL";
 
-/* POPUP */
+/* ================= POPUP ================= */
 function showPopup(msg){
-popupMsg.innerText=msg;
-popup.style.display="flex";
+  document.getElementById("popupMsg").innerText = msg;
+  document.getElementById("popup").style.display = "flex";
 }
 
-/* REGISTER */
+/* ================= REGISTER ================= */
 function registerUser(){
 
-let data = {
-name: name.value.trim(),
-dob: dob.value,
-gender: gender.value,
-college: college.value.trim(),
-district: district.value.trim(),
-phone: phone.value.trim(),
-pedagogy: pedagogy.value,
-semester: semester.value
-};
+  const data = {
+    name: document.getElementById("name").value.trim(),
+    dob: document.getElementById("dob").value,
+    gender: document.getElementById("gender").value,
+    college: document.getElementById("college").value.trim(),
+    district: document.getElementById("district").value.trim(),
+    phone: document.getElementById("phone").value.trim(),
+    pedagogy: document.getElementById("pedagogy").value,
+    semester: document.getElementById("semester").value
+  };
 
-/* VALIDATION */
-for(let key in data){
-if(!data[key]){
-showPopup("⚠️ Fill all fields");
-return;
+  /* VALIDATION */
+  for(let key in data){
+    if(!data[key]){
+      showPopup("⚠️ Fill all fields");
+      return;
+    }
+  }
+
+  if(!document.getElementById("agree").checked){
+    showPopup("⚠️ Accept Terms");
+    return;
+  }
+
+  /* SAVE LOCAL */
+  localStorage.setItem("user", JSON.stringify(data));
+
+  /* SEND GOOGLE SHEET */
+  fetch(SCRIPT_URL,{
+    method:"POST",
+    mode:"no-cors",
+    body:JSON.stringify(data)
+  });
+
+  showPopup("🎉 Registration Successful!");
+
+  setTimeout(()=>location.reload(),1500);
 }
-}
 
-if(!agree.checked){
-showPopup("⚠️ Accept Terms");
-return;
-}
+/* ================= INIT ================= */
+window.addEventListener("DOMContentLoaded", ()=>{
 
-/* SAVE LOCAL */
-localStorage.setItem("user", JSON.stringify(data));
+  const user = JSON.parse(localStorage.getItem("user"));
 
-/* SEND (optional) */
-fetch(SCRIPT_URL,{
-method:"POST",
-mode:"no-cors",
-body:JSON.stringify(data)
+  if(user){
+    document.getElementById("registerPage").style.display="none";
+    document.getElementById("nav").style.display="flex";
+    document.getElementById("home").classList.add("active");
+
+    document.getElementById("welcomeText").innerText =
+      "Welcome, " + user.name;
+
+    loadNotes();
+    loadNotices();
+  }
+
 });
 
-  function doPost(e) {
-  try {
-
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    const data = JSON.parse(e.postData.contents);
-
-    sheet.appendRow([
-      data.name,
-      data.dob,
-      data.gender,
-      data.college,
-      data.district,
-      data.phone,
-      data.pedagogy,   // ✅ only this
-      data.semester,
-      new Date()
-    ]);
-
-    return ContentService
-      .createTextOutput("Success");
-
-  } catch (err) {
-    return ContentService
-      .createTextOutput("Error: " + err);
-  }
-}
-
-/* SUCCESS */
-showPopup("🎉 Registered Successfully!");
-
-setTimeout(()=>{
-location.reload();
-},1500);
-}
-  
-/* LOAD USER AFTER DOM */
-window.addEventListener("DOMContentLoaded",()=>{
-
-let user=JSON.parse(localStorage.getItem("user"));
-
-if(user){
-
-welcomeText.innerText = "Welcome, " + (user.name || "Student") + "\n" + (user.college || "");
-
-registerPage.style.display="none";
-nav.style.display="flex";
-home.classList.add("active");
-loadNotes();
+/* ================= BOOK DATA ================= */
 const books = [
-
-/* BD1CE (7 Units) */
+/* CORE SUBJECTS (ALL USERS GET) */
 {type:"core", sem:"Semester 1", title:"BD1CE Unit 1 ENG", file:"BD1CE Unit-1 ENG.pdf"},
 {type:"core", sem:"Semester 1", title:"BD1CE Unit 1 TAM", file:"BD1CE Unit-1 TAM.pdf"},
-
 {type:"core", sem:"Semester 1", title:"BD1CE Unit 2 ENG", file:"BD1CE Unit-2 ENG.pdf"},
 {type:"core", sem:"Semester 1", title:"BD1CE Unit 2 TAM", file:"BD1CE Unit-2 TAM.pdf"},
 
-{type:"core", sem:"Semester 1", title:"BD1CE Unit 3 ENG", file:"BD1CE Unit-3 ENG.pdf"},
-{type:"core", sem:"Semester 1", title:"BD1CE Unit 3 TAM", file:"BD1CE Unit-3 TAM.pdf"},
-
-{type:"core", sem:"Semester 1", title:"BD1CE Unit 4 ENG", file:"BD1CE Unit-4 ENG.pdf"},
-{type:"core", sem:"Semester 1", title:"BD1CE Unit 4 TAM", file:"BD1CE Unit-4 TAM.pdf"},
-
-{type:"core", sem:"Semester 1", title:"BD1CE Unit 5 ENG", file:"BD1CE Unit-5 ENG.pdf"},
-{type:"core", sem:"Semester 1", title:"BD1CE Unit 5 TAM", file:"BD1CE Unit-5 TAM.pdf"},
-
-{type:"core", sem:"Semester 1", title:"BD1CE Unit 6 ENG", file:"BD1CE Unit-6 ENG.pdf"},
-{type:"core", sem:"Semester 1", title:"BD1CE Unit 6 TAM", file:"BD1CE Unit-6 TAM.pdf"},
-
-{type:"core", sem:"Semester 1", title:"BD1CE Unit 7 ENG", file:"BD1CE Unit-7 ENG.pdf"},
-{type:"core", sem:"Semester 1", title:"BD1CE Unit 7 TAM", file:"BD1CE Unit-7 TAM.pdf"},
-
-
-/* BD1EP (5 Units) */
-{type:"core", sem:"Semester 1", title:"BD1EP Unit 1 TAM", file:"BD1EP Unit-1 TAM.pdf"},
-{type:"core", sem:"Semester 1", title:"BD1EP Unit 1 TAM(1)", file:"BD1EP Unit-1 TAM(1).pdf"},
-
-{type:"core", sem:"Semester 1", title:"BD1EP Unit 2 ENG", file:"BD1EP Unit-2 ENG.pdf"},
-{type:"core", sem:"Semester 1", title:"BD1EP Unit 2 TAM", file:"BD1EP Unit-2 TAM.pdf"},
-
-{type:"core", sem:"Semester 1", title:"BD1EP Unit 3 ENG", file:"BD1EP Unit-3 ENG.pdf"},
-{type:"core", sem:"Semester 1", title:"BD1EP Unit 3 TAM", file:"BD1EP Unit-3 TAM.pdf"},
-
-{type:"core", sem:"Semester 1", title:"BD1EP Unit 4 ENG", file:"BD1EP Unit-4 ENG.pdf"},
-{type:"core", sem:"Semester 1", title:"BD1EP Unit 4 TAM", file:"BD1EP Unit-4 TAM.pdf"},
-
-{type:"core", sem:"Semester 1", title:"BD1EP Unit 5 ENG", file:"BD1EP Unit-5 ENG.pdf"},
-{type:"core", sem:"Semester 1", title:"BD1EP Unit 5 TAM", file:"BD1EP Unit-5 TAM.pdf"},
-
-
-/* BD1LC (5 Units) */
-{type:"core", sem:"Semester 1", title:"BD1LC Unit 1 ENG", file:"BD1LC Unit-1 ENG.pdf"},
-{type:"core", sem:"Semester 1", title:"BD1LC Unit 1 TAM", file:"BD1LC Unit-1 TAM.pdf"},
-
-{type:"core", sem:"Semester 1", title:"BD1LC Unit 2 ENG", file:"BD1LC Unit-2 ENG.pdf"},
-{type:"core", sem:"Semester 1", title:"BD1LC Unit 2 TAM", file:"BD1LC Unit-2 TAM.pdf"},
-
-{type:"core", sem:"Semester 1", title:"BD1LC Unit 3 ENG", file:"BD1LC Unit-3 ENG.pdf"},
-{type:"core", sem:"Semester 1", title:"BD1LC Unit 3 TAM", file:"BD1LC Unit-3 TAM.pdf"},
-
-{type:"core", sem:"Semester 1", title:"BD1LC Unit 4 ENG", file:"BD1LC Unit-4 ENG.pdf"},
-{type:"core", sem:"Semester 1", title:"BD1LC Unit 4 TAM", file:"BD1LC Unit-4 TAM.pdf"},
-
-{type:"core", sem:"Semester 1", title:"BD1LC Unit 5 ENG", file:"BD1LC Unit-5 ENG.pdf"},
-{type:"core", sem:"Semester 1", title:"BD1LC Unit 5 TAM", file:"BD1LC Unit-5 TAM.pdf"},
-
-
-/* BD1TL (5 Units) */
-{type:"core", sem:"Semester 1", title:"BD1TL Unit 1 ENG", file:"BD1TL Unit-1 ENG.pdf"},
-{type:"core", sem:"Semester 1", title:"BD1TL Unit 1 TAM", file:"BD1TL Unit-1 TAM.pdf"},
-
-{type:"core", sem:"Semester 1", title:"BD1TL Unit 2 ENG", file:"BD1TL Unit-2 ENG.pdf"},
-{type:"core", sem:"Semester 1", title:"BD1TL Unit 2 TAM", file:"BD1TL Unit-2 TAM.pdf"},
-
-{type:"core", sem:"Semester 1", title:"BD1TL Unit 3 ENG", file:"BD1TL Unit-3 ENG.pdf"},
-{type:"core", sem:"Semester 1", title:"BD1TL Unit 3 TAM", file:"BD1TL Unit-3 TAM.pdf"},
-
-{type:"core", sem:"Semester 1", title:"BD1TL Unit 4 ENG", file:"BD1TL Unit-4 ENG.pdf"},
-{type:"core", sem:"Semester 1", title:"BD1TL Unit 4 TAM", file:"BD1TL Unit-4 TAM.pdf"},
-
-{type:"core", sem:"Semester 1", title:"BD1TL Unit 5 ENG", file:"BD1TL Unit-5 ENG.pdf"},
-{type:"core", sem:"Semester 1", title:"BD1TL Unit 5 TAM", file:"BD1TL Unit-5 TAM.pdf"}
-
+/* PEDAGOGY (EXAMPLE) */
+{type:"pedagogy", pedagogy:"English", sem:"Semester 1", title:"English Pedagogy Unit 1", file:"ENG_PED_1.pdf"},
+{type:"pedagogy", pedagogy:"Maths", sem:"Semester 1", title:"Maths Pedagogy Unit 1", file:"MATH_PED_1.pdf"}
 ];
 
-/* LOAD NOTES (FULL PREMIUM FILTER SYSTEM) */
-
+/* ================= LOAD NOTES ================= */
 function loadNotes(){
 
-let user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user"));
+  const list = document.getElementById("noteList");
 
-noteList.innerHTML = "";
+  list.innerHTML = "";
+  document.getElementById("semTitle").innerText = user.semester + " Notes";
 
-let found = false; // ✅ ADD THIS
+  let found = false;
 
-books.forEach(b=>{
+  books.forEach(b=>{
 
-if(b.sem !== user.semester) return;
+    /* CORE → ALL USERS */
+    if(b.type === "core" && b.sem === user.semester){
+      addNote(b);
+      found = true;
+    }
 
-/* CORE */
-if(b.type === "core"){
-found = true;
-addCard(b);
-return;
+    /* PEDAGOGY → MATCH USER */
+    if(b.type === "pedagogy" &&
+       b.sem === user.semester &&
+       b.pedagogy === user.pedagogy){
+      addNote(b);
+      found = true;
+    }
+
+  });
+
+  if(!found){
+    list.innerHTML = `<div style="text-align:center;margin-top:30px">No Notes Found</div>`;
+  }
 }
 
-/* PEDAGOGY */
-if(
-b.type === "pedagogy" &&
-b.pedagogy.includes(user.pedagogy)
-){
-found = true;
-addCard(b);
+/* ================= ADD NOTE CARD ================= */
+function addNote(b){
+  document.getElementById("noteList").innerHTML += `
+  <div class="card">
+    <div>
+      <i class="fa-solid fa-file-pdf" style="color:#e11d48"></i>
+      ${b.title}
+    </div>
+    <button class="btn" onclick="openPDF('${b.file}')">Open</button>
+  </div>`;
 }
 
-});
-
-/* EMPTY STATE */
-if(!found){
-noteList.innerHTML = `
-<div style="text-align:center;margin-top:40px;color:#64748b">
-No Notes Found
-</div>`;
-}
-
-}
-/* CARD UI */
-function addCard(b){
-
-noteList.innerHTML += `
-<div class="card">
-
-<div>
-<i class="fa-solid fa-file-pdf" style="color:#e11d48"></i>
-${b.title}
-</div>
-
-<button class="btn" onclick="openPDF('${b.file}')">
-Open
-</button>
-
-</div>`;
-}
-/* EMPTY STATE */
-if(!found){
-noteList.innerHTML = `
-<div style="text-align:center;margin-top:40px;color:#64748b">
-
-<i class="fa-solid fa-book-open" style="font-size:40px;margin-bottom:10px;"></i>
-
-<div style="font-weight:600">No Notes Found</div>
-
-<div style="font-size:13px;margin-top:5px;">
-No notes available for your selection
-</div>
-
-</div>`;
-}
-
-}
-
-/* SEARCH */
+/* ================= SEARCH ================= */
 function searchNotes(){
-let s=search.value.toLowerCase();
-document.querySelectorAll("#noteList .card").forEach(c=>{
-c.style.display=c.innerText.toLowerCase().includes(s)?"flex":"none";
-});
+  const s = document.getElementById("search").value.toLowerCase();
+
+  document.querySelectorAll("#noteList .card").forEach(c=>{
+    c.style.display = c.innerText.toLowerCase().includes(s) ? "flex" : "none";
+  });
 }
 
-/* PDF FIXED (NO BLOB ISSUE) */
+/* ================= PDF OPEN ================= */
 function openPDF(file){
 
-let url = "https://aro5683.github.io/B.Ed-Viewer/web/PDFs/" + file;
+  const url = "https://aro5683.github.io/B.Ed-Viewer/web/PDFs/" + file;
 
-/* encode ONLY once */
-let viewerURL = "web/viewer.html?file=" + encodeURIComponent(url);
+  const viewerURL = "web/viewer.html?file=" + encodeURIComponent(url);
 
-/* IMPORTANT: NEVER use blob */
-window.location.href = viewerURL;
-
+  window.location.href = viewerURL;
 }
 
-/* NAV */
+/* ================= NAVIGATION ================= */
 function showPage(p){
-document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
-document.getElementById(p).classList.add("active");
-if(p==="notices") badge.style.display="none";
+
+  document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+
+  document.getElementById(p).classList.add("active");
+
+  if(p === "notices"){
+    document.getElementById("badge").style.display = "none";
+  }
 }
 
-/* NOTIFICATIONS */
+/* ================= NOTIFICATIONS ================= */
 async function loadNotices(){
 
-const proxy="https://api.codetabs.com/v1/proxy/?quest=";
-const target="https://www.tnteu.ac.in/notifications.php?nid=5";
+  const proxy = "https://api.codetabs.com/v1/proxy/?quest=";
+  const target = "https://www.tnteu.ac.in/notifications.php?nid=5";
 
-let res=await fetch(proxy+encodeURIComponent(target));
-let html=await res.text();
+  try{
 
-let doc=new DOMParser().parseFromString(html,"text/html");
-let links=doc.querySelectorAll(".sectionWrapper a");
+    const res = await fetch(proxy + encodeURIComponent(target));
+    const html = await res.text();
 
-let first="",saved=localStorage.getItem("lastNotice"),out="";
+    const doc = new DOMParser().parseFromString(html,"text/html");
+    const links = doc.querySelectorAll(".sectionWrapper a");
 
-links.forEach((a,i)=>{
-if(i>10)return;
+    let first = "";
+    let saved = localStorage.getItem("lastNotice");
+    let out = "";
 
-let title=a.innerText;
-let url="https://www.tnteu.ac.in/"+a.getAttribute("href");
+    links.forEach((a,i)=>{
 
-if(i===0) first=title;
+      if(i > 10) return;
 
-out+=`<div class="notice">${title}
-<button class="btn" onclick="window.open('${url}')">View</button>
-</div>`;
-});
+      const title = a.innerText;
+      const url = "https://www.tnteu.ac.in/" + a.getAttribute("href");
 
-noticeList.innerHTML=out;
+      if(i === 0) first = title;
 
-if(saved&&saved!==first){
-badge.style.display="block";
+      out += `
+      <div class="notice">
+        ${title}
+        <button class="btn" onclick="window.open('${url}')">View</button>
+      </div>`;
+    });
+
+    document.getElementById("noticeList").innerHTML = out;
+
+    if(saved && saved !== first){
+      document.getElementById("badge").style.display = "block";
+    }
+
+    localStorage.setItem("lastNotice", first);
+
+  }catch{
+    document.getElementById("noticeList").innerText = "Failed to load";
+  }
 }
-
-localStorage.setItem("lastNotice",first);
-
-}
-
-loadNotices();
-
 </script>
 
 </body>
