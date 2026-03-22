@@ -400,9 +400,16 @@ async function checkUserAccess(){
 let id = getDeviceId();
 
 try{
+
 let res = await fetch(SCRIPT_URL + "?deviceId=" + id);
 let status = await res.text();
 
+/* ✅ NEW USER → ALLOW REGISTER */
+if(status === "NEW"){
+return true;
+}
+
+/* ❌ BLOCKED */
 if(status !== "YES"){
 document.body.innerHTML = `
 <div style="text-align:center;margin-top:120px;font-size:18px">
@@ -414,7 +421,7 @@ return false;
 return true;
 
 }catch{
-return true; // allow if error
+return true;
 }
 }
 
