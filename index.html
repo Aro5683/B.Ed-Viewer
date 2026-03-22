@@ -263,7 +263,14 @@ margin:10px 0;
 </select>
 </div>
 
-
+<div class="input">
+<i class="fa fa-language"></i>
+<select id="medium">
+<option value="">Medium</option>
+<option>English</option>
+<option>Tamil</option>
+</select>
+</div>
 
 <div class="input">
 <i class="fa fa-layer-group"></i>
@@ -323,210 +330,253 @@ margin:10px 0;
 
 <script>
 
-const SCRIPT_URL = "YOUR_GOOGLE_SCRIPT_URL";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0yVkhugqqVYtKK-9xLNOJ981ob5GnDI8_gTApwgmAwxC0OsWIWZHI_fajvKFGxihr/exec";
+
+/* ================= DEVICE ID ================= */
+function getDeviceId(){
+let id = localStorage.getItem("deviceId");
+
+if(!id){
+id = "DEV-" + Math.random().toString(36).substring(2,12);
+localStorage.setItem("deviceId", id);
+}
+return id;
+}
 
 /* ================= POPUP ================= */
 function showPopup(msg){
-  document.getElementById("popupMsg").innerText = msg;
-  document.getElementById("popup").style.display = "flex";
+document.getElementById("popupMsg").innerText = msg;
+document.getElementById("popup").style.display = "flex";
 }
 
 /* ================= REGISTER ================= */
 function registerUser(){
 
-  const data = {
-    name: document.getElementById("name").value.trim(),
-    dob: document.getElementById("dob").value,
-    gender: document.getElementById("gender").value,
-    college: document.getElementById("college").value.trim(),
-    district: document.getElementById("district").value.trim(),
-    phone: document.getElementById("phone").value.trim(),
-    pedagogy: document.getElementById("pedagogy").value,
-    semester: document.getElementById("semester").value
-  };
+let data = {
+deviceId: getDeviceId(),
+name: document.getElementById("name").value.trim(),
+dob: document.getElementById("dob").value,
+gender: document.getElementById("gender").value,
+college: document.getElementById("college").value.trim(),
+district: document.getElementById("district").value.trim(),
+phone: document.getElementById("phone").value.trim(),
+pedagogy: document.getElementById("pedagogy").value,
+medium: document.getElementById("medium").value,
+semester: document.getElementById("semester").value,
+status: "YES"
+};
 
-  /* VALIDATION */
-  for(let key in data){
-    if(!data[key]){
-      showPopup("⚠️ Fill all fields");
-      return;
-    }
-  }
+/* VALIDATION */
+for(let key in data){
+if(!data[key]){
+showPopup("⚠️ Fill all fields");
+return;
+}
+}
 
-  if(!document.getElementById("agree").checked){
-    showPopup("⚠️ Accept Terms");
-    return;
-  }
+if(!document.getElementById("agree").checked){
+showPopup("⚠️ Accept Terms");
+return;
+}
 
-  /* SAVE LOCAL */
-  localStorage.setItem("user", JSON.stringify(data));
+/* SAVE */
+localStorage.setItem("user", JSON.stringify(data));
 
-  /* SEND GOOGLE SHEET */
-  fetch(SCRIPT_URL,{
-    method:"POST",
-    mode:"no-cors",
-    body:JSON.stringify(data)
-  });
+/* SEND TO GOOGLE SHEET */
+fetch(SCRIPT_URL,{
+method:"POST",
+mode:"no-cors",
+body:JSON.stringify(data)
+});
 
-  showPopup("🎉 Registration Successful!");
+showPopup("🎉 Registration Successful!");
 
-  setTimeout(()=>location.reload(),1500);
+setTimeout(()=>location.reload(),1500);
+}
+
+/* ================= CHECK APPROVAL ================= */
+async function checkUserAccess(){
+
+let id = getDeviceId();
+
+try{
+let res = await fetch(SCRIPT_URL + "?deviceId=" + id);
+let status = await res.text();
+
+if(status !== "YES"){
+document.body.innerHTML = `
+<div style="text-align:center;margin-top:120px;font-size:18px">
+🚫 Access Denied<br><br>Contact Admin
+</div>`;
+return false;
+}
+
+return true;
+
+}catch{
+return true; // allow if error
+}
 }
 
 /* ================= INIT ================= */
-window.addEventListener("DOMContentLoaded", ()=>{
+window.addEventListener("DOMContentLoaded", async ()=>{
 
-  const user = JSON.parse(localStorage.getItem("user"));
+let allowed = await checkUserAccess();
+if(!allowed) return;
 
-  if(user){
-    document.getElementById("registerPage").style.display="none";
-    document.getElementById("nav").style.display="flex";
-    document.getElementById("home").classList.add("active");
+let user = JSON.parse(localStorage.getItem("user"));
 
-    document.getElementById("welcomeText").innerText =
-      "Welcome, " + user.name;
+if(user){
 
-    loadNotes();
-    loadNotices();
-  }
+document.getElementById("registerPage").style.display="none";
+document.getElementById("nav").style.display="flex";
+document.getElementById("home").classList.add("active");
+
+document.getElementById("welcomeText").innerText =
+"Welcome, " + user.name;
+
+loadNotes();
+loadNotices();
+}
 
 });
 
 /* ================= BOOK DATA ================= */
 const books = [
-/* CORE SUBJECTS (ALL USERS GET) */
+
+/* CORE (ALL USERS) */
 {type:"core", sem:"Semester 1", title:"BD1CE Unit 1 ENG", file:"BD1CE Unit-1 ENG.pdf"},
 {type:"core", sem:"Semester 1", title:"BD1CE Unit 1 TAM", file:"BD1CE Unit-1 TAM.pdf"},
 {type:"core", sem:"Semester 1", title:"BD1CE Unit 2 ENG", file:"BD1CE Unit-2 ENG.pdf"},
 {type:"core", sem:"Semester 1", title:"BD1CE Unit 2 TAM", file:"BD1CE Unit-2 TAM.pdf"},
 
-/* PEDAGOGY (EXAMPLE) */
-{type:"pedagogy", pedagogy:"English", sem:"Semester 1", title:"English Pedagogy Unit 1", file:"ENG_PED_1.pdf"},
-{type:"pedagogy", pedagogy:"Maths", sem:"Semester 1", title:"Maths Pedagogy Unit 1", file:"MATH_PED_1.pdf"}
+/* PEDAGOGY */
+{type:"pedagogy", sem:"Semester 1", pedagogy:"English", medium:"English", title:"English Pedagogy Unit 1", file:"ENG_PED_1.pdf"},
+{type:"pedagogy", sem:"Semester 1", pedagogy:"English", medium:"Tamil", title:"English Pedagogy Tamil", file:"ENG_PED_TAM.pdf"},
+
+{type:"pedagogy", sem:"Semester 1", pedagogy:"Maths", medium:"English", title:"Maths Pedagogy Unit 1", file:"MATH_PED_1.pdf"}
 ];
 
 /* ================= LOAD NOTES ================= */
 function loadNotes(){
 
-  const user = JSON.parse(localStorage.getItem("user"));
-  const list = document.getElementById("noteList");
+let user = JSON.parse(localStorage.getItem("user"));
+let list = document.getElementById("noteList");
 
-  list.innerHTML = "";
-  document.getElementById("semTitle").innerText = user.semester + " Notes";
+list.innerHTML = "";
+document.getElementById("semTitle").innerText = user.semester + " Notes";
 
-  let found = false;
+let found = false;
 
-  books.forEach(b=>{
+books.forEach(b=>{
 
-    /* CORE → ALL USERS */
-    if(b.type === "core" && b.sem === user.semester){
-      addNote(b);
-      found = true;
-    }
-
-    /* PEDAGOGY → MATCH USER */
-    if(b.type === "pedagogy" &&
-       b.sem === user.semester &&
-       b.pedagogy === user.pedagogy){
-      addNote(b);
-      found = true;
-    }
-
-  });
-
-  if(!found){
-    list.innerHTML = `<div style="text-align:center;margin-top:30px">No Notes Found</div>`;
-  }
+if(
+b.sem === user.semester &&
+(
+b.type === "core" ||
+(
+b.type === "pedagogy" &&
+b.pedagogy === user.pedagogy &&
+b.medium === user.medium
+)
+)
+){
+addNote(b);
+found = true;
 }
 
-/* ================= ADD NOTE CARD ================= */
+});
+
+if(!found){
+list.innerHTML = `<div style="text-align:center;margin-top:30px">No Notes Found</div>`;
+}
+
+}
+
+/* ================= ADD CARD ================= */
 function addNote(b){
-  document.getElementById("noteList").innerHTML += `
-  <div class="card">
-    <div>
-      <i class="fa-solid fa-file-pdf" style="color:#e11d48"></i>
-      ${b.title}
-    </div>
-    <button class="btn" onclick="openPDF('${b.file}')">Open</button>
-  </div>`;
+document.getElementById("noteList").innerHTML += `
+<div class="card">
+<div>
+<i class="fa-solid fa-file-pdf" style="color:#e11d48"></i>
+${b.title}
+</div>
+<button class="btn" onclick="openPDF('${b.file}')">Open</button>
+</div>`;
 }
 
 /* ================= SEARCH ================= */
 function searchNotes(){
-  const s = document.getElementById("search").value.toLowerCase();
+let s = document.getElementById("search").value.toLowerCase();
 
-  document.querySelectorAll("#noteList .card").forEach(c=>{
-    c.style.display = c.innerText.toLowerCase().includes(s) ? "flex" : "none";
-  });
+document.querySelectorAll("#noteList .card").forEach(c=>{
+c.style.display = c.innerText.toLowerCase().includes(s) ? "flex" : "none";
+});
 }
 
-/* ================= PDF OPEN ================= */
+/* ================= PDF ================= */
 function openPDF(file){
 
-  const url = "https://aro5683.github.io/B.Ed-Viewer/web/PDFs/" + file;
+let url = "https://aro5683.github.io/B.Ed-Viewer/web/PDFs/" + file;
+let viewerURL = "web/viewer.html?file=" + encodeURIComponent(url);
 
-  const viewerURL = "web/viewer.html?file=" + encodeURIComponent(url);
-
-  window.location.href = viewerURL;
+window.location.href = viewerURL;
 }
 
-/* ================= NAVIGATION ================= */
+/* ================= NAV ================= */
 function showPage(p){
+document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+document.getElementById(p).classList.add("active");
 
-  document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
-
-  document.getElementById(p).classList.add("active");
-
-  if(p === "notices"){
-    document.getElementById("badge").style.display = "none";
-  }
+if(p==="notices"){
+document.getElementById("badge").style.display="none";
+}
 }
 
 /* ================= NOTIFICATIONS ================= */
 async function loadNotices(){
 
-  const proxy = "https://api.codetabs.com/v1/proxy/?quest=";
-  const target = "https://www.tnteu.ac.in/notifications.php?nid=5";
+const proxy="https://api.codetabs.com/v1/proxy/?quest=";
+const target="https://www.tnteu.ac.in/notifications.php?nid=5";
 
-  try{
+try{
 
-    const res = await fetch(proxy + encodeURIComponent(target));
-    const html = await res.text();
+let res=await fetch(proxy+encodeURIComponent(target));
+let html=await res.text();
 
-    const doc = new DOMParser().parseFromString(html,"text/html");
-    const links = doc.querySelectorAll(".sectionWrapper a");
+let doc=new DOMParser().parseFromString(html,"text/html");
+let links=doc.querySelectorAll(".sectionWrapper a");
 
-    let first = "";
-    let saved = localStorage.getItem("lastNotice");
-    let out = "";
+let first="", saved=localStorage.getItem("lastNotice"), out="";
 
-    links.forEach((a,i)=>{
+links.forEach((a,i)=>{
 
-      if(i > 10) return;
+if(i>10) return;
 
-      const title = a.innerText;
-      const url = "https://www.tnteu.ac.in/" + a.getAttribute("href");
+let title=a.innerText;
+let url="https://www.tnteu.ac.in/"+a.getAttribute("href");
 
-      if(i === 0) first = title;
+if(i===0) first=title;
 
-      out += `
-      <div class="notice">
-        ${title}
-        <button class="btn" onclick="window.open('${url}')">View</button>
-      </div>`;
-    });
+out+=`
+<div class="notice">
+${title}
+<button class="btn" onclick="window.open('${url}')">View</button>
+</div>`;
+});
 
-    document.getElementById("noticeList").innerHTML = out;
+document.getElementById("noticeList").innerHTML = out;
 
-    if(saved && saved !== first){
-      document.getElementById("badge").style.display = "block";
-    }
+if(saved && saved !== first){
+document.getElementById("badge").style.display="block";
+}
 
-    localStorage.setItem("lastNotice", first);
+localStorage.setItem("lastNotice", first);
 
-  }catch{
-    document.getElementById("noticeList").innerText = "Failed to load";
-  }
+}catch{
+document.getElementById("noticeList").innerText = "Failed to load";
+}
+
 }
 </script>
 
