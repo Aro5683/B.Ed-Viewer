@@ -263,15 +263,7 @@ margin:10px 0;
 </select>
 </div>
 
-<!-- NEW: MEDIUM -->
-<div class="input">
-<i class="fa fa-language"></i>
-<select id="medium">
-<option value="">Medium</option>
-<option>Tamil</option>
-<option>English</option>
-</select>
-</div>
+
 
 <div class="input">
 <i class="fa fa-layer-group"></i>
@@ -350,38 +342,67 @@ college: college.value.trim(),
 district: district.value.trim(),
 phone: phone.value.trim(),
 pedagogy: pedagogy.value,
-medium: medium.value,
 semester: semester.value
 };
 
 /* VALIDATION */
 for(let key in data){
 if(!data[key]){
-showPopup("⚠️ Please fill all fields");
+showPopup("⚠️ Fill all fields");
 return;
 }
 }
 
 if(!agree.checked){
-showPopup("⚠️ Please accept Terms");
+showPopup("⚠️ Accept Terms");
 return;
 }
 
 /* SAVE LOCAL */
 localStorage.setItem("user", JSON.stringify(data));
 
-/* SEND TO GOOGLE SHEET */
+/* SEND (optional) */
 fetch(SCRIPT_URL,{
 method:"POST",
 mode:"no-cors",
 body:JSON.stringify(data)
 });
 
-/* SUCCESS POPUP */
-showPopup("🎉 Registration Successful!");
+  function doPost(e) {
+  try {
 
-setTimeout(()=>location.reload(),1500);
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    const data = JSON.parse(e.postData.contents);
+
+    sheet.appendRow([
+      data.name,
+      data.dob,
+      data.gender,
+      data.college,
+      data.district,
+      data.phone,
+      data.pedagogy,   // ✅ only this
+      data.semester,
+      new Date()
+    ]);
+
+    return ContentService
+      .createTextOutput("Success");
+
+  } catch (err) {
+    return ContentService
+      .createTextOutput("Error: " + err);
+  }
 }
+
+/* SUCCESS */
+showPopup("🎉 Registered Successfully!");
+
+setTimeout(()=>{
+location.reload();
+},1500);
+}
+  
 /* LOAD USER AFTER DOM */
 window.addEventListener("DOMContentLoaded",()=>{
 
@@ -394,7 +415,7 @@ welcomeText.innerText = "Welcome, " + (user.name || "Student") + "\n" + (user.co
 registerPage.style.display="none";
 nav.style.display="flex";
 home.classList.add("active");
-
+loadNotes();
 const books = [
 
 /* BD1CE (7 Units) */
