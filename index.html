@@ -332,17 +332,6 @@ margin:10px 0;
 
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0yVkhugqqVYtKK-9xLNOJ981ob5GnDI8_gTApwgmAwxC0OsWIWZHI_fajvKFGxihr/exec";
 
-/* ================= DEVICE ID ================= */
-function getDeviceId(){
-let id = localStorage.getItem("deviceId");
-
-if(!id){
-id = "DEV-" + Math.random().toString(36).substring(2,12);
-localStorage.setItem("deviceId", id);
-}
-return id;
-}
-
 /* ================= POPUP ================= */
 function showPopup(msg){
 document.getElementById("popupMsg").innerText = msg;
@@ -353,7 +342,6 @@ document.getElementById("popup").style.display = "flex";
 function registerUser(){
 
 let data = {
-deviceId: getDeviceId(),
 name: document.getElementById("name").value.trim(),
 dob: document.getElementById("dob").value,
 gender: document.getElementById("gender").value,
@@ -362,8 +350,7 @@ district: document.getElementById("district").value.trim(),
 phone: document.getElementById("phone").value.trim(),
 pedagogy: document.getElementById("pedagogy").value,
 medium: document.getElementById("medium").value,
-semester: document.getElementById("semester").value,
-status: "YES"
+semester: document.getElementById("semester").value
 };
 
 /* VALIDATION */
@@ -394,51 +381,13 @@ showPopup("🎉 Registration Successful!");
 setTimeout(()=>location.reload(),1500);
 }
 
-/* ================= CHECK APPROVAL ================= */
-async function checkUserAccess(){
-
-let id = getDeviceId();
-
-try{
-
-let res = await fetch(SCRIPT_URL + "?deviceId=" + id);
-let status = await res.text();
-
-/* ✅ ALLOW NEW USERS */
-if(status === "NEW" || status === "" || status === null){
-return true;
-}
-
-/* ❌ BLOCK ONLY IF EXPLICIT NO */
-if(status === "NO"){
-document.body.innerHTML = `
-<div style="text-align:center;margin-top:120px;font-size:18px">
-🚫 Access Denied<br><br>Contact Admin
-</div>`;
-return false;
-}
-
-return true;
-
-}catch{
-return true;
-}
-}
-
-window.addEventListener("DOMContentLoaded", async ()=>{
+/* ================= INIT ================= */
+window.addEventListener("DOMContentLoaded", ()=>{
 
 let user = JSON.parse(localStorage.getItem("user"));
 
-/* ✅ NEW USER → SKIP BLOCK CHECK */
-if(!user){
-return; // allow register page
-}
+if(user){
 
-/* EXISTING USER → CHECK BLOCK */
-let allowed = await checkUserAccess();
-if(!allowed) return;
-
-/* LOAD APP */
 document.getElementById("registerPage").style.display="none";
 document.getElementById("nav").style.display="flex";
 document.getElementById("home").classList.add("active");
@@ -448,6 +397,7 @@ document.getElementById("welcomeText").innerText =
 
 loadNotes();
 loadNotices();
+}
 
 });
 
