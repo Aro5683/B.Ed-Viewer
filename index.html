@@ -294,8 +294,56 @@ margin:10px 0;
 
 <!-- HOME -->
 <div id="home" class="page">
-<div class="card"> Notes <button class="btn" onclick="showPage('notes')">Open</button></div>
-<div class="card"> Updates <button class="btn" onclick="showPage('notices')">Open</button></div>
+
+<div class="card">
+📚 Notes
+<button class="btn" onclick="showPage('notes')">Open</button>
+</div>
+
+<div class="card">
+🔔 Updates
+<button class="btn" onclick="showPage('notices')">Open</button>
+</div>
+
+<!-- 🔥 PREMIUM RESALE -->
+<div class="card" style="border-left:4px solid gold">
+💰 Resale Your Books
+<button class="btn" style="background:gold;color:black" onclick="openResale()">Sell</button>
+</div>
+
+<!-- 🔥 BUY BOOK SECTION -->
+<div id="buyBooks"></div>
+
+</div>
+
+  <!-- RESALE POPUP -->
+<div id="resalePopup" class="popup">
+<div class="popup-box">
+
+<h3>Sell Your Book</h3>
+
+<input id="bookName" placeholder="Book Name"><br><br>
+<input id="author" placeholder="Author"><br><br>
+<input id="edition" placeholder="Edition"><br><br>
+<input id="price" placeholder="Price"><br><br>
+
+<label>Upload 2 Images</label><br>
+<input type="file" id="img1"><br>
+<input type="file" id="img2"><br><br>
+
+<button onclick="sendResale()">Send</button>
+<button onclick="closeResale()">Cancel</button>
+
+</div>
+</div>
+
+<!-- THANK YOU POPUP -->
+<div id="thankPopup" class="popup">
+<div class="popup-box">
+<h3>✅ Thank You!</h3>
+<p>Your request submitted</p>
+<button onclick="closeThank()">Close</button>
+</div>
 </div>
 
 <!-- NOTES -->
@@ -392,11 +440,11 @@ document.getElementById("registerPage").style.display="none";
 document.getElementById("nav").style.display="flex";
 document.getElementById("home").classList.add("active");
 
-document.getElementById("welcomeText").innerText =
-"Welcome, " + user.name;
-
+document.getElementById("welcomeText").innerHTML =
+"Welcome, " + user.name + "<br><span style='font-size:12px;opacity:0.8'>" + user.college + "</span>";
 loadNotes();
 loadNotices();
+  loadBuyBooks();
 }
 
 });
@@ -492,12 +540,15 @@ books.forEach(b=>{
 if(
 b.sem === user.semester &&
 (
-b.type === "core" ||
-(
-b.type === "pedagogy" &&
-b.pedagogy === user.pedagogy &&
-b.medium === user.medium
-)
+  /* ✅ CORE → FILTER BY MEDIUM */
+  (b.type === "core" && b.medium === user.medium) ||
+
+  /* ✅ PEDAGOGY → FILTER BY BOTH */
+  (
+    b.type === "pedagogy" &&
+    b.pedagogy === user.pedagogy &&
+    b.medium === user.medium
+  )
 )
 ){
 addNote(b);
@@ -511,7 +562,6 @@ list.innerHTML = `<div style="text-align:center;margin-top:30px">No Notes Found<
 }
 
 }
-
 /* ================= ADD CARD ================= */
 function addNote(b){
 document.getElementById("noteList").innerHTML += `
@@ -596,6 +646,121 @@ localStorage.setItem("lastNotice", first);
 document.getElementById("noticeList").innerText = "Failed to load";
 }
 
+}
+
+  /* ================= RESALE POPUP ================= */
+
+function openResale(){
+document.getElementById("resalePopup").style.display="flex";
+}
+
+function closeResale(){
+document.getElementById("resalePopup").style.display="none";
+}
+
+/* ================= SEND TO WHATSAPP ================= */
+
+function sendResale(){
+
+let name = document.getElementById("bookName").value;
+let author = document.getElementById("author").value;
+let edition = document.getElementById("edition").value;
+let price = document.getElementById("price").value;
+
+if(!name || !author || !edition || !price){
+alert("Fill all fields");
+return;
+}
+
+/* WHATSAPP MESSAGE */
+let msg =
+`📚 Book Resale Request
+
+Book: ${name}
+Author: ${author}
+Edition: ${edition}
+Price: ₹${price}
+
+I want to sell this book.`;
+
+/* OPEN WHATSAPP */
+let url = "https://wa.me/919655969516?text=" + encodeURIComponent(msg);
+
+window.open(url);
+
+/* CLOSE POPUP */
+closeResale();
+
+/* THANK YOU POPUP */
+setTimeout(()=>{
+document.getElementById("thankPopup").style.display="flex";
+},1000);
+
+}
+
+function closeThank(){
+document.getElementById("thankPopup").style.display="none";
+}
+
+/* ================= BUY BOOKS ================= */
+
+const resaleBooks = [
+{
+name:"Teaching Aptitude",
+author:"Ravi Kumar",
+price:"250"
+},
+{
+name:"Child Development",
+author:"Suresh",
+price:"300"
+}
+];
+
+/* LOAD BUY BOOKS */
+function loadBuyBooks(){
+
+let container = document.getElementById("buyBooks");
+
+container.innerHTML = "<h3 style='margin-top:20px'>📦 Buy Used Books</h3>";
+
+resaleBooks.forEach(b=>{
+
+container.innerHTML += `
+<div class="card">
+<div>
+<b>${b.name}</b><br>
+<small>${b.author}</small><br>
+₹${b.price}
+</div>
+<button class="btn" onclick="buyBook('${b.name}','${b.author}','${b.price}')">Buy</button>
+</div>
+`;
+
+});
+
+}
+
+/* ================= BUY BUTTON ================= */
+
+function buyBook(name,author,price){
+
+let user = JSON.parse(localStorage.getItem("user"));
+
+let msg =
+`📚 Book Purchase Request
+
+Book: ${name}
+Author: ${author}
+Price: ₹${price}
+
+Buyer: ${user?.name || "User"}
+
+I want to buy this book.`;
+
+let url = "https://wa.me/919655969516?text=" + encodeURIComponent(msg);
+
+window.open(url);
 }
 </script>
 
