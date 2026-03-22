@@ -208,13 +208,21 @@ margin:10px 0;
 <p id="welcomeText">Smart Study App</p>
 </div>
 
+
 <!-- REGISTER -->
 <div id="registerPage" class="register">
 
 <h2 style="text-align:center;margin-bottom:10px;">Student Registration</h2>
 
-<div class="input"><i class="fa fa-user"></i><input id="name" placeholder="Full Name"></div>
-<div class="input"><i class="fa fa-calendar"></i><input id="dob" type="date"></div>
+<div class="input">
+<i class="fa fa-user"></i>
+<input id="name" placeholder="Full Name">
+</div>
+
+<div class="input">
+<i class="fa fa-calendar"></i>
+<input id="dob" type="date">
+</div>
 
 <div class="input">
 <i class="fa fa-venus-mars"></i>
@@ -226,9 +234,44 @@ margin:10px 0;
 </select>
 </div>
 
-<div class="input"><i class="fa fa-school"></i><input id="college" placeholder="College"></div>
-<div class="input"><i class="fa fa-location-dot"></i><input id="district" placeholder="District"></div>
-<div class="input"><i class="fa fa-phone"></i><input id="phone" placeholder="Phone"></div>
+<div class="input">
+<i class="fa fa-school"></i>
+<input id="college" placeholder="College">
+</div>
+
+<div class="input">
+<i class="fa fa-location-dot"></i>
+<input id="district" placeholder="District">
+</div>
+
+<div class="input">
+<i class="fa fa-phone"></i>
+<input id="phone" placeholder="Phone">
+</div>
+
+<!-- NEW: PEDAGOGY -->
+<div class="input">
+<i class="fa fa-book-open"></i>
+<select id="pedagogy">
+<option value="">Select Pedagogy</option>
+<option>English</option>
+<option>Tamil</option>
+<option>Maths</option>
+<option>Science</option>
+<option>Social Science</option>
+<option>Computer Science</option>
+</select>
+</div>
+
+<!-- NEW: MEDIUM -->
+<div class="input">
+<i class="fa fa-language"></i>
+<select id="medium">
+<option value="">Medium</option>
+<option>Tamil</option>
+<option>English</option>
+</select>
+</div>
 
 <div class="input">
 <i class="fa fa-layer-group"></i>
@@ -299,35 +342,46 @@ popup.style.display="flex";
 /* REGISTER */
 function registerUser(){
 
-let nameVal = document.getElementById("name").value.trim();
-
-let data={
-name:nameVal,
-dob:dob.value,
-gender:gender.value,
-college:college.value,
-district:district.value,
-phone:phone.value,
-semester:semester.value
+let data = {
+name: name.value.trim(),
+dob: dob.value,
+gender: gender.value,
+college: college.value.trim(),
+district: district.value.trim(),
+phone: phone.value.trim(),
+pedagogy: pedagogy.value,
+medium: medium.value,
+semester: semester.value
 };
 
-if(!nameVal || Object.values(data).includes("") || !agree.checked){
-showPopup("Fill all fields");
+/* VALIDATION */
+for(let key in data){
+if(!data[key]){
+showPopup("⚠️ Please fill all fields");
+return;
+}
+}
+
+if(!agree.checked){
+showPopup("⚠️ Please accept Terms");
 return;
 }
 
-localStorage.setItem("user",JSON.stringify(data));
+/* SAVE LOCAL */
+localStorage.setItem("user", JSON.stringify(data));
 
+/* SEND TO GOOGLE SHEET */
 fetch(SCRIPT_URL,{
 method:"POST",
 mode:"no-cors",
 body:JSON.stringify(data)
 });
 
-showPopup("🎉 Registration Success!");
+/* SUCCESS POPUP */
+showPopup("🎉 Registration Successful!");
+
 setTimeout(()=>location.reload(),1500);
 }
-
 /* LOAD USER AFTER DOM */
 window.addEventListener("DOMContentLoaded",()=>{
 
@@ -341,28 +395,105 @@ registerPage.style.display="none";
 nav.style.display="flex";
 home.classList.add("active");
 
-/* LOAD NOTES */
-const books=[
-{sem:"Semester 1",title:"BD1CE Unit 1 ENG",file:"BD1CE Unit-1 ENG.pdf"},
-{sem:"Semester 1",title:"BD1CE Unit 2 ENG",file:"BD1CE Unit-2 ENG.pdf"},
-{sem:"Semester 2",title:"BD2EE Unit 1 TAM",file:"BD2EE Unit-1.pdf"}
-];
+/* LOAD NOTES (FULL PREMIUM FILTER SYSTEM) */
 
-semTitle.innerText=user.semester+" Notes";
+function loadNotes(){
 
-books.forEach(b=>{
-if(b.sem!==user.semester)return;
+let user = JSON.parse(localStorage.getItem("user"));
 
-noteList.innerHTML+=`
-<div class="card">
-${b.title}
-<button class="btn" onclick="openPDF('${b.file}')">Open</button>
-</div>`;
-});
+if(!user) return;
 
+/* TITLE */
+semTitle.innerText = user.semester + " Notes";
+
+/* CLEAR OLD */
+noteList.innerHTML = "";
+
+/* BOOK DATA */
+const books = [
+
+{
+sem:"Semester 1",
+pedagogy:["English","Tamil"],
+medium:"English",
+title:"BD1CE Unit 1 ENG",
+file:"BD1CE Unit-1 ENG.pdf"
+},
+
+{
+sem:"Semester 1",
+pedagogy:["English"],
+medium:"English",
+title:"BD1CE Unit 2 ENG",
+file:"BD1CE Unit-2 ENG.pdf"
+},
+
+{
+sem:"Semester 2",
+pedagogy:["Tamil"],
+medium:"Tamil",
+title:"BD2EE Unit 1 TAM",
+file:"BD2EE Unit-1.pdf"
 }
 
+];
+
+/* FILTER + DISPLAY */
+let found = false;
+
+books.forEach(b => {
+
+if(
+b.sem !== user.semester ||
+!(b.pedagogy.includes(user.pedagogy) || b.pedagogy.includes("ALL")) ||
+b.medium !== user.medium
+) return;
+
+/* MARK FOUND */
+found = true;
+
+/* CARD UI */
+noteList.innerHTML += `
+<div class="card">
+
+<div style="display:flex;align-items:center;gap:10px;">
+<i class="fa-solid fa-file-pdf" style="color:#e11d48;font-size:20px;"></i>
+
+<div>
+<div style="font-weight:600">${b.title}</div>
+<div style="font-size:11px;color:#64748b">
+${b.pedagogy.join(", ")} • ${b.medium}
+</div>
+</div>
+
+</div>
+
+<button class="btn" onclick="openPDF('${b.file}')">
+<i class="fa fa-eye"></i> Open
+</button>
+
+</div>
+`;
+
 });
+
+/* EMPTY STATE */
+if(!found){
+noteList.innerHTML = `
+<div style="text-align:center;margin-top:40px;color:#64748b">
+
+<i class="fa-solid fa-book-open" style="font-size:40px;margin-bottom:10px;"></i>
+
+<div style="font-weight:600">No Notes Found</div>
+
+<div style="font-size:13px;margin-top:5px;">
+No notes available for your selection
+</div>
+
+</div>`;
+}
+
+}
 
 /* SEARCH */
 function searchNotes(){
