@@ -198,6 +198,143 @@ gap:8px;
 font-size:13px;
 margin:10px 0;
 }
+
+/* ================= PREMIUM RESALE CARD ================= */
+.card.premium{
+border-left:4px solid gold;
+background:linear-gradient(135deg,#fffbe6,#fff);
+}
+
+.card.premium .btn{
+background:gold;
+color:#000;
+font-weight:600;
+}
+
+/* ================= RESALE POPUP ================= */
+#resalePopup .popup-box{
+width:320px;
+padding:22px;
+border-radius:18px;
+box-shadow:0 20px 40px rgba(0,0,0,0.15);
+}
+
+#resalePopup h3{
+margin-bottom:12px;
+font-size:18px;
+color:#1e293b;
+}
+
+#resalePopup input{
+width:100%;
+padding:10px;
+margin-bottom:10px;
+border-radius:10px;
+border:1px solid #ddd;
+font-size:13px;
+}
+
+/* FILE INPUT */
+#resalePopup input[type="file"]{
+border:none;
+padding:5px;
+font-size:12px;
+}
+
+/* BUTTONS */
+#resalePopup button{
+width:100%;
+padding:10px;
+margin-top:6px;
+border:none;
+border-radius:10px;
+background:linear-gradient(90deg,#2563eb,#6366f1);
+color:white;
+font-weight:600;
+cursor:pointer;
+}
+
+#resalePopup button:last-child{
+background:#e5e7eb;
+color:#333;
+}
+
+/* ================= THANK YOU POPUP ================= */
+#thankPopup .popup-box{
+width:260px;
+border-radius:16px;
+padding:20px;
+text-align:center;
+}
+
+#thankPopup h3{
+color:#22c55e;
+margin-bottom:8px;
+}
+
+#thankPopup button{
+background:#2563eb;
+color:white;
+padding:10px 16px;
+border:none;
+border-radius:10px;
+margin-top:10px;
+}
+
+/* ================= BUY BOOK SECTION ================= */
+#buyBooks h3{
+font-size:16px;
+margin:10px 0;
+color:#1e293b;
+}
+
+/* BUY CARD */
+#buyBooks .card{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:14px;
+border-radius:14px;
+box-shadow:0 10px 25px rgba(0,0,0,0.06);
+transition:0.2s;
+}
+
+#buyBooks .card:hover{
+transform:translateY(-2px);
+}
+
+/* TEXT */
+#buyBooks b{
+font-size:14px;
+}
+
+#buyBooks small{
+color:#64748b;
+font-size:12px;
+}
+
+/* PRICE */
+#buyBooks .price{
+color:#16a34a;
+font-weight:600;
+}
+
+/* BUY BUTTON */
+#buyBooks .btn{
+background:linear-gradient(90deg,#16a34a,#22c55e);
+font-size:12px;
+padding:8px 12px;
+}
+
+/* ================= SMOOTH ANIMATION ================= */
+.popup{
+animation:fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn{
+from{opacity:0;transform:scale(0.95);}
+to{opacity:1;transform:scale(1);}
+}
 </style>
 </head>
 
@@ -282,7 +419,7 @@ margin:10px 0;
 <option>Semester 4</option>
 </select>
 </div>
-
+<br/>
 <div class="checkbox">
 <input type="checkbox" id="agree">
 <label>I agree to Terms</label>
@@ -293,21 +430,13 @@ margin:10px 0;
 </div>
 
 <!-- HOME -->
-<div id="home" class="page">
+<div id="notes" class="page">
 
-<div class="card">
-📚 Notes
-<button class="btn" onclick="showPage('notes')">Open</button>
-</div>
 
-<div class="card">
-🔔 Updates
-<button class="btn" onclick="showPage('notices')">Open</button>
-</div>
 
 <!-- 🔥 PREMIUM RESALE -->
 <div class="card" style="border-left:4px solid gold">
-💰 Resale Your Books
+💰 Resale Your Old B.Ed Books
 <button class="btn" style="background:gold;color:black" onclick="openResale()">Sell</button>
 </div>
 
@@ -324,14 +453,12 @@ margin:10px 0;
 
 <input id="bookName" placeholder="Book Name"><br><br>
 <input id="author" placeholder="Author"><br><br>
-<input id="edition" placeholder="Edition"><br><br>
+<input id="edition" placeholder="Edition Year"><br><br>
 <input id="price" placeholder="Price"><br><br>
 
-<label>Upload 2 Images</label><br>
-<input type="file" id="img1"><br>
-<input type="file" id="img2"><br><br>
+<p>Also Send photos of your book front and back</p><br>
 
-<button onclick="sendResale()">Send</button>
+<button onclick="sendResale()">Add Photo</button>
 <button onclick="closeResale()">Cancel</button>
 
 </div>
@@ -347,7 +474,7 @@ margin:10px 0;
 </div>
 
 <!-- NOTES -->
-<div id="notes" class="page">
+<div id="home" class="page">
 <h3 id="semTitle"></h3><br/>
 <input id="search" class="search" placeholder="Search..." onkeyup="searchNotes()">
 <div id="noteList"></div>
@@ -360,8 +487,8 @@ margin:10px 0;
 
 <!-- NAV -->
 <div id="nav" class="nav">
-<button onclick="showPage('home')"><i class="fa fa-house"></i>Home</button>
-<button onclick="showPage('notes')"><i class="fa fa-book"></i>Notes</button>
+<button onclick="showPage('home')"><i class="fa fa-book"></i>Notes</button>
+<button onclick="showPage('notes')"><i class="fa fa-house"></i>Home</button>
 <button onclick="showPage('notices')">
 <i class="fa fa-bell"></i>Updates
 <span id="badge" class="badge">1</span>
@@ -668,7 +795,7 @@ let edition = document.getElementById("edition").value;
 let price = document.getElementById("price").value;
 
 if(!name || !author || !edition || !price){
-alert("Fill all fields");
+showPopup("⚠️ Fill all fields");
 return;
 }
 
@@ -722,7 +849,7 @@ function loadBuyBooks(){
 
 let container = document.getElementById("buyBooks");
 
-container.innerHTML = "<h3 style='margin-top:20px'>📦 Buy Used Books</h3>";
+container.innerHTML = "<h3 style='margin-top:20px'>📦 Buy Used Books</h3><br/>";
 
 resaleBooks.forEach(b=>{
 
