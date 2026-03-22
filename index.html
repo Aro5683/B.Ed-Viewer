@@ -404,13 +404,13 @@ try{
 let res = await fetch(SCRIPT_URL + "?deviceId=" + id);
 let status = await res.text();
 
-/* ✅ NEW USER → ALLOW REGISTER */
-if(status === "NEW"){
+/* ✅ ALLOW NEW USERS */
+if(status === "NEW" || status === "" || status === null){
 return true;
 }
 
-/* ❌ BLOCKED */
-if(status !== "YES"){
+/* ❌ BLOCK ONLY IF EXPLICIT NO */
+if(status === "NO"){
 document.body.innerHTML = `
 <div style="text-align:center;margin-top:120px;font-size:18px">
 🚫 Access Denied<br><br>Contact Admin
@@ -425,16 +425,20 @@ return true;
 }
 }
 
-/* ================= INIT ================= */
 window.addEventListener("DOMContentLoaded", async ()=>{
-
-let allowed = await checkUserAccess();
-if(!allowed) return;
 
 let user = JSON.parse(localStorage.getItem("user"));
 
-if(user){
+/* ✅ NEW USER → SKIP BLOCK CHECK */
+if(!user){
+return; // allow register page
+}
 
+/* EXISTING USER → CHECK BLOCK */
+let allowed = await checkUserAccess();
+if(!allowed) return;
+
+/* LOAD APP */
 document.getElementById("registerPage").style.display="none";
 document.getElementById("nav").style.display="flex";
 document.getElementById("home").classList.add("active");
@@ -444,7 +448,6 @@ document.getElementById("welcomeText").innerText =
 
 loadNotes();
 loadNotices();
-}
 
 });
 
