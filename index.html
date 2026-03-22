@@ -395,88 +395,141 @@ registerPage.style.display="none";
 nav.style.display="flex";
 home.classList.add("active");
 
+const books = [
+
+/* BD1CE (7 Units) */
+{type:"core", sem:"Semester 1", title:"BD1CE Unit 1 ENG", file:"BD1CE Unit-1 ENG.pdf"},
+{type:"core", sem:"Semester 1", title:"BD1CE Unit 1 TAM", file:"BD1CE Unit-1 TAM.pdf"},
+
+{type:"core", sem:"Semester 1", title:"BD1CE Unit 2 ENG", file:"BD1CE Unit-2 ENG.pdf"},
+{type:"core", sem:"Semester 1", title:"BD1CE Unit 2 TAM", file:"BD1CE Unit-2 TAM.pdf"},
+
+{type:"core", sem:"Semester 1", title:"BD1CE Unit 3 ENG", file:"BD1CE Unit-3 ENG.pdf"},
+{type:"core", sem:"Semester 1", title:"BD1CE Unit 3 TAM", file:"BD1CE Unit-3 TAM.pdf"},
+
+{type:"core", sem:"Semester 1", title:"BD1CE Unit 4 ENG", file:"BD1CE Unit-4 ENG.pdf"},
+{type:"core", sem:"Semester 1", title:"BD1CE Unit 4 TAM", file:"BD1CE Unit-4 TAM.pdf"},
+
+{type:"core", sem:"Semester 1", title:"BD1CE Unit 5 ENG", file:"BD1CE Unit-5 ENG.pdf"},
+{type:"core", sem:"Semester 1", title:"BD1CE Unit 5 TAM", file:"BD1CE Unit-5 TAM.pdf"},
+
+{type:"core", sem:"Semester 1", title:"BD1CE Unit 6 ENG", file:"BD1CE Unit-6 ENG.pdf"},
+{type:"core", sem:"Semester 1", title:"BD1CE Unit 6 TAM", file:"BD1CE Unit-6 TAM.pdf"},
+
+{type:"core", sem:"Semester 1", title:"BD1CE Unit 7 ENG", file:"BD1CE Unit-7 ENG.pdf"},
+{type:"core", sem:"Semester 1", title:"BD1CE Unit 7 TAM", file:"BD1CE Unit-7 TAM.pdf"},
+
+
+/* BD1EP (5 Units) */
+{type:"core", sem:"Semester 1", title:"BD1EP Unit 1 TAM", file:"BD1EP Unit-1 TAM.pdf"},
+{type:"core", sem:"Semester 1", title:"BD1EP Unit 1 TAM(1)", file:"BD1EP Unit-1 TAM(1).pdf"},
+
+{type:"core", sem:"Semester 1", title:"BD1EP Unit 2 ENG", file:"BD1EP Unit-2 ENG.pdf"},
+{type:"core", sem:"Semester 1", title:"BD1EP Unit 2 TAM", file:"BD1EP Unit-2 TAM.pdf"},
+
+{type:"core", sem:"Semester 1", title:"BD1EP Unit 3 ENG", file:"BD1EP Unit-3 ENG.pdf"},
+{type:"core", sem:"Semester 1", title:"BD1EP Unit 3 TAM", file:"BD1EP Unit-3 TAM.pdf"},
+
+{type:"core", sem:"Semester 1", title:"BD1EP Unit 4 ENG", file:"BD1EP Unit-4 ENG.pdf"},
+{type:"core", sem:"Semester 1", title:"BD1EP Unit 4 TAM", file:"BD1EP Unit-4 TAM.pdf"},
+
+{type:"core", sem:"Semester 1", title:"BD1EP Unit 5 ENG", file:"BD1EP Unit-5 ENG.pdf"},
+{type:"core", sem:"Semester 1", title:"BD1EP Unit 5 TAM", file:"BD1EP Unit-5 TAM.pdf"},
+
+
+/* BD1LC (5 Units) */
+{type:"core", sem:"Semester 1", title:"BD1LC Unit 1 ENG", file:"BD1LC Unit-1 ENG.pdf"},
+{type:"core", sem:"Semester 1", title:"BD1LC Unit 1 TAM", file:"BD1LC Unit-1 TAM.pdf"},
+
+{type:"core", sem:"Semester 1", title:"BD1LC Unit 2 ENG", file:"BD1LC Unit-2 ENG.pdf"},
+{type:"core", sem:"Semester 1", title:"BD1LC Unit 2 TAM", file:"BD1LC Unit-2 TAM.pdf"},
+
+{type:"core", sem:"Semester 1", title:"BD1LC Unit 3 ENG", file:"BD1LC Unit-3 ENG.pdf"},
+{type:"core", sem:"Semester 1", title:"BD1LC Unit 3 TAM", file:"BD1LC Unit-3 TAM.pdf"},
+
+{type:"core", sem:"Semester 1", title:"BD1LC Unit 4 ENG", file:"BD1LC Unit-4 ENG.pdf"},
+{type:"core", sem:"Semester 1", title:"BD1LC Unit 4 TAM", file:"BD1LC Unit-4 TAM.pdf"},
+
+{type:"core", sem:"Semester 1", title:"BD1LC Unit 5 ENG", file:"BD1LC Unit-5 ENG.pdf"},
+{type:"core", sem:"Semester 1", title:"BD1LC Unit 5 TAM", file:"BD1LC Unit-5 TAM.pdf"},
+
+
+/* BD1TL (5 Units) */
+{type:"core", sem:"Semester 1", title:"BD1TL Unit 1 ENG", file:"BD1TL Unit-1 ENG.pdf"},
+{type:"core", sem:"Semester 1", title:"BD1TL Unit 1 TAM", file:"BD1TL Unit-1 TAM.pdf"},
+
+{type:"core", sem:"Semester 1", title:"BD1TL Unit 2 ENG", file:"BD1TL Unit-2 ENG.pdf"},
+{type:"core", sem:"Semester 1", title:"BD1TL Unit 2 TAM", file:"BD1TL Unit-2 TAM.pdf"},
+
+{type:"core", sem:"Semester 1", title:"BD1TL Unit 3 ENG", file:"BD1TL Unit-3 ENG.pdf"},
+{type:"core", sem:"Semester 1", title:"BD1TL Unit 3 TAM", file:"BD1TL Unit-3 TAM.pdf"},
+
+{type:"core", sem:"Semester 1", title:"BD1TL Unit 4 ENG", file:"BD1TL Unit-4 ENG.pdf"},
+{type:"core", sem:"Semester 1", title:"BD1TL Unit 4 TAM", file:"BD1TL Unit-4 TAM.pdf"},
+
+{type:"core", sem:"Semester 1", title:"BD1TL Unit 5 ENG", file:"BD1TL Unit-5 ENG.pdf"},
+{type:"core", sem:"Semester 1", title:"BD1TL Unit 5 TAM", file:"BD1TL Unit-5 TAM.pdf"}
+
+];
+
 /* LOAD NOTES (FULL PREMIUM FILTER SYSTEM) */
 
 function loadNotes(){
 
 let user = JSON.parse(localStorage.getItem("user"));
 
-if(!user) return;
-
-/* TITLE */
-semTitle.innerText = user.semester + " Notes";
-
-/* CLEAR OLD */
 noteList.innerHTML = "";
 
-/* BOOK DATA */
-const books = [
+let found = false; // ✅ ADD THIS
 
-{
-sem:"Semester 1",
-pedagogy:["English","Tamil"],
-medium:"English",
-title:"BD1CE Unit 1 ENG",
-file:"BD1CE Unit-1 ENG.pdf"
-},
+books.forEach(b=>{
 
-{
-sem:"Semester 1",
-pedagogy:["English"],
-medium:"English",
-title:"BD1CE Unit 2 ENG",
-file:"BD1CE Unit-2 ENG.pdf"
-},
+if(b.sem !== user.semester) return;
 
-{
-sem:"Semester 2",
-pedagogy:["Tamil"],
-medium:"Tamil",
-title:"BD2EE Unit 1 TAM",
-file:"BD2EE Unit-1.pdf"
+/* CORE */
+if(b.type === "core"){
+found = true;
+addCard(b);
+return;
 }
 
-];
-
-/* FILTER + DISPLAY */
-let found = false;
-
-books.forEach(b => {
-
+/* PEDAGOGY */
 if(
-b.sem !== user.semester ||
-!(b.pedagogy.includes(user.pedagogy) || b.pedagogy.includes("ALL")) ||
-b.medium !== user.medium
-) return;
-
-/* MARK FOUND */
+b.type === "pedagogy" &&
+b.pedagogy.includes(user.pedagogy)
+){
 found = true;
-
-/* CARD UI */
-noteList.innerHTML += `
-<div class="card">
-
-<div style="display:flex;align-items:center;gap:10px;">
-<i class="fa-solid fa-file-pdf" style="color:#e11d48;font-size:20px;"></i>
-
-<div>
-<div style="font-weight:600">${b.title}</div>
-<div style="font-size:11px;color:#64748b">
-${b.pedagogy.join(", ")} • ${b.medium}
-</div>
-</div>
-
-</div>
-
-<button class="btn" onclick="openPDF('${b.file}')">
-<i class="fa fa-eye"></i> Open
-</button>
-
-</div>
-`;
+addCard(b);
+}
 
 });
 
+/* EMPTY STATE */
+if(!found){
+noteList.innerHTML = `
+<div style="text-align:center;margin-top:40px;color:#64748b">
+No Notes Found
+</div>`;
+}
+
+}
+/* CARD UI */
+function addCard(b){
+
+noteList.innerHTML += `
+<div class="card">
+
+<div>
+<i class="fa-solid fa-file-pdf" style="color:#e11d48"></i>
+${b.title}
+</div>
+
+<button class="btn" onclick="openPDF('${b.file}')">
+Open
+</button>
+
+</div>`;
+}
 /* EMPTY STATE */
 if(!found){
 noteList.innerHTML = `
