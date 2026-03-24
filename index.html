@@ -614,7 +614,7 @@ document.getElementById("nav").style.display="flex";
 document.getElementById("home").classList.add("active");
 
 document.getElementById("welcomeText").innerHTML =
-"Welcome, " + user.name + "<br><span style='font-size:12px;opacity:0.8'>" + user.college + "</span>";
+"Welcome, " + user.name + "<br><span style='font-size:12px;opacity:0.8'>" +  + "</span>";
 loadNotes();
 loadNotices();
   loadBuyBooks();
@@ -910,7 +910,7 @@ let first="", saved=localStorage.getItem("lastNotice"), out="";
 
 links.forEach((a,i)=>{
 
-if(i>10) return;
+if(i>20) return;
 
 let title=a.innerText;
 let url="https://www.tnteu.ac.in/"+a.getAttribute("href");
@@ -996,14 +996,14 @@ document.getElementById("thankPopup").style.display="none";
 
 const resaleBooks = [
 {
-name:"Teaching Aptitude",
-author:"Ravi Kumar",
-price:"250"
+name:"",
+author:"",
+price:""
 },
 {
-name:"Child Development",
-author:"Suresh",
-price:"300"
+name:"",
+author:"",
+price:""
 }
 ];
 
@@ -1023,7 +1023,7 @@ container.innerHTML += `
 <small>${b.author}</small><br>
 ₹${b.price}
 </div>
-<button class="btn" onclick="buyBook('${b.name}','${b.author}','${b.price}')">Buy</button>
+<button class="btn" onclick="buyBook('${b.name}','${b.author}','${b.price}')"></button>
 </div>
 `;
 
