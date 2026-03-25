@@ -444,13 +444,7 @@ Terms & Conditions
 💰 Resale Your Old B.Ed Books
 <button class="btn" style="background:gold;color:black" onclick="openResale()">Sell</button>
 </div>
-  <div class="card" >
-Prev.Year Questions Coming soon!
-
-</div>
-<div class="card" >
-Important Questions Coming soon!
-</div>
+ 
 <!-- 🔥 BUY BOOK SECTION -->
 <div id="buyBooks"></div>
 
@@ -1032,17 +1026,19 @@ function loadBuyBooks(){
 
 let container = document.getElementById("buyBooks");
 
-container.innerHTML = "<h3 style='margin-top:20px'>📦 Buy Used Books</h3><br/>";
+container.innerHTML = "<h3 style='margin-top:20px'>Home</h3><br/>";
 
 resaleBooks.forEach(b=>{
 
 container.innerHTML += `
-<div class="card">
-<div>
-Not found
-</div>
+ <div class="card" >
+Prev.Year Questions Coming soon!
 
 </div>
+<div class="card" >
+Important Questions Coming soon!
+</div>
+
 `;
 
 });
@@ -1076,8 +1072,10 @@ function shareContent() {
 
   const text = `B.Ed Study App
 
-🎓 தமிழ்நாட்டில் முதன்முறையாக!
+🎓 *தமிழ்நாட்டில் முதன்முறையாக!*
+
 📚 B.Ed மாணவர்களுக்கு அனைத்து Study Materials ஒரே App-ல்!
+
 ✅ Core Subject Books (Sem 1 & 2)
 📄 Previous Year Questions (PYQ)
 ⭐ Important Questions
@@ -1086,8 +1084,9 @@ function shareContent() {
 📱 தமிழ் & ஆங்கிலம் Medium Available
 🔥 100% FREE
 ⚠️ Limited Registration Only
+
 👉 இப்போதே பதிவு செய்யுங்கள்:
-Download here:
+*Download here:*
 https://bedstudyapp.netlify.app/`;
 
   // ✅ Mobile share (best)
