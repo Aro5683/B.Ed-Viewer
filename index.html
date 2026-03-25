@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>B.Ed Vault Pro</title>
+<title>B.Ed Study Pro</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -341,7 +341,7 @@ to{opacity:1;transform:scale(1);}
 <body>
 
 <div class="header">
-<h1><i class="fa-solid fa-graduation-cap"></i> B.Ed Vault</h1>
+<h1><i class="fa-solid fa-graduation-cap"></i> B.Ed Study</h1>
 <p id="welcomeText">Smart Study App</p>
 </div>
 
@@ -417,8 +417,6 @@ to{opacity:1;transform:scale(1);}
 <option value="">Semester</option>
 <option>Semester 1</option>
 <option>Semester 2</option>
-<option>Semester 3</option>
-<option>Semester 4</option>
 </select>
 </div>
 <br/>
@@ -426,7 +424,7 @@ to{opacity:1;transform:scale(1);}
 <input type="checkbox" id="agree">
 <label>
 I agree to 
-<a href="https://bedvault.netlify.app/terms.html" target="_blank" style="color:#2563eb;font-weight:600;text-decoration:none;">
+<a href="https://bedstudyapp.netlify.app/terms.html" target="_blank" style="color:#2563eb;font-weight:600;text-decoration:none;">
 Terms & Conditions
 </a>
 </label>
@@ -446,7 +444,13 @@ Terms & Conditions
 💰 Resale Your Old B.Ed Books
 <button class="btn" style="background:gold;color:black" onclick="openResale()">Sell</button>
 </div>
+  <div class="card" >
+Prev.Year Questions Coming soon!
 
+</div>
+<div class="card" >
+Important Questions Coming soon!
+</div>
 <!-- 🔥 BUY BOOK SECTION -->
 <div id="buyBooks"></div>
 
@@ -471,6 +475,7 @@ Terms & Conditions
 </div>
 </div>
 
+
 <!-- THANK YOU POPUP -->
 <div id="thankPopup" class="popup">
 <div class="popup-box">
@@ -492,13 +497,28 @@ Terms & Conditions
 <div id="noticeList"></div>
 </div>
 
+
+ 
+
+  
 <!-- NAV -->
 <div id="nav" class="nav">
-<button onclick="showPage('home')"><i class="fa fa-book"></i>Notes</button>
-<button onclick="showPage('notes')"><i class="fa fa-house"></i>Home</button>
+<button onclick="showPage('home')">
+  <i class="fa fa-book"></i> Notes
+</button>
+
+<button onclick="showPage('notes')">
+  <i class="fa fa-house"></i> Home
+</button>
+
 <button onclick="showPage('notices')">
-<i class="fa fa-bell"></i>Updates
-<span id="badge" class="badge">1</span>
+  <i class="fa fa-bell"></i> Updates
+  <span id="badge" class="badge">1</span>
+</button>
+
+<!-- Share Button -->
+<button onclick="shareContent()">
+  <i class="fa fa-share-alt"></i> Share
 </button>
 </div>
 
@@ -561,7 +581,7 @@ return;
 }
 
 if(!document.getElementById("agree").checked){
-showPopup("⚠️ Accept Terms");
+showPopup("⚠️ Accept Terms & Conditions");
 return;
 }
 
@@ -614,7 +634,7 @@ document.getElementById("nav").style.display="flex";
 document.getElementById("home").classList.add("active");
 
 document.getElementById("welcomeText").innerHTML =
-"Welcome, " + user.name + "<br><span style='font-size:12px;opacity:0.8'>" +  + "</span>";
+"Welcome, " + user.name;
 loadNotes();
 loadNotices();
   loadBuyBooks();
@@ -1019,11 +1039,9 @@ resaleBooks.forEach(b=>{
 container.innerHTML += `
 <div class="card">
 <div>
-<b>${b.name}</b><br>
-<small>${b.author}</small><br>
-₹${b.price}
+Not found
 </div>
-<button class="btn" onclick="buyBook('${b.name}','${b.author}','${b.price}')"></button>
+
 </div>
 `;
 
@@ -1053,6 +1071,32 @@ let url = "https://wa.me/919655969516?text=" + encodeURIComponent(msg);
 window.open(url);
 }
 </script>
+<script>
+function shareContent() {
 
+  const text = `B.Ed Study App
+
+Access B.Ed Books, Notes, Previous Question Papers and TNTEU Notifications.
+
+Download here:
+https://bedvault.netlify.app/`;
+
+  // ✅ Mobile share (best)
+  if (navigator.share) {
+    navigator.share({
+      title: "B.Ed Study",
+      text: text,
+      url: "https://bedstudyapp.netlify.app/"
+    });
+  } 
+  // ✅ Fallback (desktop)
+  else {
+    window.open(
+      "https://wa.me/?text=" + encodeURIComponent(text),
+      "_blank"
+    );
+  }
+}
+</script>
 </body>
 </html>
