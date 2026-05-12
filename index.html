@@ -949,63 +949,64 @@ document.getElementById("badge").style.display="none";
 }
 
 
-/* ================= NOTIFICATIONS ================= */
-/* ================= NOTIFICATIONS ================= */
-
 async function loadNotices(){
 
-const proxy = "https://api.codetabs.com/v1/proxy?quest=";
+const proxy = "https://corsproxy.io/?";
 const target = "https://www.tnteu.ac.in/notifications.php?nid=5";
+
+console.log("🚀 Starting fetch...");
 
 try{
 
-let res = await fetch(proxy + target);
+// STEP 1: FETCH
+let finalURL = proxy + encodeURIComponent(target);
+console.log("🌐 Fetch URL:", finalURL);
 
+let res = await fetch(finalURL);
+console.log("📡 Response status:", res.status);
+
+// STEP 2: GET HTML
 let html = await res.text();
+console.log("📄 HTML length:", html.length);
+console.log("📄 HTML preview:", html.substring(0,300));
 
-/* DEBUG */
-console.log(html);
-
-/* PARSE HTML */
+// STEP 3: PARSE
 let doc = new DOMParser().parseFromString(html, "text/html");
+console.log("🧠 DOM parsed");
 
-/* TARGET ONLY NOTICE AREA */
-let notices = doc.querySelectorAll(".sectionWrapper ul li");
+// STEP 4: SELECT ELEMENTS
+let notices = doc.querySelectorAll(".sectionWrapper ul.list.prim li a");
 
-let out = "";
-let first = "";
-let saved = localStorage.getItem("lastNotice");
+console.log("🔎 Notices found:", notices.length);
 
-/* LOOP */
-notices.forEach((item, index)=>{
+// IF ZERO → show structure debug
+if(notices.length === 0){
+  console.warn("⚠️ No notices found. Checking alternative selectors...");
 
-if(index > 20) return;
-
-let a = item.querySelector("a");
-
-if(!a) return;
-
-let title = a.innerText.trim();
-
-let href = a.getAttribute("href");
-
-if(!href || !title) return;
-
-/* FULL URL */
-let url = href.startsWith("http")
-? href
-: "https://www.tnteu.ac.in/" + href;
-
-/* FIRST NOTICE */
-if(index === 0){
-first = title;
+  console.log("Try 1:", doc.querySelectorAll("ul li a").length);
+  console.log("Try 2:", doc.querySelectorAll(".sectionWrapper a").length);
+  console.log("Try 3:", doc.querySelectorAll("a").length);
 }
 
-/* CARD */
+// STEP 5: BUILD UI
+let out = "";
+
+notices.forEach((a, i)=>{
+
+if(i >= 10) return;
+
+let title = a.textContent.trim();
+let href = a.getAttribute("href");
+
+console.log(`📌 ${i}`, title, href);
+
+let url = href.startsWith("http")
+? href
+: "https://www.tnteu.ac.in/" + encodeURI(href);
+
 out += `
 <div class="notice">
 ${title}
-<br><br>
 <button class="btn"
 onclick="window.open('${url}','_blank')">
 View
@@ -1015,25 +1016,15 @@ View
 
 });
 
-/* SHOW */
-if(out){
-document.getElementById("noticeList").innerHTML = out;
-}else{
+// STEP 6: DISPLAY
 document.getElementById("noticeList").innerHTML =
-"<div class='notice'>No notifications found</div>";
-}
+out || "<div class='notice'>No notifications found</div>";
 
-/* BADGE */
-if(saved && saved !== first){
-document.getElementById("badge").style.display = "block";
-}
-
-/* SAVE */
-localStorage.setItem("lastNotice", first);
+console.log("✅ DONE");
 
 }catch(err){
 
-console.log(err);
+console.error("❌ ERROR OCCURRED:", err);
 
 document.getElementById("noticeList").innerHTML =
 "<div class='notice'>Failed to load notifications</div>";
@@ -1041,10 +1032,6 @@ document.getElementById("noticeList").innerHTML =
 }
 
 }
-
-
-
-
   /* ================= RESALE POPUP ================= */
 
 function openResale(){
