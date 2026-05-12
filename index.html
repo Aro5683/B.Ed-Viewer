@@ -919,19 +919,25 @@ c.style.display = c.innerText.toLowerCase().includes(s) ? "flex" : "none";
 /* ================= PDF ================= */
 function openPDF(file){
 
-// SHOW LOADER INSTANTLY
-document.getElementById("loader").style.display = "flex";
+let loader = document.getElementById("loader");
+
+// SHOW LOADER
+loader.style.display = "flex";
 
 let url = "https://aro5683.github.io/B.Ed-Viewer/web/PDFs/" + file;
 let viewerURL = "web/viewer.html?file=" + encodeURIComponent(url);
 
-// SMALL DELAY → feels smooth
+// REDIRECT
 setTimeout(()=>{
   window.location.href = viewerURL;
 }, 800);
 
-}
+/* 🔴 AUTO RESET (important fallback) */
+setTimeout(()=>{
+  loader.style.display = "none";
+}, 3000);
 
+}
 /* ================= NAV ================= */
 function showPage(p){
 document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
