@@ -914,78 +914,6 @@ document.getElementById("badge").style.display="none";
 
 
 /* ================= NOTIFICATIONS ================= */
-
-async function loadNotices(){
-
-const proxy = "https://api.codetabs.com/v1/proxy?quest=";
-const target = "https://www.tnteu.ac.in/notifications.php?nid=5";
-
-try{
-
-/* FETCH HTML */
-let res = await fetch(proxy + encodeURIComponent(target));
-
-if(!res.ok){
-throw new Error("Failed to fetch");
-}
-
-/* GET HTML */
-let html = await res.text();
-
-/* PARSE HTML */
-let doc = new DOMParser().parseFromString(html,"text/html");
-
-/* GET LINKS */
-let links = doc.querySelectorAll("a");
-
-let first = "";
-let saved = localStorage.getItem("lastNotice");
-let out = "";
-let count = 0;
-
-/* LOOP */
-links.forEach((a)=>{
-
-/* LIMIT */
-if(count >= 20) return;
-
-let title = a.innerText.trim();
-let href = a.getAttribute("href");
-
-/* SKIP EMPTY */
-if(!title || !href) return;
-
-/* FILTER ONLY NOTIFICATION LINKS */
-if(
-href.includes(".pdf") ||
-href.includes("uploads") ||
-href.includes("notification")
-){
-
-/* FULL URL */
-let url = href.startsWith("http")
-? href
-: "https://www.tnteu.ac.in/" + href;
-
-/* FIRST NOTICE */
-if(count === 0){
-first = title;
-}
-
-/* ADD CARD */
-out += `
-<div class="notice">
-${title}
-<button class="btn" onclick="window.open('${url}','_blank')">
-View
-</button>
-</div>
-`;
-
-count++;
-
-}
-/* ================= NOTIFICATIONS ================= */
 /* ================= NOTIFICATIONS ================= */
 
 async function loadNotices(){
@@ -1077,6 +1005,9 @@ document.getElementById("noticeList").innerHTML =
 }
 
 }
+
+
+
 
   /* ================= RESALE POPUP ================= */
 
