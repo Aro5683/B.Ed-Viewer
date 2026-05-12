@@ -912,48 +912,105 @@ document.getElementById("badge").style.display="none";
 }
 }
 
+
 /* ================= NOTIFICATIONS ================= */
+
 async function loadNotices(){
 
-const proxy="https://api.allorigins.win/get?url=";
-const target="https://www.tnteu.ac.in/notifications.php?nid=5";
+const proxy = "https://api.codetabs.com/v1/proxy?quest=";
+const target = "https://www.tnteu.ac.in/notifications.php?nid=5";
 
 try{
 
-let res=await fetch(proxy+encodeURIComponent(target));
-let html=await res.text();
+/* FETCH HTML */
+let res = await fetch(proxy + encodeURIComponent(target));
 
-let doc=new DOMParser().parseFromString(html,"text/html");
-let links=doc.querySelectorAll(".sectionWrapper a");
-
-let first="", saved=localStorage.getItem("lastNotice"), out="";
-
-links.forEach((a,i)=>{
-
-if(i>20) return;
-
-let title=a.innerText;
-let url="https://www.tnteu.ac.in/"+a.getAttribute("href");
-
-if(i===0) first=title;
-
-out+=`
-<div class="notice">
-${title}
-<button class="btn" onclick="window.open('${url}')">View</button>
-</div>`;
-});
-
-document.getElementById("noticeList").innerHTML = out;
-
-if(saved && saved !== first){
-document.getElementById("badge").style.display="block";
+if(!res.ok){
+throw new Error("Failed to fetch");
 }
 
+/* GET HTML */
+let html = await res.text();
+
+/* PARSE HTML */
+let doc = new DOMParser().parseFromString(html,"text/html");
+
+/* GET LINKS */
+let links = doc.querySelectorAll("a");
+
+let first = "";
+let saved = localStorage.getItem("lastNotice");
+let out = "";
+let count = 0;
+
+/* LOOP */
+links.forEach((a)=>{
+
+/* LIMIT */
+if(count >= 20) return;
+
+let title = a.innerText.trim();
+let href = a.getAttribute("href");
+
+/* SKIP EMPTY */
+if(!title || !href) return;
+
+/* FILTER ONLY NOTIFICATION LINKS */
+if(
+href.includes(".pdf") ||
+href.includes("uploads") ||
+href.includes("notification")
+){
+
+/* FULL URL */
+let url = href.startsWith("http")
+? href
+: "https://www.tnteu.ac.in/" + href;
+
+/* FIRST NOTICE */
+if(count === 0){
+first = title;
+}
+
+/* ADD CARD */
+out += `
+<div class="notice">
+${title}
+<button class="btn" onclick="window.open('${url}','_blank')">
+View
+</button>
+</div>
+`;
+
+count++;
+
+}
+
+});
+
+/* SHOW */
+if(out){
+document.getElementById("noticeList").innerHTML = out;
+}else{
+document.getElementById("noticeList").innerHTML =
+"<div class='notice'>No notifications found</div>";
+}
+
+/* BADGE */
+if(saved && saved !== first){
+document.getElementById("badge").style.display = "block";
+}
+
+/* SAVE LAST */
 localStorage.setItem("lastNotice", first);
 
-}catch{
-document.getElementById("noticeList").innerText = "Failed to load";
+}catch(err){
+
+console.log("Notification Error:", err);
+
+document.getElementById("noticeList").innerHTML =
+"<div class='notice'>Failed to load notifications</div>";
+
 }
 
 }
