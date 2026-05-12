@@ -335,6 +335,20 @@ animation:fadeIn 0.2s ease;
 from{opacity:0;transform:scale(0.95);}
 to{opacity:1;transform:scale(1);}
 }
+
+.spinner {
+  width:40px;
+  height:40px;
+  border:4px solid #eee;
+  border-top:4px solid #2563eb;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+  margin:auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 </style>
 </head>
 
@@ -546,6 +560,15 @@ Get latest updates, notes & notifications
 
 
 </div>
+</div>
+<!-- LOADING POPUP -->
+<div id="loader" class="popup">
+  <div class="popup-box" style="background:white">
+    
+    <div class="spinner"></div>
+    <p style="margin-top:10px;font-size:14px;">Loading file...</p>
+
+  </div>
 </div>
 <script>
 
@@ -896,10 +919,17 @@ c.style.display = c.innerText.toLowerCase().includes(s) ? "flex" : "none";
 /* ================= PDF ================= */
 function openPDF(file){
 
+// SHOW LOADER INSTANTLY
+document.getElementById("loader").style.display = "flex";
+
 let url = "https://aro5683.github.io/B.Ed-Viewer/web/PDFs/" + file;
 let viewerURL = "web/viewer.html?file=" + encodeURIComponent(url);
 
-window.location.href = viewerURL;
+// SMALL DELAY → feels smooth
+setTimeout(()=>{
+  window.location.href = viewerURL;
+}, 800);
+
 }
 
 /* ================= NAV ================= */
