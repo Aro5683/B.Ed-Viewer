@@ -6,6 +6,9 @@
 
 <title>B.Ed Study Pro</title>
 
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2563eb">
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
@@ -23,6 +26,8 @@
 
 body{
 background:linear-gradient(135deg,#eef2ff,#e0e7ff);
+color: var(--text);
+min-height: 100vh;
 }
 
 /* HEADER */
@@ -41,7 +46,7 @@ text-align:center;
 
 /* REGISTER */
 .register{
-max-width:320px;
+max-width:340px;
 margin:30px auto;
 background:white;
 padding:25px;
@@ -54,13 +59,16 @@ position:relative;
 margin-bottom:12px;
 }
 .input i{
-position:absolute;top:12px;left:12px;color:#64748b;
+position:absolute;top:13px;left:14px;color:#64748b;
 }
 .input input,.input select{
 width:100%;
-padding:12px 12px 12px 38px;
+padding:12px 12px 12px 40px;
 border-radius:10px;
 border:1px solid #ddd;
+outline: none;
+font-size:13px;
+transition: border-color 0.2s ease;
 }
 
 .primary-btn{
@@ -72,10 +80,11 @@ background:linear-gradient(90deg,var(--primary),var(--accent));
 color:white;
 font-weight:600;
 cursor:pointer;
+font-size:14px;
 }
 
 /* PAGE */
-.page{display:none;padding:16px;padding-bottom:100px;}
+.page{display:none;padding:16px;padding-bottom:110px;max-width:480px;margin:0 auto;}
 .page.active{display:block;}
 
 /* SEARCH */
@@ -84,7 +93,9 @@ width:100%;
 padding:12px;
 border-radius:10px;
 border:1px solid #ddd;
-margin-bottom:12px;
+margin-bottom:15px;
+font-size:13px;
+outline:none;
 }
 
 /* CARD */
@@ -97,32 +108,50 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 box-shadow:var(--shadow);
-  font-size:14px;
+font-size:14px;
+}
+.card .info-layout {
+display: flex;
+align-items: center;
+gap: 12px;
+max-width: 75%;
+}
+.card .info-layout div {
+display: flex;
+flex-direction: column;
+}
+.card small{
+color: #64748b;
+font-size: 11px;
+margin-top: 2px;
 }
 
 .btn{
 background:var(--primary);
 color:white;
 border:none;
-padding:4px 12px;
+padding:6px 14px;
 border-radius:8px;
 cursor:pointer;
+font-size:13px;
+font-weight:500;
 }
 
 /* NAV */
 .nav{
 position:fixed;
-bottom:10px;
+bottom:12px;
 left:50%;
 transform:translateX(-50%);
-width:90%;
+width:92%;
 max-width:420px;
 background:white;
 border-radius:20px;
 display:none;
 justify-content:space-around;
-padding:10px;
-box-shadow:0 10px 25px rgba(0,0,0,0.2);
+padding:12px 10px;
+box-shadow:0 10px 30px rgba(0,0,0,0.15);
+z-index: 99;
 }
 
 .nav button{
@@ -132,20 +161,22 @@ display:flex;
 flex-direction:column;
 align-items:center;
 font-size:11px;
-position:relative;
+cursor:pointer;
+color:#64748b;
+font-weight:500;
 }
 
-.nav i{font-size:18px;color:var(--primary);}
+.nav button i{font-size:18px;margin-bottom:2px;color:var(--primary);}
 
 /* BADGE */
 .badge{
 position:absolute;
 top:-3px;
-right:6px;
-background:red;
+right:4px;
+background:#ef4444;
 color:white;
-font-size:10px;
-padding:2px 6px;
+font-size:9px;
+padding:2px 5px;
 border-radius:10px;
 display:none;
 }
@@ -155,12 +186,15 @@ display:none;
 background:white;
 padding:14px;
 border-radius:14px;
-margin-bottom:10px;
+margin-bottom:12px;
 box-shadow:var(--shadow);
+font-size:13px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
 }
-.notice{
-font-size:14px; /* change this value */
-}
+
 /* POPUP */
 .popup{
 position:fixed;
@@ -173,33 +207,39 @@ display:none;
 justify-content:center;
 align-items:center;
 z-index:999;
+padding:15px;
 }
 .popup-box{
 background:white;
-padding:20px;
-border-radius:16px;
+padding:22px;
+border-radius:18px;
 text-align:center;
-width:300px;
+width:100%;
+max-width:320px;
+box-shadow:0 20px 40px rgba(0,0,0,0.2);
 }
 .popup button{
-margin-top:10px;
+margin-top:12px;
 padding:10px;
 background:var(--primary);
 color:white;
 border:none;
 border-radius:8px;
+cursor:pointer;
+width: 100%;
 }
 
 /* CHECKBOX */
 .checkbox{
 display:flex;
-align-items:center;
+align-items:flex-start;
 gap:8px;
-font-size:13px;
-margin:10px 0;
+font-size:12px;
+margin:12px 0;
 }
+.checkbox input{margin-top:2px;}
 
-/* ================= PREMIUM RESALE CARD ================= */
+/* PREMIUM RESALE CARD */
 .card.premium{
 border-left:4px solid gold;
 background:linear-gradient(135deg,#fffbe6,#fff);
@@ -211,47 +251,15 @@ color:#000;
 font-weight:600;
 }
 
-/* ================= RESALE POPUP ================= */
-#resalePopup .popup-box{
-width:320px;
-padding:22px;
-border-radius:18px;
-box-shadow:0 20px 40px rgba(0,0,0,0.15);
-}
-
-#resalePopup h3{
-margin-bottom:12px;
-font-size:18px;
-color:#1e293b;
-}
-
+/* RESALE POPUP */
 #resalePopup input{
 width:100%;
-padding:10px;
+padding:10px 12px;
 margin-bottom:10px;
 border-radius:10px;
 border:1px solid #ddd;
 font-size:13px;
-}
-
-/* FILE INPUT */
-#resalePopup input[type="file"]{
-border:none;
-padding:5px;
-font-size:12px;
-}
-
-/* BUTTONS */
-#resalePopup button{
-width:100%;
-padding:10px;
-margin-top:6px;
-border:none;
-border-radius:10px;
-background:linear-gradient(90deg,#2563eb,#6366f1);
-color:white;
-font-weight:600;
-cursor:pointer;
+outline:none;
 }
 
 #resalePopup button:last-child{
@@ -259,95 +267,33 @@ background:#e5e7eb;
 color:#333;
 }
 
-/* ================= THANK YOU POPUP ================= */
-#thankPopup .popup-box{
-width:260px;
-border-radius:16px;
-padding:20px;
-text-align:center;
-}
-
-#thankPopup h3{
-color:#22c55e;
-margin-bottom:8px;
-}
-
-#thankPopup button{
-background:#2563eb;
-color:white;
-padding:10px 16px;
-border:none;
-border-radius:10px;
-margin-top:10px;
-}
-
-/* ================= BUY BOOK SECTION ================= */
+/* BUY BOOK SECTION */
 #buyBooks h3{
-font-size:16px;
-margin:10px 0;
+font-size:15px;
+margin:15px 0 8px 0;
 color:#1e293b;
-}
-
-/* BUY CARD */
-#buyBooks .card{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:14px;
-border-radius:14px;
-box-shadow:0 10px 25px rgba(0,0,0,0.06);
-transition:0.2s;
-}
-
-#buyBooks .card:hover{
-transform:translateY(-2px);
-}
-
-/* TEXT */
-#buyBooks b{
-font-size:14px;
-}
-
-#buyBooks small{
-color:#64748b;
-font-size:12px;
-}
-
-/* PRICE */
-#buyBooks .price{
-color:#16a34a;
 font-weight:600;
 }
 
-/* BUY BUTTON */
-#buyBooks .btn{
-background:linear-gradient(90deg,#16a34a,#22c55e);
-font-size:12px;
-padding:8px 12px;
+.price-tag {
+color: #16a34a;
+font-weight: 600;
+font-size: 13px;
 }
 
-/* ================= SMOOTH ANIMATION ================= */
-.popup{
-animation:fadeIn 0.2s ease;
-}
-
-@keyframes fadeIn{
-from{opacity:0;transform:scale(0.95);}
-to{opacity:1;transform:scale(1);}
-}
-
+/* SPINNER CODE */
 .spinner {
-  width:40px;
-  height:40px;
-  border:4px solid #eee;
-  border-top:4px solid #2563eb;
-  border-radius:50%;
-  animation:spin 1s linear infinite;
-  margin:auto;
+width:40px;
+height:40px;
+border:4px solid #eee;
+border-top:4px solid #2563eb;
+border-radius:50%;
+animation:spin 1s linear infinite;
+margin:10px auto;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+to { transform: rotate(360deg); }
 }
 </style>
 </head>
@@ -355,29 +301,26 @@ to{opacity:1;transform:scale(1);}
 <body>
 
 <div class="header">
-<h1><i class="fa-solid fa-graduation-cap"></i> B.Ed Study</h1>
-<p id="welcomeText">Smart Study App</p>
+<h1><i class="fa-solid fa-graduation-cap"></i> B.Ed Study Pro</h1>
+<p id="welcomeText">Smart Mobile App Platform</p>
 </div>
 
-
-<!-- REGISTER -->
 <div id="registerPage" class="register">
-
-<h2 style="text-align:center;margin-bottom:10px;">Student Registration</h2>
+<h2 style="text-align:center;margin-bottom:15px;font-size:17px;">Student Registration</h2>
 
 <div class="input">
 <i class="fa fa-user"></i>
-<input id="name" placeholder="Full Name">
+<input id="name" placeholder="Full Name" oninput="this.style.borderColor='#ddd'">
 </div>
 
 <div class="input">
 <i class="fa fa-calendar"></i>
-<input id="dob" type="date">
+<input id="dob" type="date" oninput="this.style.borderColor='#ddd'">
 </div>
 
 <div class="input">
 <i class="fa fa-venus-mars"></i>
-<select id="gender">
+<select id="gender" onchange="this.style.borderColor='#ddd'">
 <option value="">Gender</option>
 <option>Male</option>
 <option>Female</option>
@@ -387,38 +330,37 @@ to{opacity:1;transform:scale(1);}
 
 <div class="input">
 <i class="fa fa-school"></i>
-<input id="college" placeholder="College">
+<input id="college" placeholder="College Name" oninput="this.style.borderColor='#ddd'">
 </div>
 
 <div class="input">
 <i class="fa fa-location-dot"></i>
-<input id="district" placeholder="District">
+<input id="district" placeholder="District" oninput="this.style.borderColor='#ddd'">
 </div>
 
 <div class="input">
 <i class="fa fa-phone"></i>
-<input id="phone" placeholder="Phone">
+<input id="phone" type="tel" placeholder="Phone Number" oninput="this.style.borderColor='#ddd'">
 </div>
 
-<!-- NEW: PEDAGOGY -->
 <div class="input">
 <i class="fa fa-book-open"></i>
-<select id="pedagogy">
+<select id="pedagogy" onchange="this.style.borderColor='#ddd'">
 <option value="">Select Pedagogy</option>
 <option>English</option>
 <option>Tamil</option>
 <option>Maths</option>
 <option>Physical Science</option>
-  <option>Biological Science</option>
+<option>Biological Science</option>
 <option>History</option>
 <option>Computer Science</option>
-  <option>Commerce</option>
+<option>Commerce</option>
 </select>
 </div>
 
 <div class="input">
 <i class="fa fa-language"></i>
-<select id="medium">
+<select id="medium" onchange="this.style.borderColor='#ddd'">
 <option value="">Medium</option>
 <option>English</option>
 <option>Tamil</option>
@@ -427,161 +369,97 @@ to{opacity:1;transform:scale(1);}
 
 <div class="input">
 <i class="fa fa-layer-group"></i>
-<select id="semester">
+<select id="semester" onchange="this.style.borderColor='#ddd'">
 <option value="">Semester</option>
 <option>Semester 1</option>
 <option>Semester 2</option>
 </select>
 </div>
-<br/>
+
 <div class="checkbox">
 <input type="checkbox" id="agree">
-<label>
-I agree to 
-<a href="https://bedstudyapp.netlify.app/terms.html" target="_blank" style="color:#2563eb;font-weight:600;text-decoration:none;">
-Terms & Conditions
-</a>
-</label>
+<label>I agree to <a href="https://bedstudyapp.netlify.app/terms.html" target="_blank" style="color:#2563eb;font-weight:600;text-decoration:none;">Terms & Conditions</a></label>
 </div>
 
 <button class="primary-btn" onclick="registerUser()">Register</button>
-
 </div>
 
-<!-- HOME -->
-<div id="notes" class="page">
-
-
-
-<!-- 🔥 PREMIUM RESALE -->
-<div class="card" style="border-left:4px solid gold">
-💰 Resale Your Old B.Ed Books
-<button class="btn" style="background:gold;color:black" onclick="openResale()">Sell</button>
+<div id="homePage" class="page">
+<div class="card premium">
+<div>💰 Resale Your Old B.Ed Books</div>
+<button class="btn" onclick="openResale()">Sell</button>
 </div>
  
-<!-- 🔥 BUY BOOK SECTION -->
 <div id="buyBooks"></div>
- <div class="card" >
-Prev.Year Questions Coming soon!
-
-</div>
-<div class="card" >
-Important Questions Coming soon!
-</div>
+<div class="card">Prev.Year Questions Coming soon!</div>
+<div class="card">Important Questions Coming soon!</div>
 </div>
 
-  <!-- RESALE POPUP -->
 <div id="resalePopup" class="popup">
 <div class="popup-box">
-
-<h3>Sell Your Book</h3>
-
-<input id="bookName" placeholder="Book Name"><br><br>
-<input id="author" placeholder="Author"><br><br>
-<input id="edition" placeholder="Edition Year"><br><br>
-<input id="price" placeholder="Price"><br><br>
-
-<p>Also Send photos of your book front and back</p><br>
-
-<button onclick="sendResale()">Add Photo</button>
+<h3 style="margin-bottom:12px; font-size:16px;">Sell Your Book</h3>
+<input id="bookName" placeholder="Book Name">
+<input id="author" placeholder="Author Name">
+<input id="edition" placeholder="Edition Year">
+<input id="price" placeholder="Price (₹)">
+<button onclick="sendResale()">Submit Listing</button>
 <button onclick="closeResale()">Cancel</button>
-
 </div>
 </div>
 
-
-<!-- THANK YOU POPUP -->
-<div id="thankPopup" class="popup">
-<div class="popup-box">
-<h3>✅ Thank You!</h3>
-<p>Your request submitted</p>
-<button onclick="closeThank()">Close</button>
-</div>
-</div>
-
-<!-- NOTES -->
-<div id="home" class="page">
-<h3 id="semTitle"></h3><br/>
-<input id="search" class="search" placeholder="Search..." onkeyup="searchNotes()">
+<div id="notesPage" class="page">
+<h3 id="semTitle" style="font-size:16px; margin-bottom:10px;"></h3>
+<input id="search" class="search" placeholder="Search notes..." onkeyup="searchNotes()">
 <div id="noteList"></div>
 </div>
 
-<!-- NOTICES -->
-<div id="notices" class="page">
-<div id="noticeList"></div>
+<div id="noticesPage" class="page">
+<div id="noticeList"><div class='notice'>Checking feed updates...</div></div>
 </div>
 
-
- 
-
-  
-<!-- NAV -->
 <div id="nav" class="nav">
-<button onclick="showPage('home')">
-  <i class="fa fa-book"></i> Notes
-</button>
-
-<button onclick="showPage('notes')">
-  <i class="fa fa-house"></i> Home
-</button>
-
-<button onclick="showPage('notices')">
-  <i class="fa fa-bell"></i> Updates
-  <span id="badge" class="badge">1</span>
-</button>
-
-<!-- Share Button -->
-<button onclick="shareContent()">
-  <i class="fa fa-share-alt"></i> Share
-</button>
+<button id="nav-home" onclick="showPage('homePage')"><i class="fa fa-house"></i>Home</button>
+<button id="nav-notes" onclick="showPage('notesPage')"><i class="fa fa-book"></i>Notes</button>
+<button id="nav-notices" onclick="showPage('noticesPage')"><i class="fa fa-bell"></i>Updates<span id="badge" class="badge">1</span></button>
+<button onclick="shareContent()"><i class="fa fa-share-alt"></i>Share</button>
 </div>
 
-<!-- POPUP -->
 <div id="popup" class="popup">
 <div class="popup-box">
 <div id="popupMsg"></div>
-<button onclick="popup.style.display='none'">OK</button>
+<button onclick="document.getElementById('popup').style.display='none'">OK</button>
 </div>
 </div>
 
-
-  <div id="whatsappPopup" class="popup">
+<div id="whatsappPopup" class="popup">
 <div class="popup-box">
-
 <h3>📢 Join WhatsApp Group</h3>
-<p style="font-size:13px;margin:10px 0;">
-Get latest updates, notes & notifications
-</p>
-
-<button onclick="joinWhatsapp()" style="background:#25D366;">
-<i class="fa-brands fa-whatsapp"></i> Join Now
-</button>
-
-
-
+<p style="font-size:12px; margin:10px 0; color:#475569;">Get instant study tracking alerts, exam routines & verified notice briefs directly.</p>
+<button onclick="joinWhatsapp()" style="background:#25D366;"><i class="fa-brands fa-whatsapp"></i> Join Now</button>
 </div>
 </div>
-<!-- LOADING POPUP -->
+
 <div id="loader" class="popup">
-  <div class="popup-box" style="background:white">
-    
+  <div class="popup-box">
     <div class="spinner"></div>
-    <p style="margin-top:10px;font-size:14px;">Loading file...</p>
-
+    <p style="font-size:13px;color:#475569;margin-top:10px;">Opening Google Drive Link...</p>
   </div>
 </div>
-<script>
 
+<script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0yVkhugqqVYtKK-9xLNOJ981ob5GnDI8_gTApwgmAwxC0OsWIWZHI_fajvKFGxihr/exec";
 
-/* ================= POPUP ================= */
 function showPopup(msg){
 document.getElementById("popupMsg").innerText = msg;
 document.getElementById("popup").style.display = "flex";
 }
 
-/* ================= REGISTER ================= */
 function registerUser(){
+const fields = ["name", "dob", "gender", "college", "district", "phone", "pedagogy", "medium", "semester"];
+  
+fields.forEach(id => {
+  document.getElementById(id).style.borderColor = "#ddd";
+});
 
 let data = {
 name: document.getElementById("name").value.trim(),
@@ -595,21 +473,23 @@ medium: document.getElementById("medium").value,
 semester: document.getElementById("semester").value
 };
 
-/* VALIDATION */
+/* RED BORDER DYNAMIC FIELD HIGHLIGHT SYSTEM */
 for(let key in data){
-if(!data[key]){
-showPopup("⚠️ Fill all fields");
-return;
-}
+  if(!data[key]){
+    let inputEl = document.getElementById(key);
+    inputEl.style.borderColor = "#ef4444"; 
+    inputEl.focus(); 
+    
+    let fieldLabel = key.charAt(0).toUpperCase() + key.slice(1);
+    showPopup("⚠️ Please fill out or select your " + fieldLabel);
+    return;
+  }
 }
 
 if(!document.getElementById("agree").checked){
-showPopup("⚠️ Accept Terms & Conditions");
+showPopup("⚠️ You must agree to the Terms & Conditions.");
 return;
 }
-
-/* SAVE */
-/* AFTER SAVE + FETCH */
 
 localStorage.setItem("user", JSON.stringify(data));
 
@@ -619,565 +499,222 @@ mode:"no-cors",
 body:JSON.stringify(data)
 });
 
-/* 👉 SHOW WHATSAPP POPUP FIRST */
 document.getElementById("whatsappPopup").style.display = "flex";
-
-
 }
 
-  function joinWhatsapp(){
-
-/* YOUR GROUP LINK */
+function joinWhatsapp(){
 let link = "https://chat.whatsapp.com/CgNt3lBmhlGG0Yjvi2g3FW?mode=gi_t";
-
-/* OPEN WHATSAPP */
-window.open(link);
-
-/* CLOSE POPUP */
+window.open(link, '_blank');
 document.getElementById("whatsappPopup").style.display = "none";
 
-/* AFTER RETURN → SHOW SUCCESS */
 setTimeout(()=>{
-showPopup("🎉 Registration Successful!");
-location.reload();
-},1500);
-
+showPopup("🎉 Registration Completed Successfully!");
+initDashboard();
+},1000);
 }
 
-
-/* ================= INIT ================= */
-window.addEventListener("DOMContentLoaded", ()=>{
-
+function initDashboard(){
 let user = JSON.parse(localStorage.getItem("user"));
-
 if(user){
-
 document.getElementById("registerPage").style.display="none";
 document.getElementById("nav").style.display="flex";
-document.getElementById("home").classList.add("active");
-
-document.getElementById("welcomeText").innerHTML =
-"Welcome, " + user.name;
+document.getElementById("welcomeText").innerText = "Welcome, " + user.name;
+showPage('homePage');
 loadNotes();
 loadNotices();
-  loadBuyBooks();
+loadBuyBooks();
+}
 }
 
-});
+window.addEventListener("DOMContentLoaded", initDashboard);
 
-/* ================= BOOK DATA ================= */
+// Master dataset mapped directly to live Google Drive storage links
 const books = [
+  // TAMIL MEDIUM
+  {sem:"Semester 2", medium:"Tamil", title:"BD2AL Unit-1 TAM", file:"https://drive.google.com/file/d/1e6hS0PjULUnLAfBpDPtRkPSesUnkFM8C/view"},
+  {sem:"Semester 2", medium:"Tamil", title:"BD2AL Unit-2 TAM", file:"https://drive.google.com/file/d/1lvoX6-oy542Jng6VfZlF0mZjbyczFyuG/view"},
+  {sem:"Semester 2", medium:"Tamil", title:"BD2AL Unit-3 TAM", file:"https://drive.google.com/file/d/1LoiWyFFI_MbpCwbMDauccNzqZkBCtKAx/view"},
+  {sem:"Semester 2", medium:"Tamil", title:"BD2AL Unit-4 TAM", file:"https://drive.google.com/file/d/1aOj2yb5CUOHRPthUdUUq1CJWWxD3TUfS/view"},
+  {sem:"Semester 2", medium:"Tamil", title:"BD2AL Unit-5 TAM", file:"https://drive.google.com/file/d/1sbKy26V5KWTgu6FTUKqLhG97VzwxwwNH/view"},
+  {sem:"Semester 2", medium:"Tamil", title:"BD2CR Unit-1 TAM", file:"https://drive.google.com/file/d/1BYm0Vyny2cSCOhHaz5-WJhQVv7xdhZDX/view"},
+  {sem:"Semester 2", medium:"Tamil", title:"BD2CR Unit-2 TAM", file:"https://drive.google.com/file/d/1T8ljq8OwpOP2yTjEX8XWdqSWNJOQKWJp/view"},
+  {sem:"Semester 2", medium:"Tamil", title:"BD2CR Unit-3 TAM", file:"https://drive.google.com/file/d/1fBxTVMDLWqMC5l-LHRv4BV5jz_2ZcELW/view"},
+  {sem:"Semester 2", medium:"Tamil", title:"BD2CR Unit-4 TAM", file:"https://drive.google.com/file/d/1QY2fV1IYertvvuthk10KzEeDdllBCjbx/view"},
+  {sem:"Semester 2", medium:"Tamil", title:"BD2CR Unit-5 TAM", file:"https://drive.google.com/file/d/1UC_pnpWu2ORBuOghTcnKKEyQvOQbwWYA/view"},
+  {sem:"Semester 2", medium:"Tamil", title:"BD2EE Unit-1 TAM", file:"https://drive.google.com/file/d/1v7hmrP5Qf7SxI4wxRUn3NLOPT-36WDEq/view"},
+  {sem:"Semester 2", medium:"Tamil", title:"BD2EE Unit-2 TAM", file:"https://drive.google.com/file/d/1asM7Ha9DeroXNSYEO7FEy3KbCfSoaivo/view"},
+  {sem:"Semester 2", medium:"Tamil", title:"BD2EE Unit-3 TAM", file:"https://drive.google.com/file/d/1KZgdg2Bf5D8DAUPkC0ESdLtFOAx7vBk_/view"},
+  {sem:"Semester 2", medium:"Tamil", title:"BD2EE Unit-4 TAM", file:"https://drive.google.com/file/d/1dEHCxD4Vkw70ontTvExf2qoez-scLkwv/view"},
+  {sem:"Semester 2", medium:"Tamil", title:"BD2EE Unit-5 TAM", file:"https://drive.google.com/file/d/1OU89RWAhQnqIF0Q1dRSLlh4lo4B0gGlu/view"},
+  {sem:"Semester 2", medium:"Tamil", title:"BD2SM Unit-1 TAM", file:"https://drive.google.com/file/d/1JDAebC4ugOmB8wGEPuZv9HrD73fArE3n/view"},
+  {sem:"Semester 2", medium:"Tamil", title:"BD2SM Unit-2 TAM", file:"https://drive.google.com/file/d/1eXj38dX9zWfxNgiKM6un5EfMQKJ-H8U9/view"},
+  {sem:"Semester 2", medium:"Tamil", title:"BD2SM Unit-3 TAM", file:"https://drive.google.com/file/d/1LUsdBuw2qw__wkt06cwT1pUpNkq_katW/view"},
+  {sem:"Semester 2", medium:"Tamil", title:"BD2SM Unit-4 TAM", file:"https://drive.google.com/file/d/1utCmYZrYgNg4MMtuv6SAjlPPMi9NtE2P/view"},
+  {sem:"Semester 2", medium:"Tamil", title:"BD2SM Unit-5 TAM", file:"https://drive.google.com/file/d/1KMXCDiQ_881BAlD5VRZl10OlyzCzYMGo/view"},
 
-/* ================= CORE SUBJECTS ================= */
-
-/* BD1CE */
-{type:"core", sem:"Semester 1", medium:"English", title:"BD1CE Unit 1 ENG", file:"BD1CE Unit-1 ENG.pdf"},
-{type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1CE Unit 1 TAM", file:"BD1CE Unit-1 TAM.pdf"},
-{type:"core", sem:"Semester 1", medium:"English", title:"BD1CE Unit 2 ENG", file:"BD1CE Unit-2 ENG.pdf"},
-{type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1CE Unit 2 TAM", file:"BD1CE Unit-2 TAM.pdf"},
-{type:"core", sem:"Semester 1", medium:"English", title:"BD1CE Unit 3 ENG", file:"BD1CE Unit-3 ENG.pdf"},
-{type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1CE Unit 3 TAM", file:"BD1CE Unit-3 TAM.pdf"},
-{type:"core", sem:"Semester 1", medium:"English", title:"BD1CE Unit 4 ENG", file:"BD1CE Unit-4 ENG.pdf"},
-{type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1CE Unit 4 TAM", file:"BD1CE Unit-4 TAM.pdf"},
-{type:"core", sem:"Semester 1", medium:"English", title:"BD1CE Unit 5 ENG", file:"BD1CE Unit-5 ENG.pdf"},
-{type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1CE Unit 5 TAM", file:"BD1CE Unit-5 TAM.pdf"},
-{type:"core", sem:"Semester 1", medium:"English", title:"BD1CE Unit 6 ENG", file:"BD1CE Unit-6 ENG.pdf"},
-{type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1CE Unit 6 TAM", file:"BD1CE Unit-6 TAM.pdf"},
-{type:"core", sem:"Semester 1", medium:"English", title:"BD1CE Unit 7 ENG", file:"BD1CE Unit-7 ENG.pdf"},
-{type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1CE Unit 7 TAM", file:"BD1CE Unit-7 TAM.pdf"},
-
-/* BD1EP */
-{type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1EP Unit 1 TAM", file:"BD1EP Unit-1 TAM.pdf"},
-{type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1EP Unit 1 TAM (Alt)", file:"BD1EP Unit-1 TAM(1).pdf"},
-{type:"core", sem:"Semester 1", medium:"English", title:"BD1EP Unit 2 ENG", file:"BD1EP Unit-2 ENG.pdf"},
-{type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1EP Unit 2 TAM", file:"BD1EP Unit-2 TAM.pdf"},
-{type:"core", sem:"Semester 1", medium:"English", title:"BD1EP Unit 3 ENG", file:"BD1EP Unit-3 ENG.pdf"},
-{type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1EP Unit 3 TAM", file:"BD1EP Unit-3 TAM.pdf"},
-{type:"core", sem:"Semester 1", medium:"English", title:"BD1EP Unit 4 ENG", file:"BD1EP Unit-4 ENG.pdf"},
-{type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1EP Unit 4 TAM", file:"BD1EP Unit-4 TAM.pdf"},
-{type:"core", sem:"Semester 1", medium:"English", title:"BD1EP Unit 5 ENG", file:"BD1EP Unit-5 ENG.pdf"},
-{type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1EP Unit 5 TAM", file:"BD1EP Unit-5 TAM.pdf"},
-
-/* BD1LC */
-{type:"core", sem:"Semester 1", medium:"English", title:"BD1LC Unit 1 ENG", file:"BD1LC Unit-1 ENG.pdf"},
-{type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1LC Unit 1 TAM", file:"BD1LC Unit-1 TAM.pdf"},
-{type:"core", sem:"Semester 1", medium:"English", title:"BD1LC Unit 2 ENG", file:"BD1LC Unit-2 ENG.pdf"},
-{type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1LC Unit 2 TAM", file:"BD1LC Unit-2 TAM.pdf"},
-{type:"core", sem:"Semester 1", medium:"English", title:"BD1LC Unit 3 ENG", file:"BD1LC Unit-3 ENG.pdf"},
-{type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1LC Unit 3 TAM", file:"BD1LC Unit-3 TAM.pdf"},
-{type:"core", sem:"Semester 1", medium:"English", title:"BD1LC Unit 4 ENG", file:"BD1LC Unit-4 ENG.pdf"},
-{type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1LC Unit 4 TAM", file:"BD1LC Unit-4 TAM.pdf"},
-{type:"core", sem:"Semester 1", medium:"English", title:"BD1LC Unit 5 ENG", file:"BD1LC Unit-5 ENG.pdf"},
-{type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1LC Unit 5 TAM", file:"BD1LC Unit-5 TAM.pdf"},
-
-/* BD1TL */
-{type:"core", sem:"Semester 1", medium:"English", title:"BD1TL Unit 1 ENG", file:"BD1TL Unit-1 ENG.pdf"},
-{type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1TL Unit 1 TAM", file:"BD1TL Unit-1 TAM.pdf"},
-{type:"core", sem:"Semester 1", medium:"English", title:"BD1TL Unit 2 ENG", file:"BD1TL Unit-2 ENG.pdf"},
-{type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1TL Unit 2 TAM", file:"BD1TL Unit-2 TAM.pdf"},
-{type:"core", sem:"Semester 1", medium:"English", title:"BD1TL Unit 3 ENG", file:"BD1TL Unit-3 ENG.pdf"},
-{type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1TL Unit 3 TAM", file:"BD1TL Unit-3 TAM.pdf"},
-{type:"core", sem:"Semester 1", medium:"English", title:"BD1TL Unit 4 ENG", file:"BD1TL Unit-4 ENG.pdf"},
-{type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1TL Unit 4 TAM", file:"BD1TL Unit-4 TAM.pdf"},
-{type:"core", sem:"Semester 1", medium:"English", title:"BD1TL Unit 5 ENG", file:"BD1TL Unit-5 ENG.pdf"},
-{type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1TL Unit 5 TAM", file:"BD1TL Unit-5 TAM.pdf"},
-
-/* ================= PEDAGOGY SUBJECTS ================= */
-
-/* BD1TA (Tamil) */
-{type:"pedagogy", pedagogy:"Tamil", sem:"Semester 1", medium:"Tamil", title:"BD1TA Unit 1 TAM", file:"BD1TA Unit-1 TAM.pdf"},
-{type:"pedagogy", pedagogy:"Tamil", sem:"Semester 1", medium:"Tamil", title:"BD1TA Unit 2 TAM", file:"BD1TA Unit-2 TAM.pdf"},
-{type:"pedagogy", pedagogy:"Tamil", sem:"Semester 1", medium:"Tamil", title:"BD1TA Unit 3 TAM", file:"BD1TA Unit-3 TAM.pdf"},
-{type:"pedagogy", pedagogy:"Tamil", sem:"Semester 1", medium:"Tamil", title:"BD1TA Unit 4 TAM", file:"BD1TA Unit-4 TAM.pdf"},
-{type:"pedagogy", pedagogy:"Tamil", sem:"Semester 1", medium:"Tamil", title:"BD1TA Unit 5 TAM", file:"BD1TA Unit-5 TAM.pdf"},
-
-/* BD1EN (English) */
-{type:"pedagogy", pedagogy:"English", sem:"Semester 1", medium:"English", title:"BD1EN Unit 1 ENG", file:"BD1EN Unit-1 ENG.pdf"},
-{type:"pedagogy", pedagogy:"English", sem:"Semester 1", medium:"English", title:"BD1EN Unit 2 ENG", file:"BD1EN Unit-2 ENG.pdf"},
-{type:"pedagogy", pedagogy:"English", sem:"Semester 1", medium:"English", title:"BD1EN Unit 3 ENG", file:"BD1EN Unit-3 ENG.pdf"},
-{type:"pedagogy", pedagogy:"English", sem:"Semester 1", medium:"English", title:"BD1EN Unit 4 ENG", file:"BD1EN Unit-4 ENG.pdf"},
-{type:"pedagogy", pedagogy:"English", sem:"Semester 1", medium:"English", title:"BD1EN Unit 5 ENG", file:"BD1EN Unit-5 ENG.pdf"},
-
-/* BD1MA (Maths) */
-{type:"pedagogy", pedagogy:"Maths", sem:"Semester 1", medium:"English", title:"BD1MA Unit 1 ENG", file:"BD1MA Unit-1 ENG.pdf"},
-{type:"pedagogy", pedagogy:"Maths", sem:"Semester 1", medium:"Tamil", title:"BD1MA Unit 1 TAM", file:"BD1MA Unit-1 TAM.pdf"},
-{type:"pedagogy", pedagogy:"Maths", sem:"Semester 1", medium:"English", title:"BD1MA Unit 2 ENG", file:"BD1MA Unit-2 ENG.pdf"},
-{type:"pedagogy", pedagogy:"Maths", sem:"Semester 1", medium:"Tamil", title:"BD1MA Unit 2 TAM", file:"BD1MA Unit-2 TAM.pdf"},
-{type:"pedagogy", pedagogy:"Maths", sem:"Semester 1", medium:"English", title:"BD1MA Unit 3 ENG", file:"BD1MA Unit-3 ENG.pdf"},
-{type:"pedagogy", pedagogy:"Maths", sem:"Semester 1", medium:"Tamil", title:"BD1MA Unit 3 TAM", file:"BD1MA Unit-3 TAM.pdf"},
-{type:"pedagogy", pedagogy:"Maths", sem:"Semester 1", medium:"English", title:"BD1MA Unit 4 ENG", file:"BD1MA Unit-4 ENG.pdf"},
-{type:"pedagogy", pedagogy:"Maths", sem:"Semester 1", medium:"Tamil", title:"BD1MA Unit 4 TAM", file:"BD1MA Unit-4 TAM.pdf"},
-{type:"pedagogy", pedagogy:"Maths", sem:"Semester 1", medium:"English", title:"BD1MA Unit 5 ENG", file:"BD1MA Unit-5 ENG.pdf"},
-{type:"pedagogy", pedagogy:"Maths", sem:"Semester 1", medium:"Tamil", title:"BD1MA Unit 5 TAM", file:"BD1MA Unit-5 TAM.pdf"},
-
-/* BD1PS (Science) */
-{type:"pedagogy", pedagogy:"Physical Science", sem:"Semester 1", medium:"English", title:"BD1PS Unit 1 ENG", file:"BD1PS Unit-1 ENG.pdf"},
-{type:"pedagogy", pedagogy:"Physical Science", sem:"Semester 1", medium:"Tamil", title:"BD1PS Unit 1 TAM", file:"BD1PS Unit-1 TAM.pdf"},
-{type:"pedagogy", pedagogy:"Physical Science", sem:"Semester 1", medium:"English", title:"BD1PS Unit 2 ENG", file:"BD1PS Unit-2 ENG.pdf"},
-{type:"pedagogy", pedagogy:"Physical Science", sem:"Semester 1", medium:"Tamil", title:"BD1PS Unit 2 TAM", file:"BD1PS Unit-2 TAM.pdf"},
-{type:"pedagogy", pedagogy:"Physical Science", sem:"Semester 1", medium:"English", title:"BD1PS Unit 3 ENG", file:"BD1PS Unit-3 ENG.pdf"},
-{type:"pedagogy", pedagogy:"Physical Science", sem:"Semester 1", medium:"Tamil", title:"BD1PS Unit 3 TAM", file:"BD1PS Unit-3 TAM.pdf"},
-{type:"pedagogy", pedagogy:"Physical Science", sem:"Semester 1", medium:"English", title:"BD1PS Unit 4 ENG", file:"BD1PS Unit-4 ENG.pdf"},
-{type:"pedagogy", pedagogy:"Physical Science", sem:"Semester 1", medium:"Tamil", title:"BD1PS Unit 4 TAM", file:"BD1PS Unit-4 TAM.pdf"},
-{type:"pedagogy", pedagogy:"Physical Science", sem:"Semester 1", medium:"English", title:"BD1PS Unit 5 ENG", file:"BD1PS Unit-5 ENG.pdf"},
-{type:"pedagogy", pedagogy:"Physical Science", sem:"Semester 1", medium:"Tamil", title:"BD1PS Unit 5 TAM", file:"BD1PS Unit-5 TAM.pdf"},
-
-/* BD1BS (Biological Science) */
-{type:"pedagogy", pedagogy:"Biological Science", sem:"Semester 1", medium:"English", title:"BD1BS Unit 1 ENG", file:"BD1BS Unit-1 ENG.pdf"},
-{type:"pedagogy", pedagogy:"Biological Science", sem:"Semester 1", medium:"Tamil", title:"BD1BS Unit 1 TAM", file:"BD1BS Unit-1 TAM.pdf"},
-{type:"pedagogy", pedagogy:"Biological Science", sem:"Semester 1", medium:"English", title:"BD1BS Unit 2 ENG", file:"BD1BS Unit-2 ENG.pdf"},
-{type:"pedagogy", pedagogy:"Biological Science", sem:"Semester 1", medium:"Tamil", title:"BD1BS Unit 2 TAM", file:"BD1BS Unit-2 TAM.pdf"},
-{type:"pedagogy", pedagogy:"Biological Science", sem:"Semester 1", medium:"English", title:"BD1BS Unit 3 ENG", file:"BD1BS Unit-3 ENG.pdf"},
-{type:"pedagogy", pedagogy:"Biological Science", sem:"Semester 1", medium:"Tamil", title:"BD1BS Unit 3 TAM", file:"BD1BS Unit-3 TAM.pdf"},
-{type:"pedagogy", pedagogy:"Biological Science", sem:"Semester 1", medium:"English", title:"BD1BS Unit 4 ENG", file:"BD1BS Unit-4 ENG.pdf"},
-{type:"pedagogy", pedagogy:"Biological Science", sem:"Semester 1", medium:"Tamil", title:"BD1BS Unit 4 TAM", file:"BD1BS Unit-4 TAM.pdf"},
-{type:"pedagogy", pedagogy:"Biological Science", sem:"Semester 1", medium:"English", title:"BD1BS Unit 5 ENG", file:"BD1BS Unit-5 ENG.pdf"},
-{type:"pedagogy", pedagogy:"Biological Science", sem:"Semester 1", medium:"Tamil", title:"BD1BS Unit 5 TAM", file:"BD1BS Unit-5 TAM.pdf"},
-
-/* BD1CS (Computer Science) */
-{type:"pedagogy", pedagogy:"Computer Science", sem:"Semester 1", medium:"English", title:"BD1CS Unit 1 ENG", file:"BD1CS Unit-1 ENG.pdf"},
-{type:"pedagogy", pedagogy:"Computer Science", sem:"Semester 1", medium:"Tamil", title:"BD1CS Unit 1 TAM", file:"BD1CS Unit-1 TAM.pdf"},
-{type:"pedagogy", pedagogy:"Computer Science", sem:"Semester 1", medium:"English", title:"BD1CS Unit 2 ENG", file:"BD1CS Unit-2 ENG.pdf"},
-{type:"pedagogy", pedagogy:"Computer Science", sem:"Semester 1", medium:"Tamil", title:"BD1CS Unit 2 TAM", file:"BD1CS Unit-2 TAM.pdf"},
-{type:"pedagogy", pedagogy:"Computer Science", sem:"Semester 1", medium:"English", title:"BD1CS Unit 3 ENG", file:"BD1CS Unit-3 ENG.pdf"},
-{type:"pedagogy", pedagogy:"Computer Science", sem:"Semester 1", medium:"Tamil", title:"BD1CS Unit 3 TAM", file:"BD1CS Unit-3 TAM.pdf"},
-{type:"pedagogy", pedagogy:"Computer Science", sem:"Semester 1", medium:"English", title:"BD1CS Unit 4 ENG", file:"BD1CS Unit-4 ENG.pdf"},
-{type:"pedagogy", pedagogy:"Computer Science", sem:"Semester 1", medium:"Tamil", title:"BD1CS Unit 4 TAM", file:"BD1CS Unit-4 TAM.pdf"},
-{type:"pedagogy", pedagogy:"Computer Science", sem:"Semester 1", medium:"English", title:"BD1CS Unit 5 ENG", file:"BD1CS Unit-5 ENG.pdf"},
-{type:"pedagogy", pedagogy:"Computer Science", sem:"Semester 1", medium:"Tamil", title:"BD1CS Unit 5 TAM", file:"BD1CS Unit-5 TAM.pdf"},
-
-/* BD1HI (Social Science) */
-{type:"pedagogy", pedagogy:"History", sem:"Semester 1", medium:"English", title:"BD1HI Unit 1 ENG", file:"BD1HI Unit-1 ENG.pdf"},
-{type:"pedagogy", pedagogy:"History", sem:"Semester 1", medium:"English", title:"BD1HI Unit 2 ENG", file:"BD1HI Unit-2 ENG.pdf"},
-{type:"pedagogy", pedagogy:"History", sem:"Semester 1", medium:"English", title:"BD1HI Unit 3 ENG", file:"BD1HI Unit-3 ENG.pdf"},
-{type:"pedagogy", pedagogy:"History", sem:"Semester 1", medium:"English", title:"BD1HI Unit 4 ENG", file:"BD1HI Unit-4 ENG.pdf"},
-{type:"pedagogy", pedagogy:"History", sem:"Semester 1", medium:"English", title:"BD1HI Unit 5 ENG", file:"BD1HI Unit-5 ENG.pdf"},
-
-/* BD1CA (Commerce) */
-{type:"pedagogy", pedagogy:"Commerce", sem:"Semester 1", medium:"English", title:"BD1CA Unit 1 ENG", file:"BD1CA Unit-1 ENG.pdf"},
-{type:"pedagogy", pedagogy:"Commerce", sem:"Semester 1", medium:"Tamil", title:"BD1CA Unit 1 TAM", file:"BD1CA Unit-1 TAM.pdf"},
-{type:"pedagogy", pedagogy:"Commerce", sem:"Semester 1", medium:"English", title:"BD1CA Unit 2 ENG", file:"BD1CA Unit-2 ENG.pdf"},
-{type:"pedagogy", pedagogy:"Commerce", sem:"Semester 1", medium:"Tamil", title:"BD1CA Unit 2 TAM", file:"BD1CA Unit-2 TAM.pdf"},
-{type:"pedagogy", pedagogy:"Commerce", sem:"Semester 1", medium:"English", title:"BD1CA Unit 3 ENG", file:"BD1CA Unit-3 ENG.pdf"},
-{type:"pedagogy", pedagogy:"Commerce", sem:"Semester 1", medium:"Tamil", title:"BD1CA Unit 3 TAM", file:"BD1CA Unit-3 TAM.pdf"},
-{type:"pedagogy", pedagogy:"Commerce", sem:"Semester 1", medium:"English", title:"BD1CA Unit 4 ENG", file:"BD1CA Unit-4 ENG.pdf"},
-{type:"pedagogy", pedagogy:"Commerce", sem:"Semester 1", medium:"Tamil", title:"BD1CA Unit 4 TAM", file:"BD1CA Unit-4 TAM.pdf"},
-{type:"pedagogy", pedagogy:"Commerce", sem:"Semester 1", medium:"English", title:"BD1CA Unit 5 ENG", file:"BD1CA Unit-5 ENG.pdf"},
-{type:"pedagogy", pedagogy:"Commerce", sem:"Semester 1", medium:"Tamil", title:"BD1CA Unit 5 TAM", file:"BD1CA Unit-5 TAM.pdf"},
-
-/* ================= SEMESTER 2 CORE ================= */
-
-{type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2EE Unit 1", file:"BD2EE Unit-1.pdf"},
-{type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2EE Unit 2", file:"BD2EE Unit-2.pdf"},
-{type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2EE Unit 3", file:"BD2EE Unit-3.pdf"},
-{type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2EE Unit 4", file:"BD2EE Unit-4.pdf"},
-{type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2EE Unit 5", file:"BD2EE Unit-5.pdf"},
-
-{type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2AL Unit 1", file:"BD2AL Unit-1.pdf"},
-{type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2AL Unit 2", file:"BD2AL Unit-2.pdf"},
-{type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2AL Unit 3", file:"BD2AL Unit-3.pdf"},
-{type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2AL Unit 4", file:"BD2AL Unit-4.pdf"},
-{type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2AL Unit 5", file:"BD2AL Unit-5.pdf"},
-
-{type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2SM Unit 1", file:"BD2SA Unit-1.pdf"},
-{type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2SM Unit 2", file:"BD2SA Unit-2.pdf"},
-{type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2SM Unit 3", file:"BD2SA Unit-3.pdf"},
-{type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2SM Unit 4", file:"BD2SA Unit-4.pdf"},
-{type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2SM Unit 5", file:"BD2SA Unit-5.pdf"},
-
-{type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2CP Unit 1 TAM", file:"BD2CP Unit-1 TAM.pdf"},
-{type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2CP Unit 2 TAM", file:"BD2CP Unit-2 TAM.pdf"},
-{type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2CP Unit 3 TAM", file:"BD2CP Unit-3 TAM.pdf"},
-{type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2CP Unit 4 TAM", file:"BD2CP Unit-4 TAM.pdf"},
-{type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2CP Unit 5 TAM", file:"BD2CP Unit-5 TAM.pdf"},
-
-{type:"core", sem:"Semester 2", medium:"English", title:"BD2EE Unit 1 ENG", file:"BD2EE Unit-1 ENG.pdf"},
-{type:"core", sem:"Semester 2", medium:"English", title:"BD2EE Unit 2 ENG", file:"BD2EE Unit-2 ENG.pdf"},
-{type:"core", sem:"Semester 2", medium:"English", title:"BD2EE Unit 3 ENG", file:"BD2EE Unit-3 ENG.pdf"},
-{type:"core", sem:"Semester 2", medium:"English", title:"BD2EE Unit 4 ENG", file:"BD2EE Unit-4 ENG.pdf"},
-{type:"core", sem:"Semester 2", medium:"English", title:"BD2EE Unit 5 ENG", file:"BD2EE Unit-5 ENG.pdf"},
-
-{type:"core", sem:"Semester 2", medium:"English", title:"BD2AL Unit 1 ENG", file:"BD2AL Unit-1 ENG.pdf"},
-{type:"core", sem:"Semester 2", medium:"English", title:"BD2AL Unit 2 ENG", file:"BD2AL Unit-2 ENG.pdf"},
-{type:"core", sem:"Semester 2", medium:"English", title:"BD2AL Unit 3 ENG", file:"BD2AL Unit-3 ENG.pdf"},
-{type:"core", sem:"Semester 2", medium:"English", title:"BD2AL Unit 4 ENG", file:"BD2AL Unit-4 ENG.pdf"},
-{type:"core", sem:"Semester 2", medium:"English", title:"BD2AL Unit 5 ENG", file:"BD2AL Unit-5 ENG.pdf"},
-
-{type:"core", sem:"Semester 2", medium:"English", title:"BD2SM Unit 1 ENG", file:"BD2SA Unit-1 ENG.pdf"},
-{type:"core", sem:"Semester 2", medium:"English", title:"BD2SM Unit 2 ENG", file:"BD2SA Unit-2 ENG.pdf"},
-{type:"core", sem:"Semester 2", medium:"English", title:"BD2SM Unit 3 ENG", file:"BD2SA Unit-3 ENG.pdf"},
-{type:"core", sem:"Semester 2", medium:"English", title:"BD2SM Unit 4 ENG", file:"BD2SA Unit-4 ENG.pdf"},
-{type:"core", sem:"Semester 2", medium:"English", title:"BD2SM Unit 5 ENG", file:"BD2SA Unit-5 ENG.pdf"},
-
-{type:"core", sem:"Semester 2", medium:"English", title:"BD2CP Unit 1 ENG", file:"BD2CP Unit-1 ENG.pdf"},
-{type:"core", sem:"Semester 2", medium:"English", title:"BD2CP Unit 2 ENG", file:"BD2CP Unit-2 ENG.pdf"},
-{type:"core", sem:"Semester 2", medium:"English", title:"BD2CP Unit 3 ENG", file:"BD2CP Unit-3 ENG.pdf"},
-{type:"core", sem:"Semester 2", medium:"English", title:"BD2CP Unit 4 ENG", file:"BD2CP Unit-4 ENG.pdf"},
-{type:"core", sem:"Semester 2", medium:"English", title:"BD2CP Unit 5 ENG", file:"BD2CP Unit-5 ENG.pdf"}
-
+  // ENGLISH MEDIUM
+  {sem:"Semester 2", medium:"English", title:"BD2AL Unit-1 ENG", file:"https://drive.google.com/file/d/1vVQb1vX28VLydDI75APmiUnZ8aj1x_F5/view"},
+  {sem:"Semester 2", medium:"English", title:"BD2AL Unit-2 ENG", file:"https://drive.google.com/file/d/1i1bAp0Y-pS2gDzCbXizSeNqeaBFBLxMn/view"},
+  {sem:"Semester 2", medium:"English", title:"BD2AL Unit-3 ENG", file:"https://drive.google.com/file/d/1RMlXRg_Np_dEd1gbvv1S_Mjm5WiD4Ntt/view"},
+  {sem:"Semester 2", medium:"English", title:"BD2AL Unit-4 ENG", file:"https://drive.google.com/file/d/1I5I8bXNP0RjHYbQmOUhBKMQsr6wkXl4B/view"},
+  {sem:"Semester 2", medium:"English", title:"BD2AL Unit-5 ENG", file:"https://drive.google.com/file/d/1xRtnVoA4qHk3LR_UuBx7nhpqJ5MLg-iU/view"},
+  {sem:"Semester 2", medium:"English", title:"BD2CR Unit-1 ENG", file:"https://drive.google.com/file/d/1REkfQjVs8KCPq0Ev_kT-jupTnqLyDsOS/view"},
+  {sem:"Semester 2", medium:"English", title:"BD2CR Unit-2 ENG", file:"https://drive.google.com/file/d/1kzLt3hB0UTq-JgwAijPvWiv4WDiJ-5No/view"},
+  {sem:"Semester 2", medium:"English", title:"BD2CR Unit-3 ENG", file:"https://drive.google.com/file/d/1TFIW_842-nStlNVeppOn0ZWlm5sLl0TT/view"},
+  {sem:"Semester 2", medium:"English", title:"BD2CR Unit-4 ENG", file:"https://drive.google.com/file/d/1tG471JsTLXVboDZVP5SJwIEfN22UV22h/view"},
+  {sem:"Semester 2", medium:"English", title:"BD2CR Unit-5 ENG", file:"https://drive.google.com/file/d/1JlqYQyJmFQQhWh9RIzDMGICFDizBfZHu/view"},
+  {sem:"Semester 2", medium:"English", title:"BD2EE Unit-1 ENG", file:"https://drive.google.com/file/d/1D20Gi8YwHNDgVimTnIQ2493_YRT-55b0/view"},
+  {sem:"Semester 2", medium:"English", title:"BD2EE Unit-2 ENG", file:"https://drive.google.com/file/d/1JJQM9E0-Or64f0cVnkYWCp2WNiyXMZo3/view"},
+  {sem:"Semester 2", medium:"English", title:"BD2EE Unit-3 ENG", file:"https://drive.google.com/file/d/1oK4km0PgEkuL2824LLFlnaeTZd_KKRBW/view"},
+  {sem:"Semester 2", medium:"English", title:"BD2EE Unit-4 ENG", file:"https://drive.google.com/file/d/1WWwvs7H0UlLzvqbl05GQ-KQxGgl16V6P/view"},
+  {sem:"Semester 2", medium:"English", title:"BD2EE Unit-5 ENG", file:"https://drive.google.com/file/d/1lF0wulhRBH4NOSURuCTBsMBbEFz4ay9m/view"},
+  {sem:"Semester 2", medium:"English", title:"BD2SM Unit-1 ENG", file:"https://drive.google.com/file/d/1xIdjPbp0J1Q8Dg9qRI3Ad6tL-q2HSjJD/view"},
+  {sem:"Semester 2", medium:"English", title:"BD2SM Unit-2 ENG", file:"https://drive.google.com/file/d/1jSmRJEbeZjJLJkAASGLs7S5KrIVtju5g/view"},
+  {sem:"Semester 2", medium:"English", title:"BD2SM Unit-3 ENG", file:"https://drive.google.com/file/d/1uJXgF0oEOe9UiscOv29j3bvNniWkOyRE/view"},
+  {sem:"Semester 2", medium:"English", title:"BD2SM Unit-4 ENG", file:"https://drive.google.com/file/d/1b88uqqXLWiU580AenD_JTyT_0d6VtLry/view"},
+  {sem:"Semester 2", medium:"English", title:"BD2SM Unit-5 ENG", file:"https://drive.google.com/file/d/1cEeWpt5gw_D3Q7M8G5VF_xfhTpmeWfBO/view"}
 ];
 
-/* ================= LOAD NOTES ================= */
 function loadNotes(){
-
 let user = JSON.parse(localStorage.getItem("user"));
 let list = document.getElementById("noteList");
+if(!user) return;
 
 list.innerHTML = "";
-document.getElementById("semTitle").innerText = user.semester + " Notes";
-
+document.getElementById("semTitle").innerText = user.semester + " Documents";
 let found = false;
 
 books.forEach(b=>{
-
-if(
-b.sem === user.semester &&
-(
-  /* ✅ CORE → FILTER BY MEDIUM */
-  (b.type === "core" && b.medium === user.medium) ||
-
-  /* ✅ PEDAGOGY → FILTER BY BOTH */
-  (
-    b.type === "pedagogy" &&
-    b.pedagogy === user.pedagogy &&
-    b.medium === user.medium
-  )
-)
-){
-addNote(b);
+if(b.sem === user.semester && b.medium === user.medium){
+list.innerHTML += `
+<div class="card">
+  <div class="info-layout">
+    <i class="fa-solid fa-file-pdf" style="color:#e11d48; font-size:18px;"></i>
+    <div>
+      <span>${b.title}</span>
+      <small>Format: GDrive Link</small>
+    </div>
+  </div>
+  <button class="btn" onclick="openDriveLink('${b.file}')">Open</button>
+</div>`;
 found = true;
 }
-
 });
 
 if(!found){
-list.innerHTML = `<div style="text-align:center;margin-top:30px"> Notes Coming soon..</div>`;
+list.innerHTML = `<div style="text-align:center;margin-top:30px;font-size:13px;color:#64748b;">Study guides for your selection are coming up shortly!</div>`;
+}
 }
 
-}
-/* ================= ADD CARD ================= */
-function addNote(b){
-document.getElementById("noteList").innerHTML += `
-<div class="card">
-<div>
-<i class="fa-solid fa-file-pdf" style="color:#e11d48"></i>
-${b.title}
-</div>
-<button class="btn" onclick="openPDF('${b.file}')">Open</button>
-</div>`;
+function openDriveLink(url){
+let loader = document.getElementById("loader");
+loader.style.display = "flex";
+setTimeout(()=>{ 
+loader.style.display = "none";
+window.open(url, '_blank'); 
+}, 750);
 }
 
-/* ================= SEARCH ================= */
 function searchNotes(){
 let s = document.getElementById("search").value.toLowerCase();
-
 document.querySelectorAll("#noteList .card").forEach(c=>{
 c.style.display = c.innerText.toLowerCase().includes(s) ? "flex" : "none";
 });
 }
 
-/* ================= PDF ================= */
-function openPDF(file){
-
-let loader = document.getElementById("loader");
-
-// SHOW LOADER
-loader.style.display = "flex";
-
-let url = "https://aro5683.github.io/B.Ed-Viewer/web/PDFs/" + file;
-let viewerURL = "web/viewer.html?file=" + encodeURIComponent(url);
-
-// REDIRECT
-setTimeout(()=>{
-  window.location.href = viewerURL;
-}, 800);
-
-/* 🔴 AUTO RESET (important fallback) */
-setTimeout(()=>{
-  loader.style.display = "none";
-}, 3000);
-
-}
-/* ================= NAV ================= */
 function showPage(p){
 document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active-tab"));
+
 document.getElementById(p).classList.add("active");
 
-if(p==="notices"){
+if(p === 'homePage') document.getElementById('nav-home').style.fontWeight = "600";
+if(p === 'notesPage') document.getElementById('nav-notes').style.fontWeight = "600";
+if(p === 'noticesPage') {
+document.getElementById('nav-notices').style.fontWeight = "600";
 document.getElementById("badge").style.display="none";
 }
 }
 
-
 async function loadNotices(){
-
 const proxy = "https://corsproxy.io/?";
 const target = "https://www.tnteu.ac.in/notifications.php?nid=5";
-
-console.log("🚀 Starting fetch...");
-
 try{
-
-// STEP 1: FETCH
-let finalURL = proxy + encodeURIComponent(target);
-console.log("🌐 Fetch URL:", finalURL);
-
-let res = await fetch(finalURL);
-console.log("📡 Response status:", res.status);
-
-// STEP 2: GET HTML
+let res = await fetch(proxy + encodeURIComponent(target));
 let html = await res.text();
-console.log("📄 HTML length:", html.length);
-console.log("📄 HTML preview:", html.substring(0,300));
-
-// STEP 3: PARSE
 let doc = new DOMParser().parseFromString(html, "text/html");
-console.log("🧠 DOM parsed");
-
-// STEP 4: SELECT ELEMENTS
 let notices = doc.querySelectorAll(".sectionWrapper ul.list.prim li a");
-
-console.log("🔎 Notices found:", notices.length);
-
-// IF ZERO → show structure debug
-if(notices.length === 0){
-  console.warn("⚠️ No notices found. Checking alternative selectors...");
-
-  console.log("Try 1:", doc.querySelectorAll("ul li a").length);
-  console.log("Try 2:", doc.querySelectorAll(".sectionWrapper a").length);
-  console.log("Try 3:", doc.querySelectorAll("a").length);
-}
-
-// STEP 5: BUILD UI
 let out = "";
-
 notices.forEach((a, i)=>{
-
 if(i >= 10) return;
-
 let title = a.textContent.trim();
 let href = a.getAttribute("href");
-
-console.log(`📌 ${i}`, title, href);
-
-let url = href.startsWith("http")
-? href
-: "https://www.tnteu.ac.in/" + encodeURI(href);
-
+let url = href.startsWith("http") ? href : "https://www.tnteu.ac.in/" + encodeURI(href);
 out += `
 <div class="notice">
-${title}
-<button class="btn"
-onclick="window.open('${url}','_blank')">
-View
-</button>
-</div>
-`;
-
+  <span style="max-width:75%;">${title}</span>
+  <button class="btn" onclick="window.open('${url}','_blank')">View</button>
+</div>`;
 });
-
-// STEP 6: DISPLAY
-document.getElementById("noticeList").innerHTML =
-out || "<div class='notice'>No notifications found</div>";
-
-console.log("✅ DONE");
-
+document.getElementById("noticeList").innerHTML = out || "<div class='notice'>No updates listed at this moment.</div>";
 }catch(err){
-
-console.error("❌ ERROR OCCURRED:", err);
-
-document.getElementById("noticeList").innerHTML =
-"<div class='notice'>Failed to load notifications</div>";
-
+document.getElementById("noticeList").innerHTML = "<div class='notice'>Portal feeds are securely available on your active dashboard view.</div>";
+}
 }
 
-}
-  /* ================= RESALE POPUP ================= */
-
-function openResale(){
-document.getElementById("resalePopup").style.display="flex";
-}
-
-function closeResale(){
-document.getElementById("resalePopup").style.display="none";
-}
-
-/* ================= SEND TO WHATSAPP ================= */
+function openResale(){ document.getElementById("resalePopup").style.display="flex"; }
+function closeResale(){ document.getElementById("resalePopup").style.display="none"; }
 
 function sendResale(){
-
 let name = document.getElementById("bookName").value;
 let author = document.getElementById("author").value;
 let edition = document.getElementById("edition").value;
 let price = document.getElementById("price").value;
-
-if(!name || !author || !edition || !price){
-showPopup("⚠️ Fill all fields");
-return;
-}
-
-/* WHATSAPP MESSAGE */
-let msg =
-`📚 Book Resale Request
-
-Book: ${name}
-Author: ${author}
-Edition: ${edition}
-Price: ₹${price}
-
-I want to sell this book.`;
-
-/* OPEN WHATSAPP */
+if(!name || !author || !edition || !price){ showPopup("⚠️ Please fill out all parameters."); return; }
+let msg = `📚 Book Resale Request\n\nBook: ${name}\nAuthor: ${author}\nEdition: ${edition}\nPrice: ₹${price}\n\nI want to sell this book.`;
 let url = "https://wa.me/919655969516?text=" + encodeURIComponent(msg);
-
-window.open(url);
-
-/* CLOSE POPUP */
+window.open(url, '_blank');
 closeResale();
-
-/* THANK YOU POPUP */
-setTimeout(()=>{
-document.getElementById("thankPopup").style.display="flex";
-},1000);
-
 }
 
-function closeThank(){
-document.getElementById("thankPopup").style.display="none";
-}
-
-/* ================= BUY BOOKS ================= */
-
-const resaleBooks = [
-{
-name:"",
-author:"",
-price:""
-},
-{
-name:"",
-author:"",
-price:""
-}
-];
-
-/* LOAD BUY BOOKS */
+const resaleBooks = [{name:"",author:"",price:""}];
 function loadBuyBooks(){
-
 let container = document.getElementById("buyBooks");
-
-container.innerHTML = "<h3 style='margin-top:20px'>Home</h3><br/>";
-
-resaleBooks.forEach(b=>{
-
-container.innerHTML += `
-
-
-`;
-
+container.innerHTML = "<h3>Available Listings</h3>";
+let counter = 0;
+resaleBooks.forEach(b=>{ 
+if(b.name) { 
+container.innerHTML += `<div class="card"><div><b>${b.name}</b><br><small>${b.author}</small></div><div><span class="price-tag">₹${b.price}</span> <button class="btn" onclick="buyBook('${b.name}','${b.author}','${b.price}')">Buy</button></div></div>`; 
+counter++;
+} 
 });
-
+if(counter === 0) {
+container.innerHTML += "<div class='card'>No books listed for resale currently.</div>";
 }
-
-/* ================= BUY BUTTON ================= */
+}
 
 function buyBook(name,author,price){
-
 let user = JSON.parse(localStorage.getItem("user"));
-
-let msg =
-`📚 Book Purchase Request
-
-Book: ${name}
-Author: ${author}
-Price: ₹${price}
-
-Buyer: ${user?.name || "User"}
-
-I want to buy this book.`;
-
+let msg = `📚 Book Purchase Request\n\nBook: ${name}\nAuthor: ${author}\nPrice: ₹${price}\n\nBuyer: ${user?.name || "User"}\n\nI want to buy this book.`;
 let url = "https://wa.me/919655969516?text=" + encodeURIComponent(msg);
+window.open(url, '_blank');
+}
 
-window.open(url);
+function shareContent() {
+const text = `🎓 *தமிழ்நாட்டில் முதன்முறையாக!*\n\n📚 B.Ed மாணவர்களுக்கு அனைத்து Study Materials ஒரே App-ல்!\n✅ Core Subject Books (Sem 1 & 2)\n📄 Previous Year Questions (PYQ)\n⭐ Important Questions\n📝 Lesson Plan Models\n🔔 TNTEU Circulars\n📱 தமிழ் & ஆங்கிலம் Medium Available\n🔥 100% FREE\n⚠️ Limited Registration Only\n\n👉 இப்போதே பதிவு செய்யுங்கள்:\n*Download here:*\nhttps://bedstudyapp.netlify.app/`;
+if (navigator.share) { navigator.share({ title: "B.Ed Study", text: text, url: "https://bedstudyapp.netlify.app/" }); } 
+else { window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank"); }
 }
 </script>
+
 <script>
-function shareContent() {
-
-  const text = `
-
-🎓 *தமிழ்நாட்டில் முதன்முறையாக!*
-
-📚 B.Ed மாணவர்களுக்கு அனைத்து Study Materials ஒரே App-ல்!
-
-✅ Core Subject Books (Sem 1 & 2)
-📄 Previous Year Questions (PYQ)
-⭐ Important Questions
-📝 Lesson Plan Models
-🔔 TNTEU Circulars
-📱 தமிழ் & ஆங்கிலம் Medium Available
-🔥 100% FREE
-⚠️ Limited Registration Only
-
-👉 இப்போதே பதிவு செய்யுங்கள்:
-*Download here:*
-https://bedstudyapp.netlify.app/`;
-
-  // ✅ Mobile share (best)
-  if (navigator.share) {
-    navigator.share({
-      title: "B.Ed Study",
-      text: text,
-      url: "https://bedstudyapp.netlify.app/"
-    });
-  } 
-  // ✅ Fallback (desktop)
-  else {
-    window.open(
-      "https://wa.me/?text=" + encodeURIComponent(text),
-      "_blank"
-    );
-  }
+// Registers the required service worker for PWA support
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('Service Worker registered!', reg))
+      .catch(err => console.log('Service Worker registration failed: ', err));
+  });
 }
 </script>
 </body>
