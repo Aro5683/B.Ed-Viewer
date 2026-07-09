@@ -651,7 +651,7 @@ body {
 <div id="homePage" class="page">
 
  <div class="card premium home-card">
-        <div>💰 Resale Your Old B.Ed Books</div>
+        <div>💰 Resale Old B.Ed Books</div>
         <button class="btn" onclick="openResale()">Sell Now</button>
     </div>
     <input id="homeSearch" class="search" placeholder="Search prev. question.." onkeyup="searchHomeCards()">
@@ -1262,12 +1262,12 @@ function showPage(p){
         let user = JSON.parse(localStorage.getItem("user"));
         let chosenSem = (user && user.semester) ? user.semester : "Semester 1";
         
-        document.getElementById("qaSubTitle").innerText = `📝 VERIFIED Q&A FOR ${chosenSem.toUpperCase()}`;
+        document.getElementById("qaSubTitle").innerText = ` Q&A FOR ${chosenSem.toUpperCase()}`;
         
         // Define your exact blogger site target locations
         let bloggerUrl = "";
         if(chosenSem === "Semester 1") {
-            bloggerUrl = "https://bedkk.blogspot.com"; // 👈 Your Sem 1 Link
+            bloggerUrl = "https://semester1-questions.blogspot.com"; // 👈 Your Sem 1 Link
         } else {
             bloggerUrl = "https://semester2-questions.blogspot.com"; // 👈 Your Sem 2 Link
         }
