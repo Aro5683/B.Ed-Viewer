@@ -570,6 +570,69 @@ body {
     width: 15px;
     height: 15px;
 }
+
+    /* Full screen overlay container */
+.iframe-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.85);
+    z-index: 99999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* The actual full-screen iframe */
+.iframe-overlay iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Top corner close button */
+.iframe-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    font-size: 30px;
+    font-weight: bold;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    transition: background 0.2s ease;
+    z-index: 100000; /* Stays over the iframe */
+}
+
+.iframe-close-btn:hover {
+    background: #ff1a1a;
+}
+
+/* Animated Loading Spinner */
+.iframe-spinner {
+    position: absolute;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border-left-color: #ffffff;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 </style>
 </head>
 
@@ -1411,27 +1474,59 @@ function closeFullQaArticle() {
 
 async function loadNotices(){
     const target = "https://www.tnteu.ac.in/notifications.php?nid=5";
-    try{
+    try {
         let res = await fetch(PROXY_URL + encodeURIComponent(target));
         let html = await res.text();
         let doc = new DOMParser().parseFromString(html, "text/html");
         let notices = doc.querySelectorAll(".sectionWrapper ul.list.prim li a");
         let out = "";
-        notices.forEach((a, i)=>{
+        
+        notices.forEach((a, i) => {
             if(i >= 10) return;
             let title = a.textContent.trim();
             let href = a.getAttribute("href");
-            let url = href.startsWith("http") ? href : "https://www.tnteu.ac.in/" + encodeURI(href);
+            let rawUrl = href.startsWith("http") ? href : "https://www.tnteu.ac.in/" + encodeURI(href);
+            
+            // Construct the viewer URL using your custom B.Ed-Viewer path
+            let viewerUrl = `${rawUrl}`;
+            
             out += `
             <div class="notice">
               <span style="max-width:75%;">${title}</span>
-              <button class="btn" onclick="openExternalLink('${url}', 'Opening Circular Notice BRIEF...')">View</button>
+              <button class="btn" onclick="openNoticeIframe('${viewerUrl}')">View</button>
             </div>`;
         });
+        
         document.getElementById("noticeList").innerHTML = out || "<div class='notice'><span>No updates listed at this moment.</span></div>";
-    }catch(err){
+    } catch(err) {
         document.getElementById("noticeList").innerHTML = "<div class='notice'><span>Portal feeds are securely available on your active dashboard view.</span></div>";
     }
+}
+
+function openNoticeIframe(viewerUrl) {
+    const overlay = document.createElement('div');
+    overlay.className = 'iframe-overlay';
+
+    overlay.innerHTML = `
+        <div class="iframe-spinner"></div>
+        <button class="iframe-close-btn" aria-label="Close">&times;</button>
+        <iframe src="${viewerUrl}" frameborder="0" style="display:none;"></iframe>
+    `;
+
+    document.body.appendChild(overlay);
+
+    const iframe = overlay.querySelector('iframe');
+    const spinner = overlay.querySelector('.iframe-spinner');
+    const closeBtn = overlay.querySelector('.iframe-close-btn');
+
+    iframe.onload = function() {
+        if (spinner) spinner.style.display = 'none';
+        iframe.style.display = 'block';
+    };
+
+    closeBtn.onclick = function() {
+        document.body.removeChild(overlay);
+    };
 }
 
 function openResale(){ document.getElementById("resalePopup").style.display="flex"; }
