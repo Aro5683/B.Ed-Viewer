@@ -1471,7 +1471,6 @@ function closeFullQaArticle() {
 }
 
 
-
 async function loadNotices(){
     const target = "https://www.tnteu.ac.in/notifications.php?nid=5";
     try {
@@ -1485,15 +1484,13 @@ async function loadNotices(){
             if(i >= 10) return;
             let title = a.textContent.trim();
             let href = a.getAttribute("href");
-            let rawUrl = href.startsWith("http") ? href : "https://www.tnteu.ac.in/" + encodeURI(href);
+            let url = href.startsWith("http") ? href : "https://www.tnteu.ac.in/" + encodeURI(href);
             
-            // Construct the viewer URL using your custom B.Ed-Viewer path
-            let viewerUrl = `${rawUrl}`;
-            
+            // Changed the onclick handler to use our new iframe modal function
             out += `
             <div class="notice">
               <span style="max-width:75%;">${title}</span>
-              <button class="btn" onclick="openNoticeIframe('${viewerUrl}')">View</button>
+              <button class="btn" onclick="openNoticeIframe('${url}')">View</button>
             </div>`;
         });
         
@@ -1503,27 +1500,32 @@ async function loadNotices(){
     }
 }
 
-function openNoticeIframe(viewerUrl) {
+// Helper function to create, show, and manage the full-screen iframe modal
+function openNoticeIframe(url) {
+    // 1. Create the overlay container
     const overlay = document.createElement('div');
     overlay.className = 'iframe-overlay';
 
+    // 2. Add the spinner, the close button, and the iframe
     overlay.innerHTML = `
         <div class="iframe-spinner"></div>
         <button class="iframe-close-btn" aria-label="Close">&times;</button>
-        <iframe src="${viewerUrl}" frameborder="0" style="display:none;"></iframe>
+        <iframe src="${url}" frameborder="0" style="display:none;"></iframe>
     `;
 
     document.body.appendChild(overlay);
 
     const iframe = overlay.querySelector('iframe');
-    const spinner = overlay.querySelector('.iframe-spinner');
+    const spinner = overlay.querySelector('iframe-spinner');
     const closeBtn = overlay.querySelector('.iframe-close-btn');
 
+    // 3. Hide spinner and reveal iframe once it completely loads
     iframe.onload = function() {
         if (spinner) spinner.style.display = 'none';
         iframe.style.display = 'block';
     };
 
+    // 4. Close and clean up the modal when clicking the close button
     closeBtn.onclick = function() {
         document.body.removeChild(overlay);
     };
