@@ -1486,7 +1486,7 @@ async function loadNotices(){
             let href = a.getAttribute("href");
             let url = href.startsWith("http") ? href : "https://www.tnteu.ac.in/" + encodeURI(href);
             
-            // Changed the onclick handler to use our new iframe modal function
+            // Passing the raw URL straight to the click handler
             out += `
             <div class="notice">
               <span style="max-width:75%;">${title}</span>
@@ -1502,11 +1502,9 @@ async function loadNotices(){
 
 // Helper function to create, show, and manage the full-screen iframe modal
 function openNoticeIframe(url) {
-    // 1. Create the overlay container
     const overlay = document.createElement('div');
     overlay.className = 'iframe-overlay';
 
-    // 2. Add the spinner, the close button, and the iframe
     overlay.innerHTML = `
         <div class="iframe-spinner"></div>
         <button class="iframe-close-btn" aria-label="Close">&times;</button>
@@ -1516,21 +1514,19 @@ function openNoticeIframe(url) {
     document.body.appendChild(overlay);
 
     const iframe = overlay.querySelector('iframe');
-    const spinner = overlay.querySelector('iframe-spinner');
+    // Keep this fix: Added the dot (.) so it finds the element correctly
+    const spinner = overlay.querySelector('.iframe-spinner');
     const closeBtn = overlay.querySelector('.iframe-close-btn');
 
-    // 3. Hide spinner and reveal iframe once it completely loads
     iframe.onload = function() {
         if (spinner) spinner.style.display = 'none';
         iframe.style.display = 'block';
     };
 
-    // 4. Close and clean up the modal when clicking the close button
     closeBtn.onclick = function() {
         document.body.removeChild(overlay);
     };
 }
-
 function openResale(){ document.getElementById("resalePopup").style.display="flex"; }
 function closeResale(){ document.getElementById("resalePopup").style.display="none"; }
 
