@@ -1627,18 +1627,6 @@ function sendChatbotRequest() {
 </script>
 
 <script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(registration => {
-        console.log('B.Ed Guru Service Worker registered successfully!', registration.scope);
-      })
-      .catch(error => {
-        console.error('Service Worker registration failed:', error);
-      });
-  });
-}
-
 
 // ==========================================
 // PWA INSTALLATION & GATEKEEPER LOGIC
@@ -1715,5 +1703,18 @@ if (fallbackMsg) {
     }, 4000);
 }
 </script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('sw.js') 
+            .then(registration => {
+              console.log('B.Ed Guru Service Worker registered successfully!', registration.scope);
+            })
+            .catch(error => {
+              console.error('Service Worker registration failed:', error);
+            });
+        });
+      }
+    </script>
 </body>
 </html>
