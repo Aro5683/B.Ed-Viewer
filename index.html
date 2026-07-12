@@ -118,9 +118,9 @@ body {
 
 /* REGISTRATION CONTAINER */
 .register {
-    max-width: 360px;
+    max-width: 300px;
     margin: 30px auto;
-    padding: 30px 24px;
+   
 }
 
 .register h2 {
@@ -619,13 +619,25 @@ body {
 </div>
 
         <!-- This is what they see IMMEDIATELY after clicking install on the website -->
-       <div id="successState" style="display: none; text-align: center;">
-   <br/>
-    <h2>Installing...</h2>
-    <p>Please wait..</p>
-    <div id="countdownBox" style="margin-top: 15px; font-weight: bold; color: #2563eb;">
-        Opening B.Ed Guru App in : </n>
-        <span id="timer">30</span>s
+      <!-- DOWNLOAD & TIMEOUT GATEKEEPER CONTAINER -->
+<div id="successState" style="display: none; text-align: center;">
+    <!-- 1. Immediate Action State (Downloading) -->
+    <div id="downloadingState">
+        <i class="fa fa-spinner fa-spin" style="font-size: 48px; color: #2563eb; margin-bottom: 15px;"></i>
+        <h2>Downloading & Installing App...</h2>
+        <p style="color: #94a3b8;">Please wait while your browser configures the application files in the background.</p>
+    </div>
+
+    <!-- 2. Final Instructional State (Hidden initially, shown after 5 seconds) -->
+    <div id="finalTimerState" style="display: none; margin-top: 20px;">
+        <i class="fa fa-check-circle" style="font-size: 48px; color: #22c55e; margin-bottom: 15px;"></i>
+        <h2>App Registration Successful!</h2>
+        <p>Your platform environment is completely ready.</p>
+    </div>
+
+    <!-- The continuous countdown clock -->
+    <div id="countdownBox" style="margin-top: 20px; font-weight: bold; color: #e2e8f0; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px;">
+        Closing this setup terminal automatically in: <span id="timer" style="color: #3b82f6; font-size: 1.2rem;">30</span>s
     </div>
 </div>
 
@@ -1741,15 +1753,26 @@ if (isStandalone) {
     }
 }
 
-// Function to handle countdown and window closure (NO example.com)
+// Function to start the 30-second countdown with an immediate download indicator
 function startInstallationTimer() {
+    // Save the permanent installation record into local storage data
     localStorage.setItem('pwa_installed_successfully', 'true');
 
+    // Switch views to show our layout container
     if (promptState) promptState.style.display = 'none';
     if (successState) successState.style.display = 'block';
     if (appContent) appContent.style.display = 'none';
+
+    const downloadingState = document.getElementById('downloadingState');
+    const finalTimerState = document.getElementById('finalTimerState');
     
-    let logicalTimeLeft = 10;
+    // After 5 seconds, switch text from "Downloading..." to "App Installed Successfully!"
+    setTimeout(() => {
+        if (downloadingState) downloadingState.style.display = 'none';
+        if (finalTimerState) finalTimerState.style.display = 'block';
+    }, 5000);
+
+    let logicalTimeLeft = 30;
     
     const countdownInterval = setInterval(() => {
         logicalTimeLeft--;
@@ -1761,7 +1784,7 @@ function startInstallationTimer() {
             // Attempt to automatically close the current browser tab
             window.close();
             
-            // SECURITY FALLBACK: If browser blocks window.close(), overwrite screen completely
+            // SECURITY FALLBACK: If browser blocks window.close(), wipe screen completely
             setTimeout(() => {
                 document.body.innerHTML = `
                     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px;">
@@ -1776,20 +1799,6 @@ function startInstallationTimer() {
     }, 1000);
 }
 
-// Deep link action: Forces browser to invoke the standalone app layout matching your domain registration
-if (openAppBtn) {
-    openAppBtn.addEventListener('click', () => {
-        // Pointing to your web origin pushes the device OS to launch the PWA container handler
-        window.location.href = window.location.origin;
-    });
-}
-
-// Catch browser's installation availability event
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-});
-
 // Primary Button Action Event
 if (installBtn) {
     installBtn.addEventListener('click', async () => {
@@ -1798,21 +1807,19 @@ if (installBtn) {
             return;
         }
         
+        // 1. Instantly fire the browser's native download prompt window
         deferredPrompt.prompt();
+        
+        // 2. Wait for user action
         const { outcome } = await deferredPrompt.userChoice;
         
         if (outcome === 'accepted') {
             deferredPrompt = null;
+            // 3. Immediately kick off the downloading sequence and timer display
             startInstallationTimer();
         }
     });
 }
-
-// Global System Event for completed installation
-window.addEventListener('appinstalled', (event) => {
-    deferredPrompt = null;
-    startInstallationTimer();
-});
 </script>
     <script>
       if ('serviceWorker' in navigator) {
