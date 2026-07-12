@@ -587,33 +587,46 @@ body {
     
     <h2>Student Registration</h2>
 
-    <!-- 1. THE GATEKEEPER INSTALL SCREEN -->
-    <!-- This is what the user sees FIRST -->
+    <!-- THE GATEKEEPER INSTALL SCREEN -->
     <div id="installGatekeeper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; padding: 20px; text-align: center; font-family: sans-serif;">
-        <div style="font-size: 64px; margin-bottom: 20px;">📲</div>
-        <h2>Action Required</h2>
-        <p style="color: #666; max-width: 300px; margin-bottom: 30px;">
-            To access the Student Registration Portal, please install the application to your device's home screen.
-        </p>
         
-        <button id="installBtn" style="padding: 15px 30px; font-size: 16px; background-color: #28a745; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
-            Install Registration App
-        </button>
+        <!-- This is what they see at first -->
+        <div id="promptState">
+            <div style="font-size: 64px; margin-bottom: 20px;">📲</div>
+            <h2>Action Required</h2>
+            <p style="color: #666; max-width: 300px; margin-bottom: 30px;">
+                To access the Student Registration Portal, please install the application to your device's home screen.
+            </p>
+            <button id="installBtn" style="padding: 15px 30px; font-size: 16px; background-color: #28a745; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                Install Registration App
+            </button>
+        </div>
+
+        <!-- This is what they see IMMEDIATELY after clicking install on the website -->
+        <div id="successState" style="display: none;">
+            <div style="font-size: 64px; margin-bottom: 20px;">🎉</div>
+            <h2>App Installed Successfully!</h2>
+            <p style="color: #666; max-width: 300px; margin-bottom: 20px;">
+                The portal is now ready. Please close this browser tab and launch the app from your home screen.
+            </p>
+        </div>
 
         <p id="fallbackMsg" style="display: none; margin-top: 20px; color: #007bff; cursor: pointer; text-decoration: underline;">
-            Already installed? Click here to proceed.
+           
         </p>
     </div>
 
-    <!-- 2. YOUR ORIGINAL APP CONTENT -->
-    <!-- This is hidden by default and only shows after install or bypass -->
+    <!-- YOUR ORIGINAL APP CONTENT -->
+    <!-- This will ONLY be seen if opened directly inside the standalone home screen app -->
     <div id="appContent" style="display: none;">
         <div class="input" id="container-name">
             <i class="fa fa-user"></i>
             <input id="name" placeholder="Full Name" oninput="clearError('name')">
         </div>
         <!-- Add your other inputs here -->
-   
+
+
+
 
 
     <div class="input" id="container-gender">
@@ -1632,77 +1645,74 @@ if ('serviceWorker' in navigator) {
 // ==========================================
 let deferredPrompt = null;
 const gatekeeper = document.getElementById('installGatekeeper');
+const promptState = document.getElementById('promptState');
+const successState = document.getElementById('successState');
 const appContent = document.getElementById('appContent');
 const installBtn = document.getElementById('installBtn');
 const fallbackMsg = document.getElementById('fallbackMsg');
 
-// Function to reveal the hidden registration form
-function unlockApp() {
+// Check immediately if the user is ALREADY running the standalone installed app
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+if (isStandalone) {
+    // If running as an installed app, bypass everything and show the registration form instantly
     if (gatekeeper) gatekeeper.style.display = 'none';
     if (appContent) appContent.style.display = 'block';
-}
-
-// Check immediately if the user is ALREADY running the installed app
-if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
-    unlockApp();
-}
-
-// Listen for the browser's PWA install availability prompt
-window.addEventListener('beforeinstallprompt', (e) => {
-    // Prevent the mini-infobar from appearing on mobile
-    e.preventDefault();
-    // Stash the event so it can be triggered later
-    deferredPrompt = e;
-    
-    // Make sure the gatekeeper is visible and form is hidden
+} else {
+    // If viewing from a website browser, force the gatekeeper state
     if (gatekeeper) gatekeeper.style.display = 'flex';
     if (appContent) appContent.style.display = 'none';
+}
+
+// Listen for the browser's PWA install capability prompt
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
 });
 
 // Handle the installation button click action
 if (installBtn) {
     installBtn.addEventListener('click', async () => {
         if (!deferredPrompt) {
-            // If browser isn't ready or doesn't support it, show the fallback link
-            alert("⏳ The browser isn't quite ready to install yet. Make sure you are using Chrome/Edge on an HTTPS connection.");
+            alert("⏳ The browser isn't quite ready to install yet. Make sure you are using Chrome/Edge on a secure connection.");
             if (fallbackMsg) fallbackMsg.style.display = 'block';
             return;
         }
         
-        // Show the browser's native install prompt
         deferredPrompt.prompt();
-        
-        // Wait for the user to respond to the prompt
         const { outcome } = await deferredPrompt.userChoice;
-        console.log(`User response to the install prompt: ${outcome}`);
         
         if (outcome === 'accepted') {
             deferredPrompt = null;
-            unlockApp(); // Instantly reveal the form details
+            // Switch to success instructions. Do NOT reveal the appContent form here!
+            if (promptState) promptState.style.display = 'none';
+            if (successState) successState.style.display = 'block';
+            if (fallbackMsg) fallbackMsg.style.display = 'none';
         }
     });
 }
 
-// Global fallback listener if they successfully complete installation
+// Global backup tracker for successful installation
 window.addEventListener('appinstalled', (event) => {
-    console.log('👍 App was successfully installed.');
     deferredPrompt = null;
-    unlockApp();
+    if (promptState) promptState.style.display = 'none';
+    if (successState) successState.style.display = 'block';
+    if (fallbackMsg) fallbackMsg.style.display = 'none';
 });
 
-// Manual override for browsers/devices that don't support automatic installation (like standard iOS Safari)
+// Emergency fallback link if browser doesn't support PWAs
 if (fallbackMsg) {
     fallbackMsg.addEventListener('click', () => {
-        unlockApp();
+        if (gatekeeper) gatekeeper.style.display = 'none';
+        if (appContent) appContent.style.display = 'block';
     });
     
-    // If the browser doesn't trigger 'beforeinstallprompt' within 3 seconds, offer the manual override link
     setTimeout(() => {
-        if (!deferredPrompt && gatekeeper && gatekeeper.style.display !== 'none') {
+        if (!deferredPrompt && !isStandalone && gatekeeper && gatekeeper.style.display !== 'none') {
             fallbackMsg.style.display = 'block';
-            fallbackMsg.innerText = "Can't install? Tap here to open anyway.";
+            fallbackMsg.innerText = "";
         }
-    }, 3000);
+    }, 4000);
 }
 </script>
 </body>
