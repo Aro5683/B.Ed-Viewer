@@ -1710,7 +1710,7 @@ if (fallbackMsg) {
     setTimeout(() => {
         if (!deferredPrompt && !isStandalone && gatekeeper && gatekeeper.style.display !== 'none') {
             fallbackMsg.style.display = 'block';
-            fallbackMsg.innerText = "";
+            fallbackMsg.innerText = "can't install, Try anyway";
         }
     }, 4000);
 }
