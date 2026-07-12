@@ -1714,6 +1714,9 @@ document.addEventListener('copy', (e) => {
 // ==========================================
 // PWA GATEKEEPER (DEEP LINK & AUTO-CLOSE LOCK)
 // ==========================================
+// ==========================================
+// PWA GATEKEEPER (DEEP LINK & AUTO-CLOSE LOCK)
+// ==========================================
 let deferredPrompt = null;
 const gatekeeper = document.getElementById('installGatekeeper');
 const promptState = document.getElementById('promptState');
@@ -1745,7 +1748,7 @@ if (isStandalone) {
         const text = document.getElementById('gatekeeperText');
         
         if (heading) heading.innerText = "App Already Installed!";
-        if (text) text.innerText = "You have already installed the platform on this device. ";
+        if (text) text.innerText = "You have already installed the platform on this device. Click below to launch it directly.";
         
         // Hide install button, show the direct launch button
         if (installBtn) installBtn.style.display = 'none';
@@ -1753,25 +1756,14 @@ if (isStandalone) {
     }
 }
 
-// Function to start the 30-second countdown with an immediate download indicator
+// Function to handle countdown and window closure (NO example.com)
 function startInstallationTimer() {
-    // Save the permanent installation record into local storage data
     localStorage.setItem('pwa_installed_successfully', 'true');
 
-    // Switch views to show our layout container
     if (promptState) promptState.style.display = 'none';
     if (successState) successState.style.display = 'block';
     if (appContent) appContent.style.display = 'none';
-
-    const downloadingState = document.getElementById('downloadingState');
-    const finalTimerState = document.getElementById('finalTimerState');
     
-    // After 5 seconds, switch text from "Downloading..." to "App Installed Successfully!"
-    setTimeout(() => {
-        if (downloadingState) downloadingState.style.display = 'none';
-        if (finalTimerState) finalTimerState.style.display = 'block';
-    }, 5000);
-
     let logicalTimeLeft = 30;
     
     const countdownInterval = setInterval(() => {
@@ -1784,7 +1776,7 @@ function startInstallationTimer() {
             // Attempt to automatically close the current browser tab
             window.close();
             
-            // SECURITY FALLBACK: If browser blocks window.close(), wipe screen completely
+            // SECURITY FALLBACK: If browser blocks window.close(), overwrite screen completely
             setTimeout(() => {
                 document.body.innerHTML = `
                     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px;">
@@ -1799,6 +1791,20 @@ function startInstallationTimer() {
     }, 1000);
 }
 
+// Deep link action: Forces browser to invoke the standalone app layout matching your domain registration
+if (openAppBtn) {
+    openAppBtn.addEventListener('click', () => {
+        // Pointing to your web origin pushes the device OS to launch the PWA container handler
+        window.location.href = window.location.origin;
+    });
+}
+
+// Catch browser's installation availability event
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+});
+
 // Primary Button Action Event
 if (installBtn) {
     installBtn.addEventListener('click', async () => {
@@ -1807,19 +1813,21 @@ if (installBtn) {
             return;
         }
         
-        // 1. Instantly fire the browser's native download prompt window
         deferredPrompt.prompt();
-        
-        // 2. Wait for user action
         const { outcome } = await deferredPrompt.userChoice;
         
         if (outcome === 'accepted') {
             deferredPrompt = null;
-            // 3. Immediately kick off the downloading sequence and timer display
             startInstallationTimer();
         }
     });
 }
+
+// Global System Event for completed installation
+window.addEventListener('appinstalled', (event) => {
+    deferredPrompt = null;
+    startInstallationTimer();
+});
 </script>
     <script>
       if ('serviceWorker' in navigator) {
