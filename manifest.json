@@ -26,7 +26,7 @@
       "name": "⚠️ Read Before Uninstalling",
       "short_name": "Don't Uninstall🥺",
       "description": "Important notice regarding your registration data",
-      "url": "#",
+      "url": "/dont-uninstall.html",
       "icons": [
         {
           "src": "icon-192.png",
