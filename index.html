@@ -607,16 +607,11 @@ body {
     <div id="installGatekeeper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; padding: 20px; text-align: center; font-family: sans-serif;">
         
         <!-- This is what they see at first -->
-        <div id="promptState">
-            <div style="font-size: 64px; margin-bottom: 20px;">📲</div>
-            <h2>Action Required</h2>
-            <p style="color: #666; max-width: 300px; margin-bottom: 30px;">
-                To access the Student Registration Portal, please install the application to your device's home screen.
-            </p>
-            <button id="installBtn" style="padding: 15px 30px; font-size: 16px; background-color: #28a745; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
-                Install Registration App
-            </button>
-        </div>
+       <div id="promptState" style="text-align: center;">
+    <h2 id="gatekeeperHeading">Install Registration App</h2>
+    <p id="gatekeeperText">You must install our official application to access the registration portal.</p>
+    <button class="primary-btn" id="installBtn">Install Registration App</button>
+</div>
 
         <!-- This is what they see IMMEDIATELY after clicking install on the website -->
        <div id="successState" style="display: none; text-align: center;">
@@ -1652,7 +1647,7 @@ function sendChatbotRequest() {
 document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
         // Blur the entire page content instantly when focus is lost
-        document.body.style.filter = "blur(20px)";
+        document.body.style.filter = "blur(0px)";
     } else {
         // Unblur when they return
         setTimeout(() => {
@@ -1702,7 +1697,7 @@ document.addEventListener('copy', (e) => {
 // PWA INSTALLATION & GATEKEEPER LOGIC
 // ==========================================
 // ==========================================
-// PWA INSTALLATION & GATEKEEPER WITH TIMER
+// PWA GATEKEEPER (STRICT DEVICE-APP LOCK)
 // ==========================================
 let deferredPrompt = null;
 const gatekeeper = document.getElementById('installGatekeeper');
@@ -1713,24 +1708,39 @@ const installBtn = document.getElementById('installBtn');
 const timerDisplay = document.getElementById('timer');
 const countdownBox = document.getElementById('countdownBox');
 
-// Check if the user is CURRENTLY running inside the standalone installed app
+// Check if this browser has a record of a successful installation
+const isAppPermanentlyInstalled = localStorage.getItem('pwa_installed_successfully') === 'true';
+
+// Check if the user is CURRENTLY running inside the standalone installed app environment
 const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
+// ROUTING MATRIX
 if (isStandalone) {
-    // STRICT RULE: Only show the registration portal if they are inside the standalone app
+    // 🟢 ONLY inside the actual app: Unlock the registration form completely
     if (gatekeeper) gatekeeper.style.display = 'none';
     if (appContent) appContent.style.display = 'block';
 } else {
-    // If they are on a standard mobile browser web tab, hide the form completely and force the gatekeeper
+    // 🔴 Inside a standard browser tab: Lock the form completely
     if (gatekeeper) gatekeeper.style.display = 'flex';
     if (appContent) appContent.style.display = 'none';
+    
+    // If they already installed it previously, change the gatekeeper text to reflect that
+    if (isAppPermanentlyInstalled) {
+        const heading = document.getElementById('gatekeeperHeading');
+        const text = document.getElementById('gatekeeperText');
+        if (heading) heading.innerText = "App Already Installed!";
+        if (text) text.innerText = "You have already installed the app. Please close this browser tab and locate the 'B.Ed Guru' icon on your Home Screen to register.";
+    }
 }
 
-// Function to start the 30-second countdown UI transition
-// Function to start the 30-second countdown UI transition and handle redirections
+// Function to handle countdown and redirect transitions
 function startInstallationTimer() {
+    // Mark the browser environment as permanently installed
+    localStorage.setItem('pwa_installed_successfully', 'true');
+
     if (promptState) promptState.style.display = 'none';
     if (successState) successState.style.display = 'block';
+    if (appContent) appContent.style.display = 'none'; // absolute lock
     
     let logicalTimeLeft = 30;
     
@@ -1741,44 +1751,20 @@ function startInstallationTimer() {
         if (logicalTimeLeft <= 0) {
             clearInterval(countdownInterval);
             
-            // 1. Open example.com in a brand new tab
+            // 1. Open destination in new tab
             window.open("https://example.com", "_blank");
             
-            // 2. Attempt to automatically close the current browser tab
+            // 2. Terminate current window context
             window.close();
             
-            // 3. SECURITY FALLBACK: If the browser blocks window.close(), 
-            // dynamically overwrite the page to force the user out of the app interface
+            // 3. Fallback UI overhaul if browser blocks tab self-destruction
             setTimeout(() => {
                 document.body.innerHTML = `
-                    <div style="
-                        display: flex; 
-                        flex-direction: column; 
-                        align-items: center; 
-                        justify-content: center; 
-                        height: 100vh; 
-                        font-family: sans-serif; 
-                        text-align: center; 
-                        background: #0f172a; 
-                        color: #fff; 
-                        padding: 20px;
-                    ">
-                        <i class="fa fa-times-circle" style="font-size: 50px; color: #ef4444; margin-bottom: 20px;"></i>
-                        <h2 style="margin: 0 0 10px 0;">Setup Complete!</h2>
-                        <p style="color: #94a3b8; max-width: 400px; margin: 0 0 20px 0;">
-                            Your new tab has been launched. You can now safely close this specific browser window.
-                        </p>
-                        <button onclick="window.close()" style="
-                            padding: 12px 24px; 
-                            background: #2563eb; 
-                            color: white; 
-                            border: none; 
-                            border-radius: 8px; 
-                            font-weight: 600; 
-                            cursor: pointer;
-                        ">
-                            Close Tab Manually
-                        </button>
+                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px;">
+                        <i class="fa fa-check-circle" style="font-size: 50px; color: #22c55e; margin-bottom: 20px;"></i>
+                        <h2 style="margin: 0 0 10px 0;">Redirected Successfully</h2>
+                        <p style="color: #94a3b8; max-width: 400px; margin: 0 0 20px 0;">Your configuration is complete. Please close this web browser tab and open the application directly from your device.</p>
+                        <button onclick="window.close()" style="padding: 12px 24px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Close Tab Manually</button>
                     </div>
                 `;
             }, 500);
@@ -1786,23 +1772,27 @@ function startInstallationTimer() {
     }, 1000);
 }
 
-// Catch the browser's PWA install banner event
+// Catch browser's installation availability event
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
 });
 
-// Handle the installation button action
+// Primary Button Action Event
 if (installBtn) {
     installBtn.addEventListener('click', async () => {
+        // If they already installed it but clicked it again in browser
+        if (isAppPermanentlyInstalled) {
+            alert("The app is already installed on your device. Please find 'B.Ed Guru' on your home screen.");
+            return;
+        }
+
         if (!deferredPrompt) {
-            alert("⏳ Your browser isn't prompting the installation. If you already installed it, please open it from your Home Screen!");
+            alert("⏳ Your browser isn't prompting the installation right now. If the app is already on your phone, please launch it from your home screen.");
             return;
         }
         
-        // Show the browser's native install pop-up
         deferredPrompt.prompt();
-        
         const { outcome } = await deferredPrompt.userChoice;
         
         if (outcome === 'accepted') {
@@ -1812,10 +1802,9 @@ if (installBtn) {
     });
 }
 
-// Global listener for a completed installation execution loop
+// Global System Event for completed installation
 window.addEventListener('appinstalled', (event) => {
     deferredPrompt = null;
-    if (appContent) appContent.style.display = 'none'; // Lock down portal form in browser
     startInstallationTimer();
 });
 </script>
