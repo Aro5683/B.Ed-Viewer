@@ -619,28 +619,43 @@ body {
 </div>
 
     <!-- STEP 2: STATUS SCREEN (Hidden at First) -->
-    <!-- DOWNLOAD & TIMEOUT GATEKEEPER CONTAINER -->
+<!-- DOWNLOAD & TIMEOUT GATEKEEPER CONTAINER -->
 <div id="successState" style="display: none; text-align: center;">
-    <!-- 1. Immediate Action State (Downloading) -->
+    <!-- 1. Immediate Action State (Downloading via Play Services) -->
     <div id="downloadingState">
         <i class="fa fa-spinner fa-spin" style="font-size: 48px; color: #2563eb; margin-bottom: 15px;"></i>
-        <h2>Downloading & Installing App...</h2>
-        <p style="color: #94a3b8;">Please wait while your browser configures the application files in the background.</p>
+        <h2>Google Play Setup in Progress...</h2>
+        <p style="color: #94a3b8; max-width: 450px; margin: 0 auto 10px auto; line-height: 1.5;">
+            Please wait while Android secures your application files and creates the app icon on your home screen.
+        </p>
+        <p style="color: #e2e8f0; font-weight: 600;">⚠️ Do not close this tab or press back.</p>
     </div>
 
-    <!-- 2. Final Instructional State (Hidden initially, shown after 5 seconds) -->
+  <!-- 2. Final Instructional State (Shown after appinstalled fires) -->
+
     <div id="finalTimerState" style="display: none; margin-top: 20px;">
+
         <i class="fa fa-check-circle" style="font-size: 48px; color: #22c55e; margin-bottom: 15px;"></i>
+
         <h2>App Registration Successful!</h2>
-        <p>Your platform environment is completely ready.</p>
+
+        <p>Dont close the tab</p>
+
     </div>
+
+also make sure your internet connection is good
 
     <!-- The continuous countdown clock -->
-    <div id="countdownBox" style="margin-top: 20px; font-weight: bold; color: #e2e8f0; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px;">
-        Closing this setup terminal automatically in: <span id="timer" style="color: #3b82f6; font-size: 1.2rem;">30</span>s
+
+    <div id="countdownBox" style="margin-top: 20px; font-weight: bold; color: #3d69a3; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px;">
+
+        Closing terminal automatically in: <span id="timer" style="color: #3b82f6; font-size: 1.2rem;">30</span>s
+
     </div>
-</div>
-</div>
+
+</div> 
+
+
     <!-- YOUR ORIGINAL APP CONTENT -->
     <!-- This will ONLY be seen if opened directly inside the standalone home screen app -->
     <div id="appContent" style="display: none;">
@@ -1719,56 +1734,86 @@ const installBtn = document.getElementById('installBtn');
 const openAppBtn = document.getElementById('openAppBtn');
 const timerDisplay = document.getElementById('timer');
 
-// Check if this browser has recorded a successful installation
-const isAppPermanentlyInstalled = localStorage.getItem('pwa_installed_successfully') === 'true';
+// Elements from your HTML
+const downloadingState = document.getElementById('downloadingState');
+const finalTimerState = document.getElementById('finalTimerState');
 
 // Check if the user is CURRENTLY running inside the standalone installed app environment
 const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
-// ROUTING MATRIX
-if (isStandalone) {
-    // 🟢 ONLY inside the actual app: Unlock registration form
-    if (gatekeeper) gatekeeper.style.display = 'none';
-    if (appContent) appContent.style.display = 'block';
-} else {
-    // 🔴 Inside a standard browser tab: Lock form completely
-    if (gatekeeper) gatekeeper.style.display = 'flex';
-    if (appContent) appContent.style.display = 'none';
-    
-    // If they already installed it previously and opened the browser link again
-    if (isAppPermanentlyInstalled) {
-        const heading = document.getElementById('gatekeeperHeading');
-        const text = document.getElementById('gatekeeperText');
+// 💡 NEW RUNTIME ROUTING FUNCTION
+async function runGatekeeperRouting() {
+    if (isStandalone) {
+        // 🟢 ONLY inside the actual app: Unlock registration form
+        if (gatekeeper) gatekeeper.style.display = 'none';
+        if (appContent) appContent.style.display = 'block';
+    } else {
+        // 🔴 Inside a standard browser tab: Lock form completely
+        if (gatekeeper) gatekeeper.style.display = 'flex';
+        if (appContent) appContent.style.display = 'none';
         
-        if (heading) heading.innerText = "App Already Installed!";
-        if (text) text.innerText = "You have already installed the platform on this device. Click below to launch it directly.";
+        let isAppTrulyPresent = false;
         
-        // Hide install button, show the direct launch button
-        if (installBtn) installBtn.style.display = 'none';
-        if (openAppBtn) openAppBtn.style.display = 'block';
+        // 1. Ask the device operating system directly if it has the app
+        if ('getInstalledRelatedApps' in navigator) {
+            try {
+                const relatedApps = await navigator.getInstalledRelatedApps();
+                if (relatedApps.length > 0) {
+                    isAppTrulyPresent = true;
+                } else {
+                    // Clean up stale cache key if they uninstalled it
+                    localStorage.removeItem('pwa_installed_successfully');
+                }
+            } catch (err) {
+                console.error('Failed to query device state:', err);
+                isAppTrulyPresent = localStorage.getItem('pwa_installed_successfully') === 'true';
+            }
+        } else {
+            // Fallback for older browsers
+            isAppTrulyPresent = localStorage.getItem('pwa_installed_successfully') === 'true';
+        }
+        
+        // 2. Adjust view based on actual verified status
+        if (isAppTrulyPresent) {
+            const heading = document.getElementById('gatekeeperHeading');
+            const text = document.getElementById('gatekeeperText');
+            
+            if (heading) heading.innerText = "App Already Installed!";
+            if (text) text.innerText = "You have already installed the App on this device.";
+            
+            // Hide install button, show the direct launch button
+            if (installBtn) installBtn.style.display = 'none';
+            if (openAppBtn) openAppBtn.style.display = 'block';
+        } else {
+            // Force reset back to default prompt view if they uninstalled it
+            const heading = document.getElementById('gatekeeperHeading');
+            const text = document.getElementById('gatekeeperText');
+            
+            if (heading) heading.innerText = "Welcome ..";
+            if (text) text.innerText = "You must install our official application to access the registration portal.";
+            
+            if (installBtn) installBtn.style.display = 'block';
+            if (openAppBtn) openAppBtn.style.display = 'none';
+        }
     }
 }
 
-// Function to handle countdown and window closure (NO example.com)
-// Function to start the 30-second countdown with an immediate download indicator
+// Fire routing check right away
+runGatekeeperRouting();
+
+// Function to handle countdown and window closure
 function startInstallationTimer() {
-    // Save the permanent installation record into local storage data
     localStorage.setItem('pwa_installed_successfully', 'true');
 
-    // Switch views to show our layout container
+    // Hide the initial prompt screen, show the success area
     if (promptState) promptState.style.display = 'none';
     if (successState) successState.style.display = 'block';
     if (appContent) appContent.style.display = 'none';
-
-    const downloadingState = document.getElementById('downloadingState');
-    const finalTimerState = document.getElementById('finalTimerState');
     
-    // After 5 seconds, switch text from "Downloading..." to "App Installed Successfully!"
-    setTimeout(() => {
-        if (downloadingState) downloadingState.style.display = 'none';
-        if (finalTimerState) finalTimerState.style.display = 'block';
-    }, 5000);
-
+    // Switch states from "Downloading" to "Success Checkmark"
+    if (downloadingState) downloadingState.style.display = 'none';
+    if (finalTimerState) finalTimerState.style.display = 'block';
+    
     let logicalTimeLeft = 30;
     
     const countdownInterval = setInterval(() => {
@@ -1777,15 +1822,12 @@ function startInstallationTimer() {
         
         if (logicalTimeLeft <= 0) {
             clearInterval(countdownInterval);
-            
-            // Attempt to automatically close the current browser tab
             window.close();
             
-            // SECURITY FALLBACK: If browser blocks window.close(), wipe screen completely
+            // SECURITY FALLBACK
             setTimeout(() => {
                 document.body.innerHTML = `
                     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px;">
-                        <i class="fa fa-times-circle" style="font-size: 50px; color: #ef4444; margin-bottom: 20px;"></i>
                         <h2 style="margin: 0 0 10px 0;">Setup Completed!</h2>
                         <p style="color: #94a3b8; max-width: 400px; margin: 0 0 20px 0;">Please close this browser tab manually and tap the 'B.Ed Guru' icon on your device home screen.</p>
                         <button onclick="window.close()" style="padding: 12px 24px; background: #ef4444; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Close Web Tab</button>
@@ -1796,24 +1838,39 @@ function startInstallationTimer() {
     }, 1000);
 }
 
+// Deep link action
+if (openAppBtn) {
+    openAppBtn.addEventListener('click', () => {
+        window.location.href = window.location.origin;
+    });
+}
+
+// Catch browser's installation availability event
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+});
+
 // Primary Button Action Event
 if (installBtn) {
     installBtn.addEventListener('click', async () => {
         if (!deferredPrompt) {
-            alert("⏳ Your browser isn't prompting the installation right now. If the app is already on your phone, click 'Open B.Ed Guru App'.");
+            alert("⏳ If the app is already on your phone, click 'Open B.Ed Guru App'.");
             return;
         }
         
-        // 1. Instantly fire the browser's native download prompt window
         deferredPrompt.prompt();
-        
-        // 2. Wait for user action
         const { outcome } = await deferredPrompt.userChoice;
         
         if (outcome === 'accepted') {
             deferredPrompt = null;
-            // 3. Immediately kick off the downloading sequence and timer display
-            startInstallationTimer();
+            
+            if (promptState) promptState.style.display = 'none';
+            if (successState) successState.style.display = 'block';
+            if (downloadingState) downloadingState.style.display = 'block';
+            if (finalTimerState) finalTimerState.style.display = 'none';
+            
+            if (timerDisplay) timerDisplay.innerText = '--';
         }
     });
 }
