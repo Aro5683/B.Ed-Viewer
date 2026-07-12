@@ -586,34 +586,36 @@ body {
 <div id="registerPage" class="register glass-panel">
     
     <h2>Student Registration</h2>
-<!-- 1. THE GATEKEEPER INSTALL SCREEN (Shown by default) -->
-<div id="installGatekeeper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; text-align: center; font-family: sans-serif;">
-    <div style="font-size: 64px; margin-bottom: 20px;">📲</div>
-    <h2>Action Required</h2>
-    <p style="color: #666; max-width: 300px; margin-bottom: 30px;">
-        To access the Student Registration Portal, please install the application to your device's home screen.
-    </p>
-    
-    <!-- This button triggers the install prompt -->
-    <button id="installBtn" style="padding: 15px 30px; font-size: 16px; background-color: #28a745; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-        Install Registration App
-    </button>
 
-    <!-- Fallback message for standalone/unsupported modes -->
-    <p id="fallbackMsg" style="display: none; margin-top: 20px; color: #007bff; cursor: pointer; text-decoration: underline;">
-        Already installed? Click here to proceed.
-    </p>
-</div>
+    <!-- 1. THE GATEKEEPER INSTALL SCREEN -->
+    <!-- This is what the user sees FIRST -->
+    <div id="installGatekeeper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; padding: 20px; text-align: center; font-family: sans-serif;">
+        <div style="font-size: 64px; margin-bottom: 20px;">📲</div>
+        <h2>Action Required</h2>
+        <p style="color: #666; max-width: 300px; margin-bottom: 30px;">
+            To access the Student Registration Portal, please install the application to your device's home screen.
+        </p>
+        
+        <button id="installBtn" style="padding: 15px 30px; font-size: 16px; background-color: #28a745; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+            Install Registration App
+        </button>
 
-<!-- 2. YOUR ORIGINAL APP CONTENT (Hidden by default) -->
-<div id="appContent" style="display: none;">
-    <!-- Paste your entire existing form, headings, popups, and inputs here -->
-</div>
-    <div class="input" id="container-name">
-        <i class="fa fa-user"></i>
-        <input id="name" placeholder="Full Name" oninput="clearError('name')">
+        <p id="fallbackMsg" style="display: none; margin-top: 20px; color: #007bff; cursor: pointer; text-decoration: underline;">
+            Already installed? Click here to proceed.
+        </p>
     </div>
 
+    <!-- 2. YOUR ORIGINAL APP CONTENT -->
+    <!-- This is hidden by default and only shows after install or bypass -->
+    <div id="appContent" style="display: none;">
+        <div class="input" id="container-name">
+            <i class="fa fa-user"></i>
+            <input id="name" placeholder="Full Name" oninput="clearError('name')">
+        </div>
+        <!-- Add your other inputs here -->
+    </div>
+
+</div>
     <div class="input" id="container-gender">
         <i class="fa fa-venus-mars"></i>
         <select id="gender" onchange="clearError('gender')">
