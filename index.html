@@ -601,7 +601,7 @@ body {
 
 <div id="registerPage" class="register glass-panel">
     
-    <h2>Student Registration</h2>
+   
 
     <!-- THE GATEKEEPER INSTALL SCREEN -->
     <div id="installGatekeeper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; padding: 20px; text-align: center; font-family: sans-serif;">
@@ -633,7 +633,7 @@ body {
            
         </p>
     </div>
-
+ <h2>Student Registration</h2>
     <!-- YOUR ORIGINAL APP CONTENT -->
     <!-- This will ONLY be seen if opened directly inside the standalone home screen app -->
     <div id="appContent" style="display: none;">
@@ -1662,7 +1662,7 @@ document.addEventListener("visibilitychange", () => {
 });
 
 window.addEventListener("blur", () => {
-    document.body.style.filter = "blur(20px)";
+    document.body.style.filter = "blur(0px)";
 });
 
 window.addEventListener("focus", () => {
