@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bed-guru-cache-v1';
+const CACHE_NAME = 'bed-guru-cache-v1.0';
 
 // Add the exact relative paths to the files you want to load offline
 const ASSETS_TO_CACHE = [
