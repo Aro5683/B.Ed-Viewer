@@ -1631,6 +1631,9 @@ function sendChatbotRequest() {
 // ==========================================
 // PWA INSTALLATION & GATEKEEPER LOGIC
 // ==========================================
+// ==========================================
+// PWA INSTALLATION & GATEKEEPER LOGIC (FIXED)
+// ==========================================
 let deferredPrompt = null;
 const gatekeeper = document.getElementById('installGatekeeper');
 const promptState = document.getElementById('promptState');
@@ -1639,15 +1642,18 @@ const appContent = document.getElementById('appContent');
 const installBtn = document.getElementById('installBtn');
 const fallbackMsg = document.getElementById('fallbackMsg');
 
+// Function to handle layout shifting once installed
+function seamlessAppUnlock() {
+    if (gatekeeper) gatekeeper.style.display = 'none';
+    if (appContent) appContent.style.display = 'block';
+}
+
 // Check immediately if the user is ALREADY running the standalone installed app
 const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
 if (isStandalone) {
-    // If running as an installed app, bypass everything and show the registration form instantly
-    if (gatekeeper) gatekeeper.style.display = 'none';
-    if (appContent) appContent.style.display = 'block';
+    seamlessAppUnlock();
 } else {
-    // If viewing from a website browser, force the gatekeeper state
     if (gatekeeper) gatekeeper.style.display = 'flex';
     if (appContent) appContent.style.display = 'none';
 }
@@ -1656,26 +1662,38 @@ if (isStandalone) {
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
+    // Show fallback message if it was hidden, indicating browser is ready
+    if (fallbackMsg) fallbackMsg.style.display = 'none';
 });
 
 // Handle the installation button click action
 if (installBtn) {
     installBtn.addEventListener('click', async () => {
         if (!deferredPrompt) {
-            alert("⏳ The browser isn't quite ready to install yet. Make sure you are using Chrome/Edge on a secure connection.");
-            if (fallbackMsg) fallbackMsg.style.display = 'block';
+            // Force bypass for debugging or non-supported browsers
+            alert("⏳ Browser installation dialog isn't responding. Unlocking the web portal version for you now...");
+            seamlessAppUnlock();
             return;
         }
         
+        // Show the native browser install prompt
         deferredPrompt.prompt();
+        
+        // Wait for the user to respond to the prompt
         const { outcome } = await deferredPrompt.userChoice;
         
         if (outcome === 'accepted') {
             deferredPrompt = null;
-            // Switch to success instructions. Do NOT reveal the appContent form here!
+            // Switch to success states seamlessly
             if (promptState) promptState.style.display = 'none';
             if (successState) successState.style.display = 'block';
-            if (fallbackMsg) fallbackMsg.style.display = 'none';
+            
+            // OPTIONAL: If you want them to be able to use it instantly without reopening:
+            setTimeout(() => {
+                seamlessAppUnlock();
+            }, 1500); 
+        } else {
+            alert("❌ Installation dismissed. You must install the app to access the registration panel.");
         }
     });
 }
@@ -1685,22 +1703,21 @@ window.addEventListener('appinstalled', (event) => {
     deferredPrompt = null;
     if (promptState) promptState.style.display = 'none';
     if (successState) successState.style.display = 'block';
-    if (fallbackMsg) fallbackMsg.style.display = 'none';
+    seamlessAppUnlock();
 });
 
 // Emergency fallback link if browser doesn't support PWAs
 if (fallbackMsg) {
     fallbackMsg.addEventListener('click', () => {
-        if (gatekeeper) gatekeeper.style.display = 'none';
-        if (appContent) appContent.style.display = 'block';
+        seamlessAppUnlock();
     });
     
     setTimeout(() => {
         if (!deferredPrompt && !isStandalone && gatekeeper && gatekeeper.style.display !== 'none') {
             fallbackMsg.style.display = 'block';
-            fallbackMsg.innerText = "can't install, Try anyway";
+            fallbackMsg.innerText = "Can't install? Try web-version anyway";
         }
-    }, 4000);
+    }, 3000);
 }
 </script>
     <script>
