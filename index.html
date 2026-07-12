@@ -608,7 +608,7 @@ body {
         
         <!-- This is what they see at first -->
       <div id="promptState" style="text-align: center;">
-    <h2 id="gatekeeperHeading">Welcome to B.Ed Guru..</h2>
+    <h2 id="gatekeeperHeading">Welcome ..</h2>
     <p id="gatekeeperText">You must install our official application to access the registration portal.</p><br/>
     
     <!-- This button shows if the app is NOT installed yet -->
@@ -637,7 +637,7 @@ body {
 
     <!-- The continuous countdown clock -->
     <div id="countdownBox" style="margin-top: 20px; font-weight: bold; color: #3d69a3; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px;">
-        Closing this setup terminal automatically in: <span id="timer" style="color: #3b82f6; font-size: 1.2rem;">30</span>s
+        Closing terminal automatically in: <span id="timer" style="color: #3b82f6; font-size: 1.2rem;">30</span>s
     </div>
 </div>
 
@@ -1748,7 +1748,7 @@ if (isStandalone) {
         const text = document.getElementById('gatekeeperText');
         
         if (heading) heading.innerText = "App Already Installed!";
-        if (text) text.innerText = "You have already installed the platform on this device. Click below to launch it directly.";
+        if (text) text.innerText = "You have already installed the App on this device.";
         
         // Hide install button, show the direct launch button
         if (installBtn) installBtn.style.display = 'none';
@@ -1780,7 +1780,7 @@ function startInstallationTimer() {
             setTimeout(() => {
                 document.body.innerHTML = `
                     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px;">
-                        <i class="fa fa-times-circle" style="font-size: 50px; color: #ef4444; margin-bottom: 20px;"></i>
+                       
                         <h2 style="margin: 0 0 10px 0;">Setup Completed!</h2>
                         <p style="color: #94a3b8; max-width: 400px; margin: 0 0 20px 0;">Please close this browser tab manually and tap the 'B.Ed Guru' icon on your device home screen.</p>
                         <button onclick="window.close()" style="padding: 12px 24px; background: #ef4444; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Close Web Tab</button>
