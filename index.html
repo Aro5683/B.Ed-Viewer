@@ -615,7 +615,7 @@ body {
     <button class="primary-btn" id="installBtn" style="display: block; margin: 0 auto;">Install B.Ed Guru App</button>
     
     <!-- This button ONLY shows if they return to the browser AFTER installing -->
-    <button class="primary-btn" id="openAppBtn" style="display: none; margin: 0 auto; background-color: #22c55e;">Open B.Ed Guru App</button>
+   
 </div>
 
         <!-- This is what they see IMMEDIATELY after clicking install on the website -->
@@ -1732,7 +1732,7 @@ if (isStandalone) {
         const text = document.getElementById('gatekeeperText');
         
         if (heading) heading.innerText = "App Already Installed!";
-        if (text) text.innerText = "You have already installed the platform on this device. Click below to launch it directly.";
+        if (text) text.innerText = "You have already installed the platform on this device. ";
         
         // Hide install button, show the direct launch button
         if (installBtn) installBtn.style.display = 'none';
