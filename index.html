@@ -620,15 +620,19 @@ body {
 
         <!-- This is what they see IMMEDIATELY after clicking install on the website -->
       <!-- DOWNLOAD & TIMEOUT GATEKEEPER CONTAINER -->
+<!-- DOWNLOAD & TIMEOUT GATEKEEPER CONTAINER -->
 <div id="successState" style="display: none; text-align: center;">
-    <!-- 1. Immediate Action State (Downloading) -->
+    <!-- 1. Immediate Action State (Downloading via Play Services) -->
     <div id="downloadingState">
         <i class="fa fa-spinner fa-spin" style="font-size: 48px; color: #2563eb; margin-bottom: 15px;"></i>
-        <h2>Downloading & Installing App...</h2>
-        <p style="color: #94a3b8;">Please wait while your browser configures the application files in the background.</p>
+        <h2>Google Play Setup in Progress...</h2>
+        <p style="color: #94a3b8; max-width: 450px; margin: 0 auto 10px auto; line-height: 1.5;">
+            Please wait while Android secures your application files and creates the app icon on your home screen.
+        </p>
+        <p style="color: #e2e8f0; font-weight: 600;">⚠️ Do not close this tab or press back.</p>
     </div>
 
-    <!-- 2. Final Instructional State (Hidden initially, shown after 5 seconds) -->
+    <!-- 2. Final Instructional State (Shown after appinstalled fires) -->
     <div id="finalTimerState" style="display: none; margin-top: 20px;">
         <i class="fa fa-check-circle" style="font-size: 48px; color: #22c55e; margin-bottom: 15px;"></i>
         <h2>App Registration Successful!</h2>
