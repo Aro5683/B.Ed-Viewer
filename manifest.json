@@ -24,9 +24,9 @@
   "shortcuts": [
     {
       "name": "⚠️ Read Before Uninstalling",
-      "short_name": "Don't Uninstall",
+      "short_name": "Don't Uninstall🥺",
       "description": "Important notice regarding your registration data",
-      "url": "/dont-uninstall.html",
+      "url": "#",
       "icons": [
         {
           "src": "icon-192.png",
