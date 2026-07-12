@@ -1692,7 +1692,7 @@ document.addEventListener('copy', (e) => {
 <script>
 
 // ==========================================
-// PWA GATEKEEPER (ULTRA-SIMPLE VERSION)
+// PWA GATEKEEPER (SIMPLE WITH INSTALLED CHECK)
 // ==========================================
 let deferredPrompt = null;
 
@@ -1702,12 +1702,37 @@ window.addEventListener('beforeinstallprompt', (e) => {
     deferredPrompt = e;
 });
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
     const promptState = document.getElementById('promptState');
     const successState = document.getElementById('successState');
     const installBtn = document.getElementById('installBtn');
     const timerDisplay = document.getElementById('timer');
+    const gatekeeperHeading = document.getElementById('gatekeeperHeading');
+    const gatekeeperText = document.getElementById('gatekeeperText');
 
+    // 1. CHECK IF ALREADY INSTALLED ON PAGE LOAD
+    let isAppInstalled = localStorage.getItem('pwa_installed_successfully') === 'true';
+
+    if ('getInstalledRelatedApps' in navigator) {
+        try {
+            const relatedApps = await navigator.getInstalledRelatedApps();
+            if (relatedApps.length > 0) {
+                isAppInstalled = true;
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    // If already installed, update text and hide the install button immediately
+    if (isAppInstalled) {
+        if (gatekeeperHeading) gatekeeperHeading.innerText = "App Already Installed!";
+        if (gatekeeperText) gatekeeperText.innerText = "You have already installed the B.Ed Guru App on this device.";
+        if (installBtn) installBtn.style.display = 'none';
+        return; // Stop execution here
+    }
+
+    // 2. HANDLE INSTALLATION BUTTON CLICK
     if (installBtn) {
         installBtn.addEventListener('click', async () => {
             if (!deferredPrompt) {
@@ -1715,13 +1740,12 @@ window.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
-            // Trigger the native browser installation popup
             deferredPrompt.prompt();
             const { outcome } = await deferredPrompt.userChoice;
             
-            // If the user confirms installation in the popup
             if (outcome === 'accepted') {
                 deferredPrompt = null;
+                localStorage.setItem('pwa_installed_successfully', 'true');
                 
                 // Toggle view states instantly
                 if (promptState) promptState.style.display = 'none';
@@ -1737,7 +1761,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     
                     if (timeLeft <= 0) {
                         clearInterval(countdown);
-                        window.close(); // Attempt to close the web tab
+                        window.close();
                     }
                 }, 1000);
             }
