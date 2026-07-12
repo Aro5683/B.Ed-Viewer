@@ -1715,9 +1715,6 @@ document.addEventListener('copy', (e) => {
 // ==========================================
 // PWA GATEKEEPER (DEEP LINK & AUTO-CLOSE LOCK)
 // ==========================================
-// ==========================================
-// PWA GATEKEEPER (DEEP LINK & AUTO-CLOSE LOCK)
-// ==========================================
 let deferredPrompt = null;
 const gatekeeper = document.getElementById('installGatekeeper');
 const promptState = document.getElementById('promptState');
@@ -1726,6 +1723,10 @@ const appContent = document.getElementById('appContent');
 const installBtn = document.getElementById('installBtn');
 const openAppBtn = document.getElementById('openAppBtn');
 const timerDisplay = document.getElementById('timer');
+
+// Elements from your new HTML
+const downloadingState = document.getElementById('downloadingState');
+const finalTimerState = document.getElementById('finalTimerState');
 
 // Check if this browser has recorded a successful installation
 const isAppPermanentlyInstalled = localStorage.getItem('pwa_installed_successfully') === 'true';
@@ -1757,13 +1758,18 @@ if (isStandalone) {
     }
 }
 
-// Function to handle countdown and window closure (NO example.com)
+// Function to handle countdown and window closure
 function startInstallationTimer() {
     localStorage.setItem('pwa_installed_successfully', 'true');
 
+    // Hide the initial prompt screen, show the success area
     if (promptState) promptState.style.display = 'none';
     if (successState) successState.style.display = 'block';
     if (appContent) appContent.style.display = 'none';
+    
+    // 💡 NEW LOGIC: Switch states from "Downloading" to "Success Checkmark"
+    if (downloadingState) downloadingState.style.display = 'none';
+    if (finalTimerState) finalTimerState.style.display = 'block';
     
     let logicalTimeLeft = 30;
     
@@ -1781,7 +1787,6 @@ function startInstallationTimer() {
             setTimeout(() => {
                 document.body.innerHTML = `
                     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px;">
-                       
                         <h2 style="margin: 0 0 10px 0;">Setup Completed!</h2>
                         <p style="color: #94a3b8; max-width: 400px; margin: 0 0 20px 0;">Please close this browser tab manually and tap the 'B.Ed Guru' icon on your device home screen.</p>
                         <button onclick="window.close()" style="padding: 12px 24px; background: #ef4444; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Close Web Tab</button>
@@ -1792,10 +1797,9 @@ function startInstallationTimer() {
     }, 1000);
 }
 
-// Deep link action: Forces browser to invoke the standalone app layout matching your domain registration
+// Deep link action
 if (openAppBtn) {
     openAppBtn.addEventListener('click', () => {
-        // Pointing to your web origin pushes the device OS to launch the PWA container handler
         window.location.href = window.location.origin;
     });
 }
@@ -1819,7 +1823,17 @@ if (installBtn) {
         
         if (outcome === 'accepted') {
             deferredPrompt = null;
-            startInstallationTimer();
+            
+            // 💡 NEW FEEDBACK LOOP: 
+            // The user clicked "Install" on the browser popup. Change the screen to 
+            // your "Downloading..." layout instantly so they know something is happening!
+            if (promptState) promptState.style.display = 'none';
+            if (successState) successState.style.display = 'block';
+            if (downloadingState) downloadingState.style.display = 'block';
+            if (finalTimerState) finalTimerState.style.display = 'none';
+            
+            // Freeze the timer box visually until the installation finishes completely
+            if (timerDisplay) timerDisplay.innerText = '--';
         }
     });
 }
@@ -1827,32 +1841,46 @@ if (installBtn) {
 // Global System Event for completed installation
 window.addEventListener('appinstalled', (event) => {
     deferredPrompt = null;
+    // Download completely finished! Switch to checkmark layout and start the 30s clock
     startInstallationTimer();
 });
 </script>
     <script>
-   if ('serviceWorker' in navigator) {
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js') 
+      .then(registration => {
+        console.log('B.Ed Guru Service Worker registered successfully!', registration.scope);
+        
+        // Check if the app is already installed right after successful registration
+        checkIfAppInstalled();
+      })
+      .catch(error => {
+        console.error('Service Worker registration failed:', error);
+      });
+  });
+}
 
-        window.addEventListener('load', () => {
+// Separate function to keep your registration code completely untouched and clean
+async function checkIfAppInstalled() {
+  const installBtn = document.getElementById('install-btn');
+  const statusMsg = document.getElementById('install-status-msg');
 
-          navigator.serviceWorker.register('sw.js') 
-
-            .then(registration => {
-
-              console.log('B.Ed Guru Service Worker registered successfully!', registration.scope);
-
-            })
-
-            .catch(error => {
-
-              console.error('Service Worker registration failed:', error);
-
-            });
-
-        });
-
-      } 
-
+  if ('getInstalledRelatedApps' in navigator) {
+    try {
+      const relatedApps = await navigator.getInstalledRelatedApps();
+      if (relatedApps.length > 0) {
+        if (installBtn) installBtn.style.display = 'none';
+        if (statusMsg) {
+          statusMsg.style.display = 'block';
+          statusMsg.innerText = 'B.Ed Guru is already installed on your device! 🎉';
+        }
+      }
+    } catch (err) {
+      console.error('Failed to check installed apps:', err);
+    }
+  }
+}
 
     </script>
 </body>
