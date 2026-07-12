@@ -35,6 +35,22 @@
     font-family: 'Poppins', sans-serif;
 }
 
+/* Disable text selection and image dragging entirely */
+body {
+    -webkit-touch-callout: none; /* iOS Safari long-press */
+    -webkit-user-select: none;   /* Safari */
+    -khtml-user-select: none;     /* Konqueror HTML */
+    -moz-user-select: none;        /* Firefox */
+    -ms-user-select: none;         /* Internet Explorer/Edge */
+    user-select: none;             /* Non-prefixed version, currently supported by Chrome, Opera and Edge */
+}
+
+img {
+    pointer-events: none;
+    -webkit-user-drag: none;
+}
+
+    
 body {
     background: linear-gradient(135deg, #e0f2fe 0%, #cce0ff 40%, #e0e7ff 100%);
     background-attachment: fixed;
@@ -604,9 +620,9 @@ body {
 
         <!-- This is what they see IMMEDIATELY after clicking install on the website -->
        <div id="successState" style="display: none; text-align: center;">
-    <i class="fa fa-check-circle" style="font-size: 48px; color: #22c55e;"></i>
+    <i class="fa fa-check-circle" style="font-size: 48px; color: #22c55e;"></i><br/>
     <h2>App Installed Successfully!</h2>
-    <p>Please close this browser tab.</p>
+    <p>Please wait..</p>
     <div id="countdownBox" style="margin-top: 15px; font-weight: bold; color: #2563eb;">
         Opening registration portal environment in: </n>
         <span id="timer">30</span>s
@@ -825,8 +841,8 @@ body {
         <h3>Opening Google Drive</h3>
         
         <ul style="font-size:13px; color:var(--text-muted); margin:14px 0 18px 0; line-height:1.6; font-weight:500; text-align:left; padding-left:20px;">
-            <li style="margin-bottom: 6px;">Please use the same Google Account for every PDF to avoid permission issues.</li>
-            <li>Loading large PDFs can take up to 2 minutes depending on your network connection.</li>
+            <li style="margin-bottom: 6px;">Please use the same Google Account for every PDF.</li>
+            <li>Loading large PDFs can take up to 2 minutes.</li>
         </ul>
         
         <button id="gdriveConfirmBtn" style="margin-top:0;">OK</button>
@@ -1626,6 +1642,58 @@ function sendChatbotRequest() {
         document.getElementById("chatbotSuccessModal").style.display = "flex";
     }, 400);
 }
+
+
+// ==========================================
+// SCREENSHOT DETERRENT & SECURITY LOGIC
+// ==========================================
+
+// 1. Detect when the user changes windows or pulls down notification shade (common during screenshots)
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+        // Blur the entire page content instantly when focus is lost
+        document.body.style.filter = "blur(20px)";
+    } else {
+        // Unblur when they return
+        setTimeout(() => {
+            document.body.style.filter = "none";
+        }, 300);
+    }
+});
+
+window.addEventListener("blur", () => {
+    document.body.style.filter = "blur(20px)";
+});
+
+window.addEventListener("focus", () => {
+    document.body.style.filter = "none";
+});
+
+// 2. Block Right-Click (Context Menu) and Long-press text selections
+document.addEventListener('contextmenu', event => event.preventDefault());
+
+// 3. Block Keyboard Shortcuts for Screenshots/Saving (PrintScreen, Ctrl+S, Ctrl+P, Inspect Element)
+document.addEventListener('keydown', (e) => {
+    // Block Print Screen key
+    if (e.key === 'PrintScreen') {
+        navigator.clipboard.writeText(""); // Clear clipboard immediately
+        alert("Screenshots are disabled for security reasons.");
+        e.preventDefault();
+    }
+    // Block Ctrl+P (Print), Ctrl+S (Save), Ctrl+Shift+I (Inspect)
+    if (e.ctrlKey && (e.key === 'p' || e.key === 's' || e.key === 'u' || (e.shiftKey && e.key === 'I'))) {
+        e.preventDefault();
+        return false;
+    }
+});
+
+// 4. Wipe clipboard if they try to copy anything
+document.addEventListener('copy', (e) => {
+    e.preventDefault();
+    navigator.clipboard.writeText("[Protected Content]");
+});
+
+    
 </script>
 
 <script>
