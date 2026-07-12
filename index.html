@@ -8,7 +8,7 @@
 
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1e3a8a">
-
+  <link rel="icon" type="image/svg+xml" href="/logo.svg" />
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
@@ -1578,7 +1578,7 @@ function buyBook(name,author,price){
 }
 
 function shareContent() {
-    const text = `🎓 *தமிழ்நாட்டில் முதன்முறையாக!*\n\n📚 B.Ed மாணவர்களுக்கு அனைத்து Study Materials ஒரே App-ல்!\n✅ Core Subject Books (Sem 1 & 2)\n📄 Previous Year Questions (PYQ)\n⭐ Important Questions\n📝 Lesson Plan Models\n🔔 TNTEU Circulars\n📱 தமிழ் & ஆங்கிலம் Medium Available\n🔥 100% FREE\n⚠️ Limited Registration Only\n\n👉 இப்போதே பதிவு செய்யுங்கள்:\n*Download here:*\nhttps://bedstudyapp.netlify.app/`;
+    const text = `🎓 *தமிழ்நாட்டில் முதன்முறையாக!*\n\n📚 B.Ed மாணவர்களுக்கு அனைத்து Study Materials ஒரே App-ல்!\n✅ Core Subject Books (Sem 1 & 2)\n📄 Previous Year Questions (PYQ)\n⭐ Important Questions\n📝 Lesson Plan Models\n🔔 TNTEU Circulars\n📱 தமிழ் & ஆங்கிலம் Medium Available\n🔥 100% FREE\n⚠️ Limited Registration Only\n\n👉 இப்போதே பதிவு செய்யுங்கள்:\n*Download here:*\nhttps://bedguru.netlify.app/`;
     if (navigator.share) { navigator.share({ title: "B.Ed Guru", text: text, url: "https://bedstudyapp.netlify.app/" }); } 
     else { window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank"); }
 }
