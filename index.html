@@ -1724,39 +1724,72 @@ const installBtn = document.getElementById('installBtn');
 const openAppBtn = document.getElementById('openAppBtn');
 const timerDisplay = document.getElementById('timer');
 
-// Elements from your new HTML
+// Elements from your HTML
 const downloadingState = document.getElementById('downloadingState');
 const finalTimerState = document.getElementById('finalTimerState');
-
-// Check if this browser has recorded a successful installation
-const isAppPermanentlyInstalled = localStorage.getItem('pwa_installed_successfully') === 'true';
 
 // Check if the user is CURRENTLY running inside the standalone installed app environment
 const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
-// ROUTING MATRIX
-if (isStandalone) {
-    // 🟢 ONLY inside the actual app: Unlock registration form
-    if (gatekeeper) gatekeeper.style.display = 'none';
-    if (appContent) appContent.style.display = 'block';
-} else {
-    // 🔴 Inside a standard browser tab: Lock form completely
-    if (gatekeeper) gatekeeper.style.display = 'flex';
-    if (appContent) appContent.style.display = 'none';
-    
-    // If they already installed it previously and opened the browser link again
-    if (isAppPermanentlyInstalled) {
-        const heading = document.getElementById('gatekeeperHeading');
-        const text = document.getElementById('gatekeeperText');
+// 💡 NEW RUNTIME ROUTING FUNCTION
+async function runGatekeeperRouting() {
+    if (isStandalone) {
+        // 🟢 ONLY inside the actual app: Unlock registration form
+        if (gatekeeper) gatekeeper.style.display = 'none';
+        if (appContent) appContent.style.display = 'block';
+    } else {
+        // 🔴 Inside a standard browser tab: Lock form completely
+        if (gatekeeper) gatekeeper.style.display = 'flex';
+        if (appContent) appContent.style.display = 'none';
         
-        if (heading) heading.innerText = "App Already Installed!";
-        if (text) text.innerText = "You have already installed the App on this device.";
+        let isAppTrulyPresent = false;
         
-        // Hide install button, show the direct launch button
-        if (installBtn) installBtn.style.display = 'none';
-        if (openAppBtn) openAppBtn.style.display = 'block';
+        // 1. Ask the device operating system directly if it has the app
+        if ('getInstalledRelatedApps' in navigator) {
+            try {
+                const relatedApps = await navigator.getInstalledRelatedApps();
+                if (relatedApps.length > 0) {
+                    isAppTrulyPresent = true;
+                } else {
+                    // Clean up stale cache key if they uninstalled it
+                    localStorage.removeItem('pwa_installed_successfully');
+                }
+            } catch (err) {
+                console.error('Failed to query device state:', err);
+                isAppTrulyPresent = localStorage.getItem('pwa_installed_successfully') === 'true';
+            }
+        } else {
+            // Fallback for older browsers
+            isAppTrulyPresent = localStorage.getItem('pwa_installed_successfully') === 'true';
+        }
+        
+        // 2. Adjust view based on actual verified status
+        if (isAppTrulyPresent) {
+            const heading = document.getElementById('gatekeeperHeading');
+            const text = document.getElementById('gatekeeperText');
+            
+            if (heading) heading.innerText = "App Already Installed!";
+            if (text) text.innerText = "You have already installed the App on this device.";
+            
+            // Hide install button, show the direct launch button
+            if (installBtn) installBtn.style.display = 'none';
+            if (openAppBtn) openAppBtn.style.display = 'block';
+        } else {
+            // Force reset back to default prompt view if they uninstalled it
+            const heading = document.getElementById('gatekeeperHeading');
+            const text = document.getElementById('gatekeeperText');
+            
+            if (heading) heading.innerText = "Welcome ..";
+            if (text) text.innerText = "You must install our official application to access the registration portal.";
+            
+            if (installBtn) installBtn.style.display = 'block';
+            if (openAppBtn) openAppBtn.style.display = 'none';
+        }
     }
 }
+
+// Fire routing check right away
+runGatekeeperRouting();
 
 // Function to handle countdown and window closure
 function startInstallationTimer() {
@@ -1767,7 +1800,7 @@ function startInstallationTimer() {
     if (successState) successState.style.display = 'block';
     if (appContent) appContent.style.display = 'none';
     
-    // 💡 NEW LOGIC: Switch states from "Downloading" to "Success Checkmark"
+    // Switch states from "Downloading" to "Success Checkmark"
     if (downloadingState) downloadingState.style.display = 'none';
     if (finalTimerState) finalTimerState.style.display = 'block';
     
@@ -1779,11 +1812,9 @@ function startInstallationTimer() {
         
         if (logicalTimeLeft <= 0) {
             clearInterval(countdownInterval);
-            
-            // Attempt to automatically close the current browser tab
             window.close();
             
-            // SECURITY FALLBACK: If browser blocks window.close(), overwrite screen completely
+            // SECURITY FALLBACK
             setTimeout(() => {
                 document.body.innerHTML = `
                     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px;">
@@ -1824,15 +1855,11 @@ if (installBtn) {
         if (outcome === 'accepted') {
             deferredPrompt = null;
             
-            // 💡 NEW FEEDBACK LOOP: 
-            // The user clicked "Install" on the browser popup. Change the screen to 
-            // your "Downloading..." layout instantly so they know something is happening!
             if (promptState) promptState.style.display = 'none';
             if (successState) successState.style.display = 'block';
             if (downloadingState) downloadingState.style.display = 'block';
             if (finalTimerState) finalTimerState.style.display = 'none';
             
-            // Freeze the timer box visually until the installation finishes completely
             if (timerDisplay) timerDisplay.innerText = '--';
         }
     });
@@ -1841,7 +1868,6 @@ if (installBtn) {
 // Global System Event for completed installation
 window.addEventListener('appinstalled', (event) => {
     deferredPrompt = null;
-    // Download completely finished! Switch to checkmark layout and start the 30s clock
     startInstallationTimer();
 });
 </script>
