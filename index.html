@@ -1721,7 +1721,6 @@ document.addEventListener('copy', (e) => {
 </script>
 
 <script>
-
 // ==========================================
 // PWA GATEKEEPER (DEEP LINK & AUTO-CLOSE LOCK)
 // ==========================================
@@ -1734,34 +1733,30 @@ const installBtn = document.getElementById('installBtn');
 const openAppBtn = document.getElementById('openAppBtn');
 const timerDisplay = document.getElementById('timer');
 
-// Elements from your HTML
 const downloadingState = document.getElementById('downloadingState');
 const finalTimerState = document.getElementById('finalTimerState');
 
-// Check if the user is CURRENTLY running inside the standalone installed app environment
+// Check if running inside standalone PWA window environment
 const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
-// 💡 NEW RUNTIME ROUTING FUNCTION
 async function runGatekeeperRouting() {
     if (isStandalone) {
-        // 🟢 ONLY inside the actual app: Unlock registration form
+        // 🟢 Inside PWA App: Unlock form display
         if (gatekeeper) gatekeeper.style.display = 'none';
         if (appContent) appContent.style.display = 'block';
     } else {
-        // 🔴 Inside a standard browser tab: Lock form completely
+        // 🔴 Inside Web Browser: Lock form view completely
         if (gatekeeper) gatekeeper.style.display = 'flex';
         if (appContent) appContent.style.display = 'none';
         
         let isAppTrulyPresent = false;
         
-        // 1. Ask the device operating system directly if it has the app
         if ('getInstalledRelatedApps' in navigator) {
             try {
                 const relatedApps = await navigator.getInstalledRelatedApps();
                 if (relatedApps.length > 0) {
                     isAppTrulyPresent = true;
                 } else {
-                    // Clean up stale cache key if they uninstalled it
                     localStorage.removeItem('pwa_installed_successfully');
                 }
             } catch (err) {
@@ -1769,27 +1764,24 @@ async function runGatekeeperRouting() {
                 isAppTrulyPresent = localStorage.getItem('pwa_installed_successfully') === 'true';
             }
         } else {
-            // Fallback for older browsers
             isAppTrulyPresent = localStorage.getItem('pwa_installed_successfully') === 'true';
         }
         
-        // 2. Adjust view based on actual verified status
+        // Adjust elements using your verified HTML structural IDs
         if (isAppTrulyPresent) {
             const heading = document.getElementById('gatekeeperHeading');
             const text = document.getElementById('gatekeeperText');
             
-            if (heading) heading.innerText = "App Already Installed!";
+            if (heading) heading.innerText = "App Already Installed! 🎉";
             if (text) text.innerText = "You have already installed the App on this device.";
             
-            // Hide install button, show the direct launch button
             if (installBtn) installBtn.style.display = 'none';
             if (openAppBtn) openAppBtn.style.display = 'block';
         } else {
-            // Force reset back to default prompt view if they uninstalled it
             const heading = document.getElementById('gatekeeperHeading');
             const text = document.getElementById('gatekeeperText');
             
-            if (heading) heading.innerText = "Welcome ..";
+            if (heading) heading.innerText = "Install Registration App";
             if (text) text.innerText = "You must install our official application to access the registration portal.";
             
             if (installBtn) installBtn.style.display = 'block';
@@ -1798,19 +1790,16 @@ async function runGatekeeperRouting() {
     }
 }
 
-// Fire routing check right away
+// Initial execution sweep
 runGatekeeperRouting();
 
-// Function to handle countdown and window closure
 function startInstallationTimer() {
     localStorage.setItem('pwa_installed_successfully', 'true');
 
-    // Hide the initial prompt screen, show the success area
     if (promptState) promptState.style.display = 'none';
     if (successState) successState.style.display = 'block';
     if (appContent) appContent.style.display = 'none';
     
-    // Switch states from "Downloading" to "Success Checkmark"
     if (downloadingState) downloadingState.style.display = 'none';
     if (finalTimerState) finalTimerState.style.display = 'block';
     
@@ -1824,7 +1813,6 @@ function startInstallationTimer() {
             clearInterval(countdownInterval);
             window.close();
             
-            // SECURITY FALLBACK
             setTimeout(() => {
                 document.body.innerHTML = `
                     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px;">
@@ -1838,20 +1826,17 @@ function startInstallationTimer() {
     }, 1000);
 }
 
-// Deep link action
 if (openAppBtn) {
     openAppBtn.addEventListener('click', () => {
         window.location.href = window.location.origin;
     });
 }
 
-// Catch browser's installation availability event
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
 });
 
-// Primary Button Action Event
 if (installBtn) {
     installBtn.addEventListener('click', async () => {
         if (!deferredPrompt) {
@@ -1875,49 +1860,27 @@ if (installBtn) {
     });
 }
 
-// Global System Event for completed installation
 window.addEventListener('appinstalled', (event) => {
     deferredPrompt = null;
     startInstallationTimer();
 });
-</script>
-    <script>
+
+// ==========================================
+// SERVICE WORKER REGISTRATION SETUP
+// ==========================================
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js') 
-      .then(registration => {
-        console.log('B.Ed Guru Service Worker registered successfully!', registration.scope);
-        
-        // Check if the app is already installed right after successful registration
-        checkIfAppInstalled();
-      })
-      .catch(error => {
-        console.error('Service Worker registration failed:', error);
-      });
-  });
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js') 
+            .then(registration => {
+                console.log('B.Ed Guru Service Worker registered successfully!', registration.scope);
+                // Run the application check using the shared configuration logic
+                runGatekeeperRouting();
+            })
+            .catch(error => {
+                console.error('Service Worker registration failed:', error);
+            });
+    });
 }
-
-// Separate function to keep your registration code completely untouched and clean
-async function checkIfAppInstalled() {
-  const installBtn = document.getElementById('install-btn');
-  const statusMsg = document.getElementById('install-status-msg');
-
-  if ('getInstalledRelatedApps' in navigator) {
-    try {
-      const relatedApps = await navigator.getInstalledRelatedApps();
-      if (relatedApps.length > 0) {
-        if (installBtn) installBtn.style.display = 'none';
-        if (statusMsg) {
-          statusMsg.style.display = 'block';
-          statusMsg.innerText = 'B.Ed Guru is already installed on your device! 🎉';
-        }
-      }
-    } catch (err) {
-      console.error('Failed to check installed apps:', err);
-    }
-  }
-}
-
-    </script>
+</script>
 </body>
 </html>
