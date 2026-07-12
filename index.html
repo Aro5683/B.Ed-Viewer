@@ -604,38 +604,26 @@ body {
    
 
 <!-- THE GATEKEEPER INSTALL SCREEN -->
-<div id="installGatekeeper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 350px; padding: 20px; text-align: center; font-family: sans-serif; background: #ffffff;">
+<div id="installGatekeeper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 300px; padding: 20px; text-align: center; font-family: sans-serif; background: #ffffff;">
     
-    <!-- 1. INITIAL STATE -->
+    <!-- STEP 1: WELCOME SCREEN (Shown First) -->
     <div id="promptState" style="display: block;">
-        <h2 id="gatekeeperHeading" style="color: #1e293b; margin-bottom: 8px;">Welcome</h2>
-        <p id="gatekeeperText" style="color: #64748b; font-size: 14px; margin-bottom: 20px;">You must install our app to access the registration portal.</p>
-        <button id="installBtn" style="background: #0284c7; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; cursor: pointer;">Install B.Ed Guru App</button>
-        <button id="openAppBtn" style="display: none; background: #16a34a; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; cursor: pointer;">Open B.Ed Guru App</button>
+        <h2 style="color: #1e293b; margin-bottom: 8px;">Welcome</h2>
+        <p style="color: #64748b; font-size: 14px; margin-bottom: 25px;">Install B.Ed Guru App</p>
+        <button id="installBtn" style="background: #0284c7; color: white; border: none; padding: 12px 28px; border-radius: 6px; font-weight: 600; font-size: 15px; cursor: pointer;">Install</button>
     </div>
 
-    <!-- 2. STATUS CONTAINER -->
-    <div id="successState" style="display: block; margin-top: 20px;">
-        
-        <!-- LOADING STATE -->
-        <div id="downloadingState" style="display: block;">
-            <i class="fa fa-spinner fa-spin" style="font-size: 36px; color: #0284c7; margin-bottom: 12px;"></i>
-            <h3 style="color: #1e293b; margin: 0 0 4px 0;">Setup in progress...</h3>
-            <p style="color: #64748b; font-size: 13px; margin: 0;">Please check your device home screen shortly.</p>
-        </div>
-
-        <!-- SUCCESS STATE -->
-        <div id="finalTimerState" style="display: none;">
-            <i class="fa fa-check-circle" style="font-size: 36px; color: #16a34a; margin-bottom: 12px;"></i>
-            <h3 style="color: #1e293b; margin: 0 0 4px 0;">App Installed!</h3>
-        </div>
-
-        <!-- TIMER COUNTER -->
-        <p style="font-size: 13px; color: #64748b; margin-top: 15px;">
+    <!-- STEP 2: STATUS SCREEN (Hidden at First) -->
+    <div id="successState" style="display: none; background: #ffffff; padding: 20px; border: 1px solid #e0f2fe; border-radius: 12px; box-shadow: 0 4px 12px rgba(186, 230, 253, 0.2); max-width: 360px;">
+        <i class="fa fa-spinner fa-spin" style="font-size: 32px; color: #0284c7; margin-bottom: 12px;"></i>
+        <h3 style="color: #1e293b; margin: 0 0 8px 0;">Download in progress...</h3>
+        <p style="color: #64748b; font-size: 14px; line-height: 1.4; margin: 0 0 16px 0;">
+            Please wait. Do not close the tab. Make sure your network is good.
+        </p>
+        <p style="font-size: 13px; color: #64748b; margin: 0;">
             Closing in: <span id="timer" style="color: #0284c7; font-weight: bold; background: #e0f2fe; padding: 2px 6px; border-radius: 4px;">60</span>s
         </p>
     </div>
-
 
     <!-- YOUR ORIGINAL APP CONTENT -->
     <!-- This will ONLY be seen if opened directly inside the standalone home screen app -->
@@ -1704,167 +1692,57 @@ document.addEventListener('copy', (e) => {
 <script>
 
 // ==========================================
-// PWA GATEKEEPER (DEEP LINK & AUTO-CLOSE LOCK)
+// PWA GATEKEEPER (ULTRA-SIMPLE VERSION)
 // ==========================================
 let deferredPrompt = null;
 
-// Wrap DOM queries inside a DOMContentLoaded handler so they never return null
-window.addEventListener('DOMContentLoaded', () => {
-    const gatekeeper = document.getElementById('installGatekeeper');
-    const promptState = document.getElementById('promptState');
-    const successState = document.getElementById('successState');
-    const appContent = document.getElementById('appContent');
-    const installBtn = document.getElementById('installBtn');
-    const openAppBtn = document.getElementById('openAppBtn');
-    const timerDisplay = document.getElementById('timer');
-    const downloadingState = document.getElementById('downloadingState');
-    const finalTimerState = document.getElementById('finalTimerState');
-
-    // Check if the user is CURRENTLY running inside the standalone installed app environment
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-
-    // 💡 RUNTIME ROUTING FUNCTION
-    async function runGatekeeperRouting() {
-        if (isStandalone) {
-            // 🟢 ONLY inside the actual app: Unlock registration form
-            if (gatekeeper) gatekeeper.style.display = 'none';
-            if (appContent) appContent.style.display = 'block';
-        } else {
-            // 🔴 Inside a standard browser tab: Lock form completely
-            if (gatekeeper) gatekeeper.style.display = 'flex';
-            if (appContent) appContent.style.display = 'none';
-            
-            let isAppTrulyPresent = false;
-            
-            // 1. Ask the device operating system directly if it has the app
-            if ('getInstalledRelatedApps' in navigator) {
-                try {
-                    const relatedApps = await navigator.getInstalledRelatedApps();
-                    if (relatedApps.length > 0) {
-                        isAppTrulyPresent = true;
-                    } else {
-                        // Clean up stale cache key if they uninstalled it
-                        localStorage.removeItem('pwa_installed_successfully');
-                    }
-                } catch (err) {
-                    console.error('Failed to query device state:', err);
-                    isAppTrulyPresent = localStorage.getItem('pwa_installed_successfully') === 'true';
-                }
-            } else {
-                // Fallback for older browsers
-                isAppTrulyPresent = localStorage.getItem('pwa_installed_successfully') === 'true';
-            }
-            
-            // 2. Adjust view based on actual verified status
-            if (isAppTrulyPresent) {
-                const heading = document.getElementById('gatekeeperHeading');
-                const text = document.getElementById('gatekeeperText');
-                
-                if (heading) heading.innerText = "App Already Installed!";
-                if (text) text.innerText = "You have already installed the App on this device.";
-                
-                // Hide install button, show the direct launch button
-                if (installBtn) installBtn.style.display = 'none';
-                if (openAppBtn) openAppBtn.style.display = 'block';
-            } else {
-                // Force reset back to default prompt view if they uninstalled it
-                const heading = document.getElementById('gatekeeperHeading');
-                const text = document.getElementById('gatekeeperText');
-                
-                if (heading) heading.innerText = "Welcome ..";
-                if (text) text.innerText = "You must install our official application to access the registration portal.";
-                
-                if (installBtn) installBtn.style.display = 'block';
-                if (openAppBtn) openAppBtn.style.display = 'none';
-            }
-        }
-    }
-
-    // Fire routing check now that the DOM is fully loaded and ready
-    runGatekeeperRouting();
-
-    // Function to handle countdown and window closure
-    function startInstallationTimer() {
-        localStorage.setItem('pwa_installed_successfully', 'true');
-
-        // Hide the initial prompt screen, show the success area
-        if (promptState) promptState.style.display = 'none';
-        if (successState) successState.style.display = 'block';
-        if (appContent) appContent.style.display = 'none';
-        
-        // Switch states from "Downloading" to "Success Checkmark"
-        if (downloadingState) downloadingState.style.display = 'none';
-        if (finalTimerState) finalTimerState.style.display = 'block';
-        
-        let logicalTimeLeft = 60; // Matches your UI countdown template string
-        if (timerDisplay) timerDisplay.innerText = logicalTimeLeft;
-        
-        const countdownInterval = setInterval(() => {
-            logicalTimeLeft--;
-            if (timerDisplay) timerDisplay.innerText = logicalTimeLeft;
-            
-            if (logicalTimeLeft <= 0) {
-                clearInterval(countdownInterval);
-                window.close();
-                
-                // SECURITY FALLBACK FOR BROWSERS THAT BLOCK AUTO-WINDOW-CLOSURE
-                setTimeout(() => {
-                    document.body.innerHTML = `
-                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: -apple-system, sans-serif; text-align: center; background: #ffffff; color: #1e293b; padding: 20px;">
-                            <div style="width: 70px; height: 70px; background: #f0fdf4; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; border: 1px solid #bbf7d0;">
-                                <i class="fa fa-check-circle" style="font-size: 40px; color: #16a34a;"></i>
-                            </div>
-                            <h2 style="margin: 0 0 10px 0; font-weight: 700;">Setup Completed!</h2>
-                            <p style="color: #64748b; max-width: 400px; margin: 0 0 20px 0; line-height: 1.5;">Please close this browser tab manually and tap the 'B.Ed Guru' icon on your device home screen to access the portal.</p>
-                            <button onclick="window.close()" style="padding: 12px 24px; background: #ef4444; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);">Close Web Tab</button>
-                        </div>
-                    `;
-                }, 500);
-            }
-        }, 1000);
-    }
-
-    // Deep link action
-    if (openAppBtn) {
-        openAppBtn.addEventListener('click', () => {
-            window.location.href = window.location.origin;
-        });
-    }
-
-    // Primary Button Action Event
-    if (installBtn) {
-        installBtn.addEventListener('click', async () => {
-            if (!deferredPrompt) {
-                alert("⏳ If the app is already on your phone, click 'Open B.Ed Guru App'. Otherwise, please wait a moment for the system install to initialize.");
-                return;
-            }
-            
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            
-            if (outcome === 'accepted') {
-                deferredPrompt = null;
-                
-                // Dynamic View updates - reveals ice blue download layout container
-                if (promptState) promptState.style.display = 'none';
-                if (successState) successState.style.display = 'block';
-                if (downloadingState) downloadingState.style.display = 'block';
-                if (finalTimerState) finalTimerState.style.display = 'none';
-            }
-        });
-    }
-
-    // Global System Event for completed installation
-    window.addEventListener('appinstalled', (event) => {
-        deferredPrompt = null;
-        startInstallationTimer();
-    });
-});
-
-// Catch browser's installation availability event outside DOM loop to capture early triggers
+// Catch browser's installation availability event early
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+    const promptState = document.getElementById('promptState');
+    const successState = document.getElementById('successState');
+    const installBtn = document.getElementById('installBtn');
+    const timerDisplay = document.getElementById('timer');
+
+    if (installBtn) {
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) {
+                alert("Please wait a moment or check if the app is already installed.");
+                return;
+            }
+            
+            // Trigger the native browser installation popup
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            // If the user confirms installation in the popup
+            if (outcome === 'accepted') {
+                deferredPrompt = null;
+                
+                // Toggle view states instantly
+                if (promptState) promptState.style.display = 'none';
+                if (successState) successState.style.display = 'block';
+                
+                // Execute the 60-second timer
+                let timeLeft = 60;
+                if (timerDisplay) timerDisplay.innerText = timeLeft;
+                
+                const countdown = setInterval(() => {
+                    timeLeft--;
+                    if (timerDisplay) timerDisplay.innerText = timeLeft;
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(countdown);
+                        window.close(); // Attempt to close the web tab
+                    }
+                }, 1000);
+            }
+        });
+    }
 });
 </script>
     <script>
