@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bed-guru-cache-v1.0';
+const CACHE_NAME = 'bed-guru-cache-v1.1'; // 💡 Bumped version to force update
 
 // Add the exact relative paths to the files you want to load offline
 const ASSETS_TO_CACHE = [
@@ -7,7 +7,6 @@ const ASSETS_TO_CACHE = [
   '/manifest.json',
   '/icon-192.png',
   '/icon-512.png'
-  // 💡 Add your CSS and main JS files here (e.g., '/style.css', '/app.js')
 ];
 
 // 1. Install Event - Saves the layout files locally
@@ -37,26 +36,40 @@ self.addEventListener('activate', event => {
   return self.clients.claim();
 });
 
-// 3. Fetch Event - Serves files from cache if network fails
+// 3. Fetch Event - NOW NETWORK-FIRST FOR PAGES
 self.addEventListener('fetch', event => {
   // Let Google Drive links or external WhatsApp groups pass through untouched
   if (!event.request.url.startsWith(self.location.origin)) {
     return;
   }
 
-  event.respondWith(
-    caches.match(event.request).then(cachedResponse => {
-      if (cachedResponse) {
-        // Return the cached layout file immediately
-        return cachedResponse;
-      }
-
-      // If it's not cached, fetch it from the internet
-      return fetch(event.request).catch(() => {
-        // Fallback behavior if network completely fails
-        console.log('User is completely offline.');
-      });
-    })
-  );
+  // If the user is navigating to a page (HTML request), use Network-First
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          // Save a fresh copy to cache for offline use
+          return caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, response.clone());
+            return response;
+          });
+        })
+        .catch(() => {
+          // If internet is down, load the page from cache
+          return caches.match(event.request);
+        })
+    );
+  } else {
+    // For images, CSS, and structural files, keep the fast Cache-First strategy
+    event.respondWith(
+      caches.match(event.request).then(cachedResponse => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        return fetch(event.request).catch(() => {
+          console.log('Asset asset fetch failed offline.');
+        });
+      })
+    );
+  }
 });
-
