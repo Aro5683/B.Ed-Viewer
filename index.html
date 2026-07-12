@@ -607,19 +607,24 @@ body {
     <div id="installGatekeeper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; padding: 20px; text-align: center; font-family: sans-serif;">
         
         <!-- This is what they see at first -->
-       <div id="promptState" style="text-align: center;">
-    <h2 id="gatekeeperHeading">Welcome to B.Ed Guru App..</h2>
+      <div id="promptState" style="text-align: center;">
+    <h2 id="gatekeeperHeading">Welcome to B.Ed Guru..</h2>
     <p id="gatekeeperText">You must install our official application to access the registration portal.</p><br/>
-    <button class="primary-btn" id="installBtn">Install B.Ed Guru App</button>
+    
+    <!-- This button shows if the app is NOT installed yet -->
+    <button class="primary-btn" id="installBtn" style="display: block; margin: 0 auto;">Install B.Ed Guru App</button>
+    
+    <!-- This button ONLY shows if they return to the browser AFTER installing -->
+    <button class="primary-btn" id="openAppBtn" style="display: none; margin: 0 auto; background-color: #22c55e;">Open B.Ed Guru App</button>
 </div>
 
         <!-- This is what they see IMMEDIATELY after clicking install on the website -->
        <div id="successState" style="display: none; text-align: center;">
-    <i class="fa fa-check-circle" style="font-size: 48px; color: #22c55e;"></i><br/>
-    <h2>App Installed Successfully!</h2>
+   <br/>
+    <h2>Installing...</h2>
     <p>Please wait..</p>
     <div id="countdownBox" style="margin-top: 15px; font-weight: bold; color: #2563eb;">
-        Opening registration portal environment in: </n>
+        Opening B.Ed Guru App in : </n>
         <span id="timer">30</span>s
     </div>
 </div>
@@ -1694,10 +1699,7 @@ document.addEventListener('copy', (e) => {
 <script>
 
 // ==========================================
-// PWA INSTALLATION & GATEKEEPER LOGIC
-// ==========================================
-// ==========================================
-// PWA GATEKEEPER (STRICT DEVICE-APP LOCK)
+// PWA GATEKEEPER (DEEP LINK & AUTO-CLOSE LOCK)
 // ==========================================
 let deferredPrompt = null;
 const gatekeeper = document.getElementById('installGatekeeper');
@@ -1705,10 +1707,10 @@ const promptState = document.getElementById('promptState');
 const successState = document.getElementById('successState');
 const appContent = document.getElementById('appContent');
 const installBtn = document.getElementById('installBtn');
+const openAppBtn = document.getElementById('openAppBtn');
 const timerDisplay = document.getElementById('timer');
-const countdownBox = document.getElementById('countdownBox');
 
-// Check if this browser has a record of a successful installation
+// Check if this browser has recorded a successful installation
 const isAppPermanentlyInstalled = localStorage.getItem('pwa_installed_successfully') === 'true';
 
 // Check if the user is CURRENTLY running inside the standalone installed app environment
@@ -1716,31 +1718,35 @@ const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
 
 // ROUTING MATRIX
 if (isStandalone) {
-    // 🟢 ONLY inside the actual app: Unlock the registration form completely
+    // 🟢 ONLY inside the actual app: Unlock registration form
     if (gatekeeper) gatekeeper.style.display = 'none';
     if (appContent) appContent.style.display = 'block';
 } else {
-    // 🔴 Inside a standard browser tab: Lock the form completely
+    // 🔴 Inside a standard browser tab: Lock form completely
     if (gatekeeper) gatekeeper.style.display = 'flex';
     if (appContent) appContent.style.display = 'none';
     
-    // If they already installed it previously, change the gatekeeper text to reflect that
+    // If they already installed it previously and opened the browser link again
     if (isAppPermanentlyInstalled) {
         const heading = document.getElementById('gatekeeperHeading');
         const text = document.getElementById('gatekeeperText');
+        
         if (heading) heading.innerText = "App Already Installed!";
-        if (text) text.innerText = "You have already installed the app. Please close this browser tab and locate the 'B.Ed Guru' icon on your Home Screen to register.";
+        if (text) text.innerText = "You have already installed the platform on this device. Click below to launch it directly.";
+        
+        // Hide install button, show the direct launch button
+        if (installBtn) installBtn.style.display = 'none';
+        if (openAppBtn) openAppBtn.style.display = 'block';
     }
 }
 
-// Function to handle countdown and redirect transitions
+// Function to handle countdown and window closure (NO example.com)
 function startInstallationTimer() {
-    // Mark the browser environment as permanently installed
     localStorage.setItem('pwa_installed_successfully', 'true');
 
     if (promptState) promptState.style.display = 'none';
     if (successState) successState.style.display = 'block';
-    if (appContent) appContent.style.display = 'none'; // absolute lock
+    if (appContent) appContent.style.display = 'none';
     
     let logicalTimeLeft = 30;
     
@@ -1751,25 +1757,30 @@ function startInstallationTimer() {
         if (logicalTimeLeft <= 0) {
             clearInterval(countdownInterval);
             
-            // 1. Open destination in new tab
-            window.open("https://example.com", "_blank");
-            
-            // 2. Terminate current window context
+            // Attempt to automatically close the current browser tab
             window.close();
             
-            // 3. Fallback UI overhaul if browser blocks tab self-destruction
+            // SECURITY FALLBACK: If browser blocks window.close(), overwrite screen completely
             setTimeout(() => {
                 document.body.innerHTML = `
                     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px;">
-                        <i class="fa fa-check-circle" style="font-size: 50px; color: #22c55e; margin-bottom: 20px;"></i>
-                        <h2 style="margin: 0 0 10px 0;">Redirected Successfully</h2>
-                        <p style="color: #94a3b8; max-width: 400px; margin: 0 0 20px 0;">Your configuration is complete. Please close this web browser tab and open the application directly from your device.</p><br/>
-                        <button onclick="window.close()" style="padding: 12px 24px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Close Tab Manually</button>
+                        <i class="fa fa-times-circle" style="font-size: 50px; color: #ef4444; margin-bottom: 20px;"></i>
+                        <h2 style="margin: 0 0 10px 0;">Setup Completed!</h2>
+                        <p style="color: #94a3b8; max-width: 400px; margin: 0 0 20px 0;">Please close this browser tab manually and tap the 'B.Ed Guru' icon on your device home screen.</p>
+                        <button onclick="window.close()" style="padding: 12px 24px; background: #ef4444; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Close Web Tab</button>
                     </div>
                 `;
             }, 500);
         }
     }, 1000);
+}
+
+// Deep link action: Forces browser to invoke the standalone app layout matching your domain registration
+if (openAppBtn) {
+    openAppBtn.addEventListener('click', () => {
+        // Pointing to your web origin pushes the device OS to launch the PWA container handler
+        window.location.href = window.location.origin;
+    });
 }
 
 // Catch browser's installation availability event
@@ -1781,14 +1792,8 @@ window.addEventListener('beforeinstallprompt', (e) => {
 // Primary Button Action Event
 if (installBtn) {
     installBtn.addEventListener('click', async () => {
-        // If they already installed it but clicked it again in browser
-        if (isAppPermanentlyInstalled) {
-            alert("The app is already installed on your device. Please find 'B.Ed Guru' on your home screen.");
-            return;
-        }
-
         if (!deferredPrompt) {
-            alert("⏳ Your browser isn't prompting the installation right now. If the app is already on your phone, please launch it from your home screen.");
+            alert("⏳ Your browser isn't prompting the installation right now. If the app is already on your phone, click 'Open B.Ed Guru App'.");
             return;
         }
         
