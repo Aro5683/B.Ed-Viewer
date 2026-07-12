@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stay with B.Ed Guru</title>
+    <!-- FontAwesome for the icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #0f172a;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 35px 25px;
+            border-radius: 20px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+        .heart-icon {
+            font-size: 55px;
+            color: #ec4899;
+            margin-bottom: 20px;
+            animation: heartbeat 1.5s infinite;
+        }
+        h2 {
+            margin: 0 0 10px 0;
+            color: #f472b6;
+            font-size: 26px;
+            font-weight: 700;
+        }
+        h3 {
+            margin: 0 0 15px 0;
+            color: #cbd5e1;
+            font-size: 16px;
+            font-weight: 400;
+        }
+        p {
+            color: #94a3b8;
+            line-height: 1.6;
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+        .bond-message {
+            font-size: 14px;
+            color: #e2e8f0;
+            background: rgba(236, 72, 153, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(236, 72, 153, 0.2);
+            text-align: left;
+            margin-bottom: 25px;
+        }
+        .bond-message ul {
+            margin: 8px 0 0 0;
+            padding-left: 20px;
+            color: #cbd5e1;
+        }
+        .bond-message li {
+            margin-bottom: 6px;
+        }
+        .btn-stay {
+            display: inline-block;
+            background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+            color: white;
+            text-decoration: none;
+            padding: 14px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: transform 0.2s, opacity 0.2s;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 16px;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
+        }
+        .btn-stay:hover {
+            transform: translateY(-1px);
+            opacity: 0.95;
+        }
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            20% { transform: scale(1.1); }
+            40% { transform: scale(1); }
+            60% { transform: scale(1.1); }
+            80% { transform: scale(1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="heart-icon">
+            <i class="fa-solid fa-heart-crack"></i>
+        </div>
+        <h2>Are you leaving our circle?</h2>
+        <h3>Don't break the bond we've built...</h3>
+        
+        <p>
+            Becoming a great teacher is a shared journey. <strong>B.Ed Guru</strong> isn't just an application on your screen—it is your portal to a community of peers walking the exact same path as you.
+        </p>
+        
+        <div class="bond-message">
+            <strong>If you disconnect now, you leave behind:</strong>
+            <ul>
+                <li>Your structured semester study tracking.</li>
+                <li>Instant access to critical pedagogy support.</li>
+                <li>The community network helping you cross the finish line.</li>
+            </ul>
+        </div>
+
+        <p style="font-size: 13px; color: #64748b;">
+            We grew this platform together. Let's finish this journey together.
+        </p>
+        
+        <button class="btn-stay" onclick="window.close()">❤️ Keep App & Stay Connected</button>
+    </div>
+
+</body>
+</html>
