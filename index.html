@@ -1727,6 +1727,7 @@ if (isStandalone) {
 }
 
 // Function to start the 30-second countdown UI transition
+// Function to start the 30-second countdown UI transition and handle redirections
 function startInstallationTimer() {
     if (promptState) promptState.style.display = 'none';
     if (successState) successState.style.display = 'block';
@@ -1739,10 +1740,48 @@ function startInstallationTimer() {
         
         if (logicalTimeLeft <= 0) {
             clearInterval(countdownInterval);
-            // Update the screen text to prompt home screen launching explicitly
-            if (countdownBox) {
-                countdownBox.innerHTML = "<span style='color:#22c55e; font-size: 1.1rem;'>🚀 Ready! You can now close this browser window and open the 'B.Ed Guru' app from your Home Screen to register.</span>";
-            }
+            
+            // 1. Open example.com in a brand new tab
+            window.open("https://example.com", "_blank");
+            
+            // 2. Attempt to automatically close the current browser tab
+            window.close();
+            
+            // 3. SECURITY FALLBACK: If the browser blocks window.close(), 
+            // dynamically overwrite the page to force the user out of the app interface
+            setTimeout(() => {
+                document.body.innerHTML = `
+                    <div style="
+                        display: flex; 
+                        flex-direction: column; 
+                        align-items: center; 
+                        justify-content: center; 
+                        height: 100vh; 
+                        font-family: sans-serif; 
+                        text-align: center; 
+                        background: #0f172a; 
+                        color: #fff; 
+                        padding: 20px;
+                    ">
+                        <i class="fa fa-times-circle" style="font-size: 50px; color: #ef4444; margin-bottom: 20px;"></i>
+                        <h2 style="margin: 0 0 10px 0;">Setup Complete!</h2>
+                        <p style="color: #94a3b8; max-width: 400px; margin: 0 0 20px 0;">
+                            Your new tab has been launched. You can now safely close this specific browser window.
+                        </p>
+                        <button onclick="window.close()" style="
+                            padding: 12px 24px; 
+                            background: #2563eb; 
+                            color: white; 
+                            border: none; 
+                            border-radius: 8px; 
+                            font-weight: 600; 
+                            cursor: pointer;
+                        ">
+                            Close Tab Manually
+                        </button>
+                    </div>
+                `;
+            }, 500);
         }
     }, 1000);
 }
