@@ -600,133 +600,118 @@ body {
 </div>
 
 <div id="registerPage" class="register glass-panel">
-    
-   
 
 <!-- THE GATEKEEPER INSTALL SCREEN -->
 <div id="installGatekeeper" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 300px; padding: 20px; text-align: center; font-family: sans-serif; background: #ffffff;">
     
     <!-- STEP 1: WELCOME SCREEN (Shown First) -->
-   <div id="promptState" style="text-align: center;">
-    <h2 id="gatekeeperHeading">Install Registration App</h2>
-    <p id="gatekeeperText">You must install our official application to access the registration portal.</p>
-    
-    <!-- This button shows if the app is NOT installed yet -->
-    <button class="primary-btn" id="installBtn" style="display: block; margin: 0 auto;">Install Registration App</button>
-    
-    <!-- This button ONLY shows if they return to the browser AFTER installing -->
-    <button class="primary-btn" id="openAppBtn" style="display: none; margin: 0 auto; background-color: #22c55e;">Open B.Ed Guru App</button>
-</div>
+    <div id="promptState" style="text-align: center;">
+        <h2 id="gatekeeperHeading">Install Registration App</h2>
+        <p id="gatekeeperText">You must install our official application to access the registration portal.</p>
+        
+        <!-- This button shows if the app is NOT installed yet -->
+        <button class="primary-btn" id="installBtn" style="display: block; margin: 0 auto;">Install Registration App</button>
+        
+        <!-- This button ONLY shows if they return to the browser AFTER installing -->
+        <button class="primary-btn" id="openAppBtn" style="display: none; margin: 0 auto; background-color: #22c55e;">Open B.Ed Guru App</button>
+    </div>
 
     <!-- STEP 2: STATUS SCREEN (Hidden at First) -->
-<!-- DOWNLOAD & TIMEOUT GATEKEEPER CONTAINER -->
-<div id="successState" style="display: none; text-align: center;">
-    <!-- 1. Immediate Action State (Downloading via Play Services) -->
-    <div id="downloadingState">
-        <i class="fa fa-spinner fa-spin" style="font-size: 48px; color: #2563eb; margin-bottom: 15px;"></i>
-        <h2>Google Play Setup in Progress...</h2>
-        <p style="color: #94a3b8; max-width: 450px; margin: 0 auto 10px auto; line-height: 1.5;">
-            Please wait while Android secures your application files and creates the app icon on your home screen.
-        </p>
-        <p style="color: #e2e8f0; font-weight: 600;">⚠️ Do not close this tab or press back.</p>
-    </div>
+    <!-- DOWNLOAD & TIMEOUT GATEKEEPER CONTAINER -->
+    <div id="successState" style="display: none; text-align: center;">
+        <!-- 1. Immediate Action State (Downloading via Play Services) -->
+        <div id="downloadingState">
+            <i class="fa fa-spinner fa-spin" style="font-size: 48px; color: #2563eb; margin-bottom: 15px;"></i>
+            <h2>Google Play Setup in Progress...</h2>
+            <p style="color: #94a3b8; max-width: 450px; margin: 0 auto 10px auto; line-height: 1.5;">
+                Please wait while Android secures your application files and creates the app icon on your home screen.
+            </p>
+            <p style="color: #e2e8f0; font-weight: 600;">⚠️ Do not close this tab or press back.</p>
+        </div>
 
-  <!-- 2. Final Instructional State (Shown after appinstalled fires) -->
+        <!-- 2. Final Instructional State (Shown after appinstalled fires) -->
+        <div id="finalTimerState" style="display: none; margin-top: 20px;">
+            <i class="fa fa-check-circle" style="font-size: 48px; color: #22c55e; margin-bottom: 15px;"></i>
+            <h2>App Registration Successful!</h2>
+            <p>Dont close the tab</p>
+        </div>
 
-    <div id="finalTimerState" style="display: none; margin-top: 20px;">
+        <p style="color: #94a3b8; margin: 10px 0;">also make sure your internet connection is good</p>
 
-        <i class="fa fa-check-circle" style="font-size: 48px; color: #22c55e; margin-bottom: 15px;"></i>
-
-        <h2>App Registration Successful!</h2>
-
-        <p>Dont close the tab</p>
-
-    </div>
-
-also make sure your internet connection is good
-
-    <!-- The continuous countdown clock -->
-
-    <div id="countdownBox" style="margin-top: 20px; font-weight: bold; color: #3d69a3; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px;">
-
-        Closing terminal automatically in: <span id="timer" style="color: #3b82f6; font-size: 1.2rem;">30</span>s
-
-    </div>
-
-</div> 
-
+        <!-- The continuous countdown clock -->
+        <div id="countdownBox" style="margin-top: 20px; font-weight: bold; color: #3d69a3; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px;">
+            Closing terminal automatically in: <span id="timer" style="color: #3b82f6; font-size: 1.2rem;">30</span>s
+        </div>
+    </div> 
+</div> <!-- Closes #installGatekeeper -->
 
     <!-- YOUR ORIGINAL APP CONTENT -->
     <!-- This will ONLY be seen if opened directly inside the standalone home screen app -->
     <div id="appContent" style="display: none;">
-         <h2>Student Registration</h2>
+        <h2>Student Registration</h2>
         <div class="input" id="container-name">
             <i class="fa fa-user"></i>
             <input id="name" placeholder="Full Name" oninput="clearError('name')">
         </div>
-        <!-- Add your other inputs here -->
 
+        <div class="input" id="container-gender">
+            <i class="fa fa-venus-mars"></i>
+            <select id="gender" onchange="clearError('gender')">
+                <option value="">Gender</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+            </select>
+        </div>
 
+        <div class="input" id="container-semester">
+            <i class="fa fa-layer-group"></i>
+            <select id="semester" onchange="clearError('semester')">
+                <option value="">Semester</option>
+                <option>Semester 1</option>
+                <option>Semester 2</option>
+            </select>
+        </div>
 
+        <div class="input" id="container-medium">
+            <i class="fa fa-language"></i>
+            <select id="medium" onchange="clearError('medium')">
+                <option value="">Study Medium</option>
+                <option value="Tamil">Tamil Medium</option>
+                <option value="English">English Medium</option>
+            </select>
+        </div>
 
+        <div class="input" id="container-pedagogy">
+            <i class="fa fa-book-open"></i>
+            <select id="pedagogy" onchange="clearError('pedagogy')">
+                <option value="">Pedagogy Subject</option>
+                <option value="TA">Tamil (TA)</option>
+                <option value="EN">English (EN)</option>
+                <option value="MA">Mathematics (MA)</option>
+                <option value="PS">Physical Science (PS)</option>
+                <option value="BS">Biological Science (BS)</option>
+                <option value="CS">Computer Science (CS)</option>
+                <option value="CA">Commerce and Accountancy (CA)</option>
+                <option value="HI">History (HI)</option>
+            </select>
+        </div>
 
-    <div class="input" id="container-gender">
-        <i class="fa fa-venus-mars"></i>
-        <select id="gender" onchange="clearError('gender')">
-            <option value="">Gender</option>
-            <option>Male</option>
-            <option>Female</option>
-            <option>Other</option>
-        </select>
-    </div>
+        <div class="input" id="container-phone">
+            <i class="fa fa-phone"></i>
+            <input id="phone" type="tel" placeholder="Phone Number" oninput="clearError('phone')">
+        </div>
 
-    <div class="input" id="container-semester">
-        <i class="fa fa-layer-group"></i>
-        <select id="semester" onchange="clearError('semester')">
-            <option value="">Semester</option>
-            <option>Semester 1</option>
-            <option>Semester 2</option>
-        </select>
-    </div>
+        <div class="checkbox">
+            <input type="checkbox" id="agree">
+            <label>I agree to <a href="https://bedstudyapp.netlify.app/terms.html" target="_blank" style="color:#2563eb;font-weight:600;text-decoration:none;">Terms & Conditions</a></label>
+        </div>
 
-    <div class="input" id="container-medium">
-        <i class="fa fa-language"></i>
-        <select id="medium" onchange="clearError('medium')">
-            <option value="">Study Medium</option>
-            <option value="Tamil">Tamil Medium</option>
-            <option value="English">English Medium</option>
-        </select>
-    </div>
+        <button class="primary-btn" onclick="registerUser()">Register Platform</button>
+    </div> <!-- Closes #appContent -->
 
-    <div class="input" id="container-pedagogy">
-        <i class="fa fa-book-open"></i>
-        <select id="pedagogy" onchange="clearError('pedagogy')">
-            <option value="">Pedagogy Subject</option>
-            <option value="TA">Tamil (TA)</option>
-            <option value="EN">English (EN)</option>
-            <option value="MA">Mathematics (MA)</option>
-            <option value="PS">Physical Science (PS)</option>
-            <option value="BS">Biological Science (BS)</option>
-            <option value="CS">Computer Science (CS)</option>
-            <option value="CA">Commerce and Accountancy (CA)</option>
-            <option value="HI">History (HI)</option>
-        </select>
-    </div>
+</div> <!-- Closes #registerPage -->
 
-    <div class="input" id="container-phone">
-        <i class="fa fa-phone"></i>
-        <input id="phone" type="tel" placeholder="Phone Number" oninput="clearError('phone')">
-    </div>
-
-    <div class="checkbox">
-        <input type="checkbox" id="agree">
-        <label>I agree to <a href="https://bedstudyapp.netlify.app/terms.html" target="_blank" style="color:#2563eb;font-weight:600;text-decoration:none;">Terms & Conditions</a></label>
-    </div>
-
-    <button class="primary-btn" onclick="registerUser()">Register Platform</button>
-</div>
-</div>
-</div>
 <div id="homePage" class="page">
 
  <div class="card premium home-card">
