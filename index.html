@@ -866,7 +866,38 @@ function showPopup(msg){
 function clearError(id) {
     document.getElementById("container-" + id).classList.remove("input-error");
 }
+// ==========================================
+// OFFLINE FORM PERSISTENCE
+// ==========================================
 
+// 1. Save values immediately when the student changes an option
+window.addEventListener('DOMContentLoaded', () => {
+    const inputs = ['name', 'gender', 'semester', 'medium', 'pedagogy', 'phone'];
+    
+    inputs.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.addEventListener('input', (e) => {
+                localStorage.setItem('draft_' + id, e.target.value);
+            });
+            // Also listen for select dropdown changes
+            element.addEventListener('change', (e) => {
+                localStorage.setItem('draft_' + id, e.target.value);
+            });
+        }
+    });
+
+    // 2. Restore values automatically when the page reloads
+    inputs.forEach(id => {
+        const savedValue = localStorage.getItem('draft_' + id);
+        const element = document.getElementById(id);
+        if (savedValue && element) {
+            element.value = savedValue;
+        }
+    });
+});
+
+// ==========================================
 function registerUser(){
     const fields = ["name", "gender", "semester", "medium", "pedagogy", "phone"];
     let hasError = false;
@@ -913,7 +944,13 @@ function registerUser(){
         return;
     }
 
+    // Save final registration data
     localStorage.setItem("user", JSON.stringify(data));
+    
+    // Clear the temporary form drafts since registration is successful
+    ['name', 'gender', 'semester', 'medium', 'pedagogy', 'phone'].forEach(id => {
+        localStorage.removeItem('draft_' + id);
+    });
     
     if(SCRIPT_URL && SCRIPT_URL !== "") {
         fetch(PROXY_URL + encodeURIComponent(SCRIPT_URL), {
@@ -929,7 +966,6 @@ function registerUser(){
 
     document.getElementById("whatsappPopup").style.display = "flex";
 }
-
 function joinWhatsapp(){
     let link = "https://chat.whatsapp.com/CgNt3lBmhlGG0Yjvi2g3FW?mode=gi_t";
     window.open(link, '_blank');
