@@ -603,13 +603,14 @@ body {
         </div>
 
         <!-- This is what they see IMMEDIATELY after clicking install on the website -->
-        <div id="successState" style="display: none;">
-            <div style="font-size: 64px; margin-bottom: 20px;">🎉</div>
-            <h2>App Installed Successfully!</h2>
-            <p style="color: #666; max-width: 300px; margin-bottom: 20px;">
-                The portal is now ready. Please close this browser tab and launch the app from your home screen.
-            </p>
-        </div>
+       <div id="successState" style="display: none; text-align: center;">
+    <i class="fa fa-check-circle" style="font-size: 48px; color: #22c55e;"></i>
+    <h2>App Installed Successfully!</h2>
+    <p>Please close this browser tab.</p>
+    <div id="countdownBox" style="margin-top: 15px; font-weight: bold; color: #2563eb;">
+        Opening registration portal environment in: <span id="timer">30</span>s
+    </div>
+</div>
 
         <p id="fallbackMsg" style="display: none; margin-top: 20px; color: #007bff; cursor: pointer; text-decoration: underline;">
            
@@ -1632,7 +1633,7 @@ function sendChatbotRequest() {
 // PWA INSTALLATION & GATEKEEPER LOGIC
 // ==========================================
 // ==========================================
-// PWA INSTALLATION & GATEKEEPER LOGIC (STRICT OVERRIDE)
+// PWA INSTALLATION & GATEKEEPER WITH TIMER
 // ==========================================
 let deferredPrompt = null;
 const gatekeeper = document.getElementById('installGatekeeper');
@@ -1640,7 +1641,8 @@ const promptState = document.getElementById('promptState');
 const successState = document.getElementById('successState');
 const appContent = document.getElementById('appContent');
 const installBtn = document.getElementById('installBtn');
-const fallbackMsg = document.getElementById('fallbackMsg');
+const timerDisplay = document.getElementById('timer');
+const countdownBox = document.getElementById('countdownBox');
 
 // Check if the user is CURRENTLY running inside the standalone installed app
 const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
@@ -1653,6 +1655,27 @@ if (isStandalone) {
     // If they are on a standard mobile browser web tab, hide the form completely and force the gatekeeper
     if (gatekeeper) gatekeeper.style.display = 'flex';
     if (appContent) appContent.style.display = 'none';
+}
+
+// Function to start the 30-second countdown UI transition
+function startInstallationTimer() {
+    if (promptState) promptState.style.display = 'none';
+    if (successState) successState.style.display = 'block';
+    
+    let logicalTimeLeft = 30;
+    
+    const countdownInterval = setInterval(() => {
+        logicalTimeLeft--;
+        if (timerDisplay) timerDisplay.innerText = logicalTimeLeft;
+        
+        if (logicalTimeLeft <= 0) {
+            clearInterval(countdownInterval);
+            // Update the screen text to prompt home screen launching explicitly
+            if (countdownBox) {
+                countdownBox.innerHTML = "<span style='color:#22c55e; font-size: 1.1rem;'>🚀 Ready! You can now close this browser window and open the 'B.Ed Guru' app from your Home Screen to register.</span>";
+            }
+        }
+    }, 1000);
 }
 
 // Catch the browser's PWA install banner event
@@ -1676,20 +1699,16 @@ if (installBtn) {
         
         if (outcome === 'accepted') {
             deferredPrompt = null;
-            // Show ONLY the success message state. Do NOT reveal appContent here.
-            if (promptState) promptState.style.display = 'none';
-            if (successState) successState.style.display = 'block';
+            startInstallationTimer();
         }
     });
 }
 
-// Global listener for a completed installation
+// Global listener for a completed installation execution loop
 window.addEventListener('appinstalled', (event) => {
     deferredPrompt = null;
-    // Force the UI to stay on the instructions page inside the browser
-    if (promptState) promptState.style.display = 'none';
-    if (successState) successState.style.display = 'block';
-    if (appContent) appContent.style.display = 'none'; // Keep hidden in browser
+    if (appContent) appContent.style.display = 'none'; // Lock down portal form in browser
+    startInstallationTimer();
 });
 </script>
     <script>
