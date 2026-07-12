@@ -916,11 +916,8 @@ body {
         <button class="btn" style="width: 100%; padding: 10px;" onclick="document.getElementById('chatbotSuccessModal').style.display='none'">Dismiss</button>
     </div>
 </div>
-<!-- The Update Notification Popup -->
-<div id="update-popup" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 15px 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 9999; font-family: sans-serif; align-items: center; gap: 15px;">
-  <span>A new version is available!</span>
-  <button id="reload-btn" style="background: #007bff; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">Refresh</button>
-</div>
+
+
 <style>
 @keyframes qaPopupScale { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
@@ -1813,7 +1810,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 if (installBtn) {
     installBtn.addEventListener('click', async () => {
         if (!deferredPrompt) {
-            alert("⏳ Your browser isn't prompting the installation right now. If the app is already on your phone, click 'Open B.Ed Guru App'.");
+            alert("⏳ If the app is already on your phone, click 'Open B.Ed Guru App'.");
             return;
         }
         
@@ -1834,56 +1831,29 @@ window.addEventListener('appinstalled', (event) => {
 });
 </script>
     <script>
-    if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js') // Matches your 'sw.js' filename
-      .then(registration => {
-        console.log('B.Ed Guru Service Worker registered successfully!', registration.scope);
+   if ('serviceWorker' in navigator) {
 
-        // 1. Listen for new updates while the user has the app open
-        registration.addEventListener('updatefound', () => {
-          const newWorker = registration.installing;
-          
-          newWorker.addEventListener('statechange', () => {
-            // Check if the new code has finished downloading/installing
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              showUpdatePopup(newWorker);
-            }
-          });
+        window.addEventListener('load', () => {
+
+          navigator.serviceWorker.register('sw.js') 
+
+            .then(registration => {
+
+              console.log('B.Ed Guru Service Worker registered successfully!', registration.scope);
+
+            })
+
+            .catch(error => {
+
+              console.error('Service Worker registration failed:', error);
+
+            });
+
         });
 
-        // 2. Check for updates automatically in the background every time they open the app
-        registration.update();
-      })
-      .catch(error => {
-        console.error('Service Worker registration failed:', error);
-      });
-  });
-}
+      } 
 
-// 3. Function to make the popup visible and handle the click
-function showUpdatePopup(worker) {
-  const popup = document.getElementById('update-popup');
-  const btn = document.getElementById('reload-btn');
-  
-  if (popup && btn) {
-    popup.style.display = 'flex'; // Shows the popup
-    
-    btn.addEventListener('click', () => {
-      worker.postMessage({ action: 'skipWaiting' });
-      popup.style.display = 'none';
-    });
-  }
-}
 
-// 4. Reload the page instantly once the new service worker takes over
-let refreshing = false;
-navigator.serviceWorker.addEventListener('controllerchange', () => {
-  if (!refreshing) {
-    window.location.reload();
-    refreshing = true;
-  }
-});
     </script>
 </body>
 </html>
