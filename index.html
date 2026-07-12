@@ -1632,7 +1632,7 @@ function sendChatbotRequest() {
 // PWA INSTALLATION & GATEKEEPER LOGIC
 // ==========================================
 // ==========================================
-// PWA INSTALLATION & GATEKEEPER LOGIC (FIXED)
+// PWA INSTALLATION & GATEKEEPER LOGIC (STRICT OVERRIDE)
 // ==========================================
 let deferredPrompt = null;
 const gatekeeper = document.getElementById('installGatekeeper');
@@ -1642,83 +1642,55 @@ const appContent = document.getElementById('appContent');
 const installBtn = document.getElementById('installBtn');
 const fallbackMsg = document.getElementById('fallbackMsg');
 
-// Function to handle layout shifting once installed
-function seamlessAppUnlock() {
-    if (gatekeeper) gatekeeper.style.display = 'none';
-    if (appContent) appContent.style.display = 'block';
-}
-
-// Check immediately if the user is ALREADY running the standalone installed app
+// Check if the user is CURRENTLY running inside the standalone installed app
 const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
 if (isStandalone) {
-    seamlessAppUnlock();
+    // STRICT RULE: Only show the registration portal if they are inside the standalone app
+    if (gatekeeper) gatekeeper.style.display = 'none';
+    if (appContent) appContent.style.display = 'block';
 } else {
+    // If they are on a standard mobile browser web tab, hide the form completely and force the gatekeeper
     if (gatekeeper) gatekeeper.style.display = 'flex';
     if (appContent) appContent.style.display = 'none';
 }
 
-// Listen for the browser's PWA install capability prompt
+// Catch the browser's PWA install banner event
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    // Show fallback message if it was hidden, indicating browser is ready
-    if (fallbackMsg) fallbackMsg.style.display = 'none';
 });
 
-// Handle the installation button click action
+// Handle the installation button action
 if (installBtn) {
     installBtn.addEventListener('click', async () => {
         if (!deferredPrompt) {
-            // Force bypass for debugging or non-supported browsers
-            alert("⏳ Browser installation dialog isn't responding. Unlocking the web portal version for you now...");
-            seamlessAppUnlock();
+            alert("⏳ Your browser isn't prompting the installation. If you already installed it, please open it from your Home Screen!");
             return;
         }
         
-        // Show the native browser install prompt
+        // Show the browser's native install pop-up
         deferredPrompt.prompt();
         
-        // Wait for the user to respond to the prompt
         const { outcome } = await deferredPrompt.userChoice;
         
         if (outcome === 'accepted') {
             deferredPrompt = null;
-            // Switch to success states seamlessly
+            // Show ONLY the success message state. Do NOT reveal appContent here.
             if (promptState) promptState.style.display = 'none';
             if (successState) successState.style.display = 'block';
-            
-            // OPTIONAL: If you want them to be able to use it instantly without reopening:
-            setTimeout(() => {
-                seamlessAppUnlock();
-            }, 1500); 
-        } else {
-            alert("❌ Installation dismissed. You must install the app to access the registration panel.");
         }
     });
 }
 
-// Global backup tracker for successful installation
+// Global listener for a completed installation
 window.addEventListener('appinstalled', (event) => {
     deferredPrompt = null;
+    // Force the UI to stay on the instructions page inside the browser
     if (promptState) promptState.style.display = 'none';
     if (successState) successState.style.display = 'block';
-    seamlessAppUnlock();
+    if (appContent) appContent.style.display = 'none'; // Keep hidden in browser
 });
-
-// Emergency fallback link if browser doesn't support PWAs
-if (fallbackMsg) {
-    fallbackMsg.addEventListener('click', () => {
-        seamlessAppUnlock();
-    });
-    
-    setTimeout(() => {
-        if (!deferredPrompt && !isStandalone && gatekeeper && gatekeeper.style.display !== 'none') {
-            fallbackMsg.style.display = 'block';
-            fallbackMsg.innerText = "Can't install? Try web-version anyway";
-        }
-    }, 3000);
-}
 </script>
     <script>
       if ('serviceWorker' in navigator) {
