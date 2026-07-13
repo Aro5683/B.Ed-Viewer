@@ -1754,11 +1754,11 @@ function enforceAbsoluteLockout() {
 }
 
 async function runGatekeeperRouting() {
-    // 1. STAGE ONE: Check if already registered or completed setup in the regular browser
+    // If the user explicitly cleared storage, let them back into the loop
     const isRegistered = localStorage.getItem('bed_guru_user');
     const isSetupDone = localStorage.getItem('pwa_installed_successfully') === 'true';
     
-    if (!isStandalone && (isRegistered || isSetupDone)) {
+    if (!isStandalone && isRegistered) {
         enforceAbsoluteLockout();
         return;
     }
@@ -1784,18 +1784,25 @@ async function runGatekeeperRouting() {
                 const relatedApps = await navigator.getInstalledRelatedApps();
                 if (relatedApps.length > 0) {
                     isAppTrulyPresent = true;
-                } else {
-                    localStorage.removeItem('pwa_installed_successfully');
                 }
             } catch (err) {
-                isAppTrulyPresent = localStorage.getItem('pwa_installed_successfully') === 'true';
+                isAppTrulyPresent = isSetupDone;
             }
         } else {
-            isAppTrulyPresent = localStorage.getItem('pwa_installed_successfully') === 'true';
+            isAppTrulyPresent = isSetupDone;
         }
         
+        // FIX: Instead of locking them out silently if the app is present, 
+        // we show the "Welcome" screen but swap the Install button for the "Open App" button.
         if (isAppTrulyPresent) {
-            enforceAbsoluteLockout();
+            const heading = document.getElementById('gatekeeperHeading');
+            const text = document.getElementById('gatekeeperText');
+            
+            if (heading) heading.innerText = "App Already Installed! 🎉";
+            if (text) text.innerText = "You have already configured B.Ed Guru on this device.";
+            
+            if (ib) ib.style.display = 'none';
+            if (ob) ob.style.display = 'block';
         } else {
             const heading = document.getElementById('gatekeeperHeading');
             const text = document.getElementById('gatekeeperText');
@@ -1864,7 +1871,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (ib) {
         ib.addEventListener('click', async () => {
             if (!deferredPrompt) {
-                alert("⏳ Preparing device installer link package. If already configured, please look for the app icon on your screen.");
+                alert("⏳ Please make sure your internet connection is stable. If the prompt doesn't appear, try reloading the page.");
                 return;
             }
             
@@ -1873,7 +1880,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (outcome === 'accepted') {
                 deferredPrompt = null;
-                // Instantly execute the download pipeline views and the 60s security lock clock
                 startInstallationTimer();
             }
         });
@@ -1887,7 +1893,6 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 window.addEventListener('appinstalled', (event) => {
     deferredPrompt = null;
-    // Fallback trigger loop safety block
     if (!countdownInterval) {
         startInstallationTimer();
     }
