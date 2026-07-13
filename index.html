@@ -1776,12 +1776,17 @@ function enforceAbsoluteLockout() {
     `;
 }
 
-// System Deep-Link Engine Interception
+// 🚀 FIXED: Dual-Trigger Intent Handshake
 function launchAppViaHref() {
     const currentOrigin = window.location.origin;
+
+    // 1. Force state route changes using anchor hashing to alert the web manifest scope
     window.location.hash = "pwa-launch";
+
+    // 2. Try an absolute fallback route that triggers PWA display-mode parameters
     const appWindow = window.open(`${currentOrigin}/?display=standalone&pwa=true`, '_blank');
     
+    // 3. Close the current tab context if opened from an outside click helper
     if (appWindow) {
         setTimeout(() => {
             if (!isStandalone) {
@@ -1792,36 +1797,9 @@ function launchAppViaHref() {
 }
 
 async function runGatekeeperRouting() {
-    let isRegistered = localStorage.getItem('bed_guru_user');
-    let isSetupDone = localStorage.getItem('pwa_installed_successfully') === 'true';
+    const isRegistered = localStorage.getItem('bed_guru_user');
+    const isSetupDone = localStorage.getItem('pwa_installed_successfully') === 'true';
     
-    let isAppTrulyPresent = false;
-    
-    // 🔍 NATIVE SYSTEM VERIFICATION CHECK
-    if (!isStandalone && ('getInstalledRelatedApps' in navigator)) {
-        try {
-            const relatedApps = await navigator.getInstalledRelatedApps();
-            if (relatedApps.length > 0) {
-                isAppTrulyPresent = true;
-            } else {
-                // 🔄 FIXED: The device natively reports the app is uninstalled!
-                // Clear old stale local storage keys immediately to restore the install loop.
-                localStorage.removeItem('pwa_installed_successfully');
-                isSetupDone = false;
-                
-                // If they completely uninstalled the app, let's assume they might need to re-register
-                if (!isRegistered) {
-                    localStorage.removeItem('bed_guru_user');
-                    isRegistered = null;
-                }
-            }
-        } catch (err) {
-            isAppTrulyPresent = isSetupDone;
-        }
-    } else {
-        isAppTrulyPresent = isSetupDone;
-    }
-
     // 🛑 CRITICAL ENFORCEMENT: Browser lockout wall
     if (!isStandalone && (isRegistered || isSetupDone)) {
         enforceAbsoluteLockout();
@@ -1841,6 +1819,21 @@ async function runGatekeeperRouting() {
         // 🔴 Inside Web Browser: Show layout setup guide
         if (gk) gk.style.display = 'flex';
         if (ac) ac.style.display = 'none';
+        
+        let isAppTrulyPresent = false;
+        
+        if ('getInstalledRelatedApps' in navigator) {
+            try {
+                const relatedApps = await navigator.getInstalledRelatedApps();
+                if (relatedApps.length > 0) {
+                    isAppTrulyPresent = true;
+                }
+            } catch (err) {
+                isAppTrulyPresent = isSetupDone;
+            }
+        } else {
+            isAppTrulyPresent = isSetupDone;
+        }
         
         if (isAppTrulyPresent) {
             const heading = document.getElementById('gatekeeperHeading');
