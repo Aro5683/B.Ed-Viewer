@@ -1754,11 +1754,12 @@ function enforceAbsoluteLockout() {
 }
 
 async function runGatekeeperRouting() {
-    // If the user explicitly cleared storage, let them back into the loop
     const isRegistered = localStorage.getItem('bed_guru_user');
     const isSetupDone = localStorage.getItem('pwa_installed_successfully') === 'true';
     
-    if (!isStandalone && isRegistered) {
+    // 🛑 CRITICAL ENFORCEMENT: If they are in a standard browser AND they have a registered profile 
+    // OR have successfully gone through the install timer setup, lock them out instantly.
+    if (!isStandalone && (isRegistered || isSetupDone)) {
         enforceAbsoluteLockout();
         return;
     }
@@ -1769,11 +1770,11 @@ async function runGatekeeperRouting() {
     const ob = document.getElementById('openAppBtn') || openAppBtn;
 
     if (isStandalone) {
-        // 🟢 Inside PWA App: Unlock structural content display fully
+        // 🟢 Inside PWA App: Unlock structural content display fully (No Lockouts Here)
         if (gk) gk.style.display = 'none';
         if (ac) ac.style.display = 'block';
     } else {
-        // 🔴 Inside Web Browser: Lock regular structural views immediately
+        // 🔴 Inside Web Browser (Unregistered / Fresh Clean Slate): Show layout setup guide
         if (gk) gk.style.display = 'flex';
         if (ac) ac.style.display = 'none';
         
@@ -1792,8 +1793,7 @@ async function runGatekeeperRouting() {
             isAppTrulyPresent = isSetupDone;
         }
         
-        // FIX: Instead of locking them out silently if the app is present, 
-        // we show the "Welcome" screen but swap the Install button for the "Open App" button.
+        // Show context-aware installation screens depending on app detection status
         if (isAppTrulyPresent) {
             const heading = document.getElementById('gatekeeperHeading');
             const text = document.getElementById('gatekeeperText');
