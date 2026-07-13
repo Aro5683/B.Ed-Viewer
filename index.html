@@ -602,10 +602,7 @@ body {
 
 <div id="registerPage" class="register glass-panel">
 
-<!-- THE GATEKEEPER INSTALL SCREEN -->
-
     <!-- YOUR ORIGINAL APP CONTENT -->
-    <!-- This will ONLY be seen if opened directly inside the standalone home screen app -->
     <div id="appContent" style="display: none;">
         <h2>Student Registration</h2>
         <div class="input" id="container-name">
@@ -667,51 +664,47 @@ body {
         </div>
 
         <button class="primary-btn" onclick="registerUser()">Register Platform</button>
-    </div> <!-- Closes #appContent -->
-<div id="installGatekeeper" style="display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 300px; padding: 20px; text-align: center; font-family: sans-serif;">
-    <!-- STEP 1: WELCOME SCREEN (Shown First) -->
-    <div id="promptState" style="text-align: center;">
-        <h2 id="gatekeeperHeading">Welcome!</h2>
-        <p id="gatekeeperText">You must install our official application to access the registration portal.</p>
-        <br/>
-        <!-- This button shows if the app is NOT installed yet -->
-        <button class="primary-btn" id="installBtn" style="display: block; margin: 0 auto;">Install B.Ed Guru App</button>
-        
-        <!-- This button ONLY shows if they return to the browser AFTER installing -->
-      
     </div>
 
-    <!-- STEP 2: STATUS SCREEN (Hidden at First) -->
-    <!-- DOWNLOAD & TIMEOUT GATEKEEPER CONTAINER -->
-    <div id="successState" style="display: none; text-align: center;">
-        <!-- 1. Immediate Action State (Downloading via Play Services) -->
-        <div id="downloadingState">
-            <i class="fa fa-spinner fa-spin" style="font-size: 48px; color: #2563eb; margin-bottom: 15px;"></i>
-            <h2>Google Play Setup in Progress...</h2>
-            <p style="color: #94a3b8; max-width: 450px; margin: 0 auto 10px auto; line-height: 1.5;">
-                Please wait while Android secures your application files and creates the app icon on your home screen.
-            </p>
-            <p style="color: #e2e8f0; font-weight: 600;">⚠️ Do not close this tab or press back.</p>
+    <!-- THE GATEKEEPER INSTALL SCREEN -->
+    <div id="installGatekeeper" style="display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 300px; padding: 20px; text-align: center; font-family: sans-serif;">
+        
+        <!-- STEP 1: WELCOME SCREEN -->
+        <div id="promptState" style="text-align: center;">
+            <h2 id="gatekeeperHeading">Welcome!</h2>
+            <p id="gatekeeperText">You must install our official application to access the registration portal.</p>
+            <br/>
+            <button class="primary-btn" id="installBtn" style="display: block; margin: 0 auto;">Install B.Ed Guru App</button>
+            <!-- 🟢 ADDED BACK: This button was missing from your markup -->
+            <button class="primary-btn" id="openAppBtn" style="display: none; margin: 10px auto 0 auto;">Launch Application</button>
         </div>
 
-        <!-- 2. Final Instructional State (Shown after appinstalled fires) -->
-        <div id="finalTimerState" style="display: none; margin-top: 20px;">
-            <i class="fa fa-check-circle" style="font-size: 48px; color: #22c55e; margin-bottom: 15px;"></i>
-            <h2>Installing..</h2>
-            <p>Dont close the tab</p>
-        </div>
+        <!-- STEP 2: STATUS SCREEN -->
+        <div id="successState" style="display: none; text-align: center;">
+            <div id="downloadingState">
+                <i class="fa fa-spinner fa-spin" style="font-size: 48px; color: #2563eb; margin-bottom: 15px;"></i>
+                <h2>Google Play Setup in Progress...</h2>
+                <p style="color: #94a3b8; max-width: 450px; margin: 0 auto 10px auto; line-height: 1.5;">
+                    Please wait while Android secures your application files and creates the app icon on your home screen.
+                </p>
+                <p style="color: #e2e8f0; font-weight: 600;">⚠️ Do not close this tab or press back.</p>
+            </div>
 
-        <p style="color: #94a3b8; margin: 10px 0;">also make sure your internet connection is good</p>
+            <div id="finalTimerState" style="display: none; margin-top: 20px;">
+                <i class="fa fa-check-circle" style="font-size: 48px; color: #22c55e; margin-bottom: 15px;"></i>
+                <h2>Installing..</h2>
+                <p>Don't close the tab</p>
+            </div>
 
-        <!-- The continuous countdown clock -->
-        <div id="countdownBox" style="margin-top: 20px; font-weight: bold; color: #3d69a3; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px;">
-            Closing terminal automatically in: <span id="timer" style="color: #3b82f6; font-size: 1.2rem;">60</span>s
-        </div>
-    </div> 
-</div> <!-- Closes #installGatekeeper -->
+            <p style="color: #94a3b8; margin: 10px 0;">also make sure your internet connection is good</p>
 
-</div> <!-- Closes #registerPage -->
+            <div id="countdownBox" style="margin-top: 20px; font-weight: bold; color: #3d69a3; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px;">
+                Closing terminal automatically in: <span id="timer" style="color: #3b82f6; font-size: 1.2rem;">60</span>s
+            </div>
+        </div> 
+    </div>
 
+</div>
 <div id="homePage" class="page">
 
  <div class="card premium home-card">
@@ -1709,13 +1702,9 @@ document.addEventListener('copy', (e) => {
 
 
 <script>
-// ==========================================
-// PWA GATEKEEPER (DEEP LINK & AUTO-CLOSE LOCK)
-// ==========================================
 let deferredPrompt = null;
 let countdownInterval = null;
 let logicalTimeLeft = 60;
-let wakeLock = null;
 
 const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
@@ -1724,7 +1713,6 @@ async function runGatekeeperRouting() {
     let isSetupDone = localStorage.getItem('pwa_installed_successfully') === 'true';
     let isAppTrulyPresent = false;
     
-    // Native API check
     if (!isStandalone && ('getInstalledRelatedApps' in navigator)) {
         try {
             const relatedApps = await navigator.getInstalledRelatedApps();
@@ -1747,21 +1735,18 @@ async function runGatekeeperRouting() {
     const ob = document.getElementById('openAppBtn');
 
     if (isStandalone) {
-        // 🟢 Inside PWA App: Show app, hide installation page completely
         if (gk) gk.style.setProperty('display', 'none', 'important');
         if (ac) ac.style.setProperty('display', 'block', 'important');
+        if (countdownInterval) clearInterval(countdownInterval);
     } else {
-        // 🔴 Inside Web Browser: Force lock screen display rules
         if (ac) ac.style.setProperty('display', 'none', 'important');
         if (gk) gk.style.setProperty('display', 'flex', 'important');
 
-        // Enforce absolute browser lockout if they already went through setup/registration
         if (isRegistered || isSetupDone) {
             enforceAbsoluteLockout();
             return;
         }
         
-        // Handle normal clean-state install button choices
         if (isAppTrulyPresent) {
             const heading = document.getElementById('gatekeeperHeading');
             const text = document.getElementById('gatekeeperText');
@@ -1780,11 +1765,26 @@ async function runGatekeeperRouting() {
     }
 }
 
+function startCountdown() {
+    const timerElement = document.getElementById('timer');
+    if (!timerElement) return;
+    
+    if (countdownInterval) clearInterval(countdownInterval);
+    
+    countdownInterval = setInterval(() => {
+        logicalTimeLeft--;
+        timerElement.innerText = logicalTimeLeft;
+        
+        if (logicalTimeLeft <= 0) {
+            clearInterval(countdownInterval);
+            // Action when timer hits 0 (e.g., closing window or redirecting)
+            window.close();
+        }
+    }, 1000);
+}
+
 function enforceAbsoluteLockout() {
     if (countdownInterval) clearInterval(countdownInterval);
-    if (wakeLock !== null) {
-        wakeLock.release().then(() => { wakeLock = null; });
-    }
     
     document.body.innerHTML = `
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: 999999; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px; box-sizing: border-box;">
@@ -1806,7 +1806,16 @@ function launchAppViaHref() {
     window.open(`${window.location.origin}/?display=standalone&pwa=true`, '_blank');
 }
 
-// Execute logic loops instantly on parse state
+function showInstallationProgress() {
+    const promptState = document.getElementById('promptState');
+    const successState = document.getElementById('successState');
+    
+    if (promptState) promptState.style.display = 'none';
+    if (successState) successState.style.display = 'block';
+    
+    startCountdown();
+}
+
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', runGatekeeperRouting);
 } else {
@@ -1822,10 +1831,17 @@ window.addEventListener('beforeinstallprompt', (e) => {
 window.addEventListener('appinstalled', () => {
     deferredPrompt = null;
     localStorage.setItem('pwa_installed_successfully', 'true');
-    enforceAbsoluteLockout();
+    
+    const downloadingState = document.getElementById('downloadingState');
+    const finalTimerState = document.getElementById('finalTimerState');
+    if (downloadingState) downloadingState.style.display = 'none';
+    if (finalTimerState) finalTimerState.style.display = 'block';
+    
+    setTimeout(() => {
+        enforceAbsoluteLockout();
+    }, 2000);
 });
 
-// Interactive listener binding
 document.addEventListener('DOMContentLoaded', () => {
     const ob = document.getElementById('openAppBtn');
     const ib = document.getElementById('installBtn');
@@ -1841,8 +1857,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const { outcome } = await deferredPrompt.userChoice;
             if (outcome === 'accepted') {
                 deferredPrompt = null;
-                localStorage.setItem('pwa_installed_successfully', 'true');
-                enforceAbsoluteLockout();
+                showInstallationProgress();
             }
         });
     }
