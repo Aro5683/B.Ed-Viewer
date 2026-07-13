@@ -3,7 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+(function() {
+    // 1. Instantly check if they are running in the standalone app window
+    const isPWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
+    // 2. If they are in a regular web browser tab...
+    if (!isPWA) {
+        // Find out where they are trying to go
+        const currentPath = window.location.pathname;
+        
+        // If they are NOT on the main index root page, hijack the browser and force them back to the gatekeeper
+        if (currentPath !== '/' && !currentPath.endsWith('index.html')) {
+            // Change this URL to match your main landing page file if different
+            window.location.replace('/'); 
+        }
+
+        // 3. Inject a CSS rule before the page even finishes rendering to hide everything except the gatekeeper
+        const style = document.createElement('style');
+        style.innerHTML = `
+            body > *:not(#installGatekeeper):not(script):not(style) {
+                display: none !important;
+            }
+            #appContent {
+                display: none !important;
+            }
+            #installGatekeeper {
+                display: flex !important;
+            }
+        `;
+        document.documentElement.appendChild(style);
+    }
+})();
+</script>
 <title>B.Ed Guru</title>
 
 <link rel="manifest" href="manifest.json">
