@@ -1805,19 +1805,16 @@ async function runGatekeeperRouting() {
     
     let isAppTrulyPresent = false;
     
-    // 🔍 NATIVE SYSTEM VERIFICATION CHECK
+    // NATIVE SYSTEM VERIFICATION CHECK
     if (!isStandalone && ('getInstalledRelatedApps' in navigator)) {
         try {
             const relatedApps = await navigator.getInstalledRelatedApps();
             if (relatedApps.length > 0) {
                 isAppTrulyPresent = true;
             } else {
-                // 🔄 FIXED: The device natively reports the app is uninstalled!
-                // Clear old stale local storage keys immediately to restore the install loop.
                 localStorage.removeItem('pwa_installed_successfully');
                 isSetupDone = false;
                 
-                // If they completely uninstalled the app, let's assume they might need to re-register
                 if (!isRegistered) {
                     localStorage.removeItem('bed_guru_user');
                     isRegistered = null;
@@ -1830,26 +1827,28 @@ async function runGatekeeperRouting() {
         isAppTrulyPresent = isSetupDone;
     }
 
-    // 🛑 CRITICAL ENFORCEMENT: Browser lockout wall
-    if (!isStandalone && (isRegistered || isSetupDone)) {
-        enforceAbsoluteLockout();
-        return;
-    }
-
     const gk = document.getElementById('installGatekeeper') || gatekeeper;
     const ac = document.getElementById('appContent') || appContent;
     const ib = document.getElementById('installBtn') || installBtn;
     const ob = document.getElementById('openAppBtn') || openAppBtn;
 
     if (isStandalone) {
-        // 🟢 Inside PWA App: Unlock structural content display fully
+        // 🟢 Inside PWA App: Fully open app features safely
         if (gk) gk.style.display = 'none';
         if (ac) ac.style.display = 'block';
     } else {
-        // 🔴 Inside Web Browser: Show layout setup guide
+        // 🔴 Inside Web Browser: ALWAYS enforce gatekeeper panel visibility first 
+        // to block data leaks on cold load uninstalled states.
         if (gk) gk.style.display = 'flex';
         if (ac) ac.style.display = 'none';
+
+        // 🛑 LOCKOUT ENFORCEMENT: If they are registered or setup is finished, trigger the block wall
+        if (isRegistered || isSetupDone) {
+            enforceAbsoluteLockout();
+            return;
+        }
         
+        // Show context-aware setup states for clean installations
         if (isAppTrulyPresent) {
             const heading = document.getElementById('gatekeeperHeading');
             const text = document.getElementById('gatekeeperText');
@@ -1892,7 +1891,6 @@ async function startInstallationTimer() {
     const fs = document.getElementById('finalTimerState') || finalTimerState;
     const td = document.getElementById('timer') || timerDisplay;
 
-    // Show download text layouts
     if (ps) ps.style.display = 'none';
     if (ss) ss.style.display = 'block';
     if (ac) ac.style.display = 'none';
@@ -1947,6 +1945,8 @@ document.addEventListener('DOMContentLoaded', () => {
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
+    // Rerun routing logic to ensure installer buttons update correctly when prompt loads
+    runGatekeeperRouting();
 });
 
 window.addEventListener('appinstalled', (event) => {
