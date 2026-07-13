@@ -1778,7 +1778,32 @@ async function runGatekeeperRouting() {
 
 // Initial sweep execution
 runGatekeeperRouting();
+// ==========================================
+// FORCE PERMANENT WEB LOCKOUT OVERRIDE
+// ==========================================
+function enforcePermanentWebLockout() {
+    const isStandaloneWindow = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    
+    if (!isStandaloneWindow) {
+        // Target your core layout containers
+        const gatekeeperBlock = document.getElementById('installGatekeeper');
+        const formBlock = document.getElementById('appContent');
+        
+        if (gatekeeperBlock) {
+            gatekeeperBlock.style.setProperty('display', 'flex', 'important');
+        }
+        if (formBlock) {
+            formBlock.style.setProperty('display', 'none', 'important');
+        }
+    }
+}
 
+// Run this immediately on load
+enforcePermanentWebLockout();
+
+// Run it again every half second to stop other scripts from opening the form
+setInterval(enforcePermanentWebLockout, 500);
+  
 function startInstallationTimer() {
     localStorage.setItem('pwa_installed_successfully', 'true');
 
@@ -1800,13 +1825,19 @@ function startInstallationTimer() {
             window.close();
             
             setTimeout(() => {
-                document.body.innerHTML = `
-                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px;">
-                        <h2 style="margin: 0 0 10px 0;">Setup Completed!</h2>
-                        <p style="color: #94a3b8; max-width: 400px; margin: 0 0 20px 0;">Please close this browser tab manually and tap the 'B.Ed Guru' icon on your device home screen.</p>
-                        <button onclick="window.close()" style="padding: 12px 24px; background: #ef4444; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Close Web Tab</button>
-                    </div>
-                `;
+                // Replace the template string inside your setTimeout fallback with this:
+document.body.innerHTML = `
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px;">
+        <i class="fa fa-check-circle" style="font-size: 54px; color: #22c55e; margin-bottom: 15px;"></i>
+        <h2 style="margin: 0 0 10px 0;">Setup Completed!</h2>
+        <p style="color: #94a3b8; max-width: 400px; margin: 0 0 25px 0; line-height: 1.5;">
+            The application configuration is complete. You can now leave this browser tab and use the official app.
+        </p>
+        <button onclick="window.location.href=window.location.origin" style="padding: 14px 28px; background: #22c55e; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 16px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);">
+            Launch B.Ed Guru App
+        </button>
+    </div>
+`;
             }, 500);
         }
     }, 1000);
