@@ -1965,49 +1965,59 @@ if ('serviceWorker' in navigator) {
 </script>
 <script>
 (function() {
-    // 1. Check if the user is running inside the standalone app window
-    const isAppWindow = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    // 1. Environmental Check
+    const isStandalonePWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
-    // 🔴 IF WE ARE IN A STANDARD WEB BROWSER: Enforce absolute ironclad lock
-    if (!isAppWindow) {
-        // Path Hijack Protection: Redirect if they try to access internal pages directly
+    // 🔴 IF WE ARE IN A STANDARD WEB BROWSER: Enforce global lock
+    if (!isStandalonePWA) {
+        // Path Hijack Protection
         const currentPath = window.location.pathname;
         if (currentPath !== '/' && !currentPath.endsWith('index.html')) {
             window.location.replace('/'); 
             return;
         }
 
-        // 2. Inject a high-priority CSS rule to overwrite ANY registration scripts
-        const safetyStyle = document.createElement('style');
-        safetyStyle.innerHTML = `
-            #appContent { display: none !important; }
-            #installGatekeeper { display: flex !important; visibility: visible !important; opacity: 1 !important; }
+        // 2. Inject a global stylesheet targeting the layout hierarchy
+        const permanentLock = document.createElement('style');
+        permanentLock.innerHTML = `
+            /* Hide the main wrapper container entirely */
+            #registerPage {
+                display: block !important;
+            }
+            /* Hide every child element within the registration page */
+            #registerPage > * {
+                display: none !important;
+            }
+            /* Explicitly force ONLY the gatekeeper to open */
+            #registerPage > #installGatekeeper, 
+            #registerPage > #installGatekeeper * {
+                display: flex !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
         `;
-        document.head.appendChild(safetyStyle);
+        document.head.appendChild(permanentLock);
 
-        // 3. Target elements immediately since they are loaded at the bottom of the page
-        const targetForm = document.getElementById('appContent');
-        const gatekeeperBlock = document.getElementById('installGatekeeper');
+        // 3. Structural Lock - Watch the entire page layout for changes
+        const globalObserver = new MutationObserver(() => {
+            const formContainer = document.getElementById('appContent');
+            const gatekeeperBlock = document.getElementById('installGatekeeper');
 
-        if (targetForm) targetForm.setAttribute('style', 'display: none !important;');
-        if (gatekeeperBlock) gatekeeperBlock.setAttribute('style', 'display: flex !important;');
-
-        // 4. Set up the observer to watch for any sneaky registration script modifications
-        const lockObserver = new MutationObserver(() => {
-            if (targetForm && targetForm.style.display !== 'none') {
-                targetForm.setAttribute('style', 'display: none !important;');
+            if (formContainer && formContainer.style.display !== 'none') {
+                formContainer.style.setProperty('display', 'none', 'important');
             }
             if (gatekeeperBlock && gatekeeperBlock.style.display !== 'flex') {
-                gatekeeperBlock.setAttribute('style', 'display: flex !important;');
+                gatekeeperBlock.style.setProperty('display', 'flex', 'important');
             }
         });
 
-        if (targetForm) {
-            lockObserver.observe(targetForm, { attributes: true, attributeFilter: ['style', 'class'] });
-        }
-        if (gatekeeperBlock) {
-            lockObserver.observe(gatekeeperBlock, { attributes: true, attributeFilter: ['style', 'class'] });
-        }
+        // Monitor the root document body for any programmatic style structural cleanups
+        globalObserver.observe(document.body, { 
+            childList: true, 
+            subtree: true, 
+            attributes: true, 
+            attributeFilter: ['style', 'class'] 
+        });
     }
 })();
 </script>
