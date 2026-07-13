@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bed-guru-cache-v1.5'; // 💡 Bumped version to force update
+const CACHE_NAME = 'bed-guru-cache-v1.1'; // 💡 Bumped version to force update
 
 // Add the exact relative paths to the files you want to load offline
 const ASSETS_TO_CACHE = [
