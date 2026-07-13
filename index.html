@@ -1708,14 +1708,33 @@ document.addEventListener('copy', (e) => {
 
 
 <script>
+
 // ========================================================
-// GLOBAL STATE & ENVIRONMENTAL CHECK
+// 1. GLOBAL STATE & ENVIRONMENTAL CHECK
 // ========================================================
 let deferredPrompt = null;
 let wakeLock = null;
 
 const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
+// Pre-inject layout blockade styles instantly if in a regular browser tab
+if (!isStandalone) {
+    const criticalStyles = document.createElement('style');
+    criticalStyles.id = 'ironclad-gatekeeper-styles';
+    criticalStyles.innerHTML = `
+        body > *:not(#installGatekeeper):not(script):not(style) {
+            display: none !important;
+        }
+        #installGatekeeper {
+            display: flex !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+    `;
+    document.head.appendChild(criticalStyles);
+}
+
+// Gather DOM structural hooks
 const gatekeeper = document.getElementById('installGatekeeper');
 const appContent = document.getElementById('appContent');
 const installBtn = document.getElementById('installBtn');
@@ -1727,38 +1746,45 @@ const successState = document.getElementById('successState');
 const downloadingState = document.getElementById('downloadingState');
 const finalTimerState = document.getElementById('finalTimerState');
 
-// Active screen wake lock managers
+// ========================================================
+// 2. WAKE LOCK MANAGER
+// ========================================================
 async function requestWakeLock() {
     try {
         if ('wakeLock' in navigator) {
             wakeLock = await navigator.wakeLock.request('screen');
+            console.log('Screen Wake Lock active.');
         }
     } catch (err) {
-        console.warn(`Wake Lock failed: ${err.message}`);
+        console.warn(`Wake Lock request failed: ${err.message}`);
     }
 }
 
 function releaseWakeLock() {
     if (wakeLock !== null) {
-        wakeLock.release().then(() => { wakeLock = null; });
+        wakeLock.release().then(() => { 
+            wakeLock = null; 
+            console.log('Screen Wake Lock released.');
+        });
     }
 }
 
 // ========================================================
-// CORE GATEKEEPER ROUTING (SAFE & NON-COLLAPSING)
+// 3. CORE GATEKEEPER ROUTING
 // ========================================================
 async function runGatekeeperRouting() {
     if (isStandalone) {
-        // 🟢 INSIDE STANDALONE APP: Show form, hide blockades
+        // Strip the block styles within the standalone app layout
+        const customStyleBlock = document.getElementById('ironclad-gatekeeper-styles');
+        if (customStyleBlock) customStyleBlock.remove();
+
         if (gatekeeper) gatekeeper.style.setProperty('display', 'none', 'important');
         if (appContent) appContent.style.setProperty('display', 'block', 'important');
     } else {
-        // 🔴 INSIDE WEB BROWSER: Keep form locked down completely
         if (gatekeeper) gatekeeper.style.setProperty('display', 'flex', 'important');
         if (appContent) appContent.style.setProperty('display', 'none', 'important');
 
         let isAppTrulyPresent = false;
-        
         if ('getInstalledRelatedApps' in navigator) {
             try {
                 const relatedApps = await navigator.getInstalledRelatedApps();
@@ -1770,7 +1796,6 @@ async function runGatekeeperRouting() {
             isAppTrulyPresent = localStorage.getItem('pwa_installed_successfully') === 'true';
         }
 
-        // Adjust presentation UI text safe strings
         if (isAppTrulyPresent) {
             const heading = document.getElementById('gatekeeperHeading');
             const text = document.getElementById('gatekeeperText');
@@ -1791,7 +1816,7 @@ async function runGatekeeperRouting() {
 }
 
 // ========================================================
-// INSTALLATION ACTION LOGIC & WAKE LOCK TIMER
+// 4. INSTALLATION ACTION LOGIC & WAKE LOCK TIMER
 // ========================================================
 function startInstallationTimer() {
     localStorage.setItem('pwa_installed_successfully', 'true');
@@ -1799,8 +1824,6 @@ function startInstallationTimer() {
 
     if (promptState) promptState.style.display = 'none';
     if (successState) successState.style.display = 'block';
-    if (appContent) appContent.style.setProperty('display', 'none', 'important');
-    
     if (downloadingState) downloadingState.style.display = 'none';
     if (finalTimerState) finalTimerState.style.display = 'block';
     
@@ -1815,7 +1838,6 @@ function startInstallationTimer() {
             clearInterval(countdownInterval);
             releaseWakeLock();
             
-            // Render beautiful setup completed fallback pane context
             document.body.innerHTML = `
                 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px;">
                     <h2 style="margin: 0 0 10px 0;">Setup Completed!</h2>
@@ -1831,7 +1853,9 @@ function startInstallationTimer() {
     }, 1000);
 }
 
-// Dynamic Action Listeners
+// ========================================================
+// 5. NATIVE APPLICATION LISTENERS
+// ========================================================
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
@@ -1866,130 +1890,31 @@ if (openAppBtn) {
     });
 }
 
-// Continuous Structural Safety Mutation Guard
+// ========================================================
+// 6. CONTINUOUS STRUCTURAL SAFETY MUTATION GUARD
+// ========================================================
 if (!isStandalone) {
     const safetyObserver = new MutationObserver(() => {
-        if (appContent && appContent.style.display !== 'none') {
-            appContent.style.setProperty('display', 'none', 'important');
+        const customStyleBlock = document.getElementById('ironclad-gatekeeper-styles');
+        if (!customStyleBlock) {
+            const dynamicReconstruct = document.createElement('style');
+            dynamicReconstruct.id = 'ironclad-gatekeeper-styles';
+            dynamicReconstruct.innerHTML = `
+                body > *:not(#installGatekeeper):not(script):not(style) { display: none !important; }
+                #installGatekeeper { display: flex !important; visibility: visible !important; opacity: 1 !important; }
+            `;
+            document.head.appendChild(dynamicReconstruct);
         }
-        if (gatekeeper && gatekeeper.style.display !== 'flex' && !successState.style.display.includes('block')) {
+        if (gatekeeper && gatekeeper.style.display !== 'flex' && (!successState || successState.style.display !== 'block')) {
             gatekeeper.style.setProperty('display', 'flex', 'important');
         }
     });
     safetyObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
 }
 
-// Initial Run
+// Initialize
 runGatekeeperRouting();
 
-
-// Function to activate the screen wake lock
-async function requestWakeLock() {
-    try {
-        if ('wakeLock' in navigator) {
-            wakeLock = await navigator.wakeLock.request('screen');
-            console.log('Screen Wake Lock is active. Device will stay awake.');
-        }
-    } catch (err) {
-        console.warn(`Wake Lock failed: ${err.name}, ${err.message}`);
-    }
-}
-
-// Function to release the screen lock when done
-function releaseWakeLock() {
-    if (wakeLock !== null) {
-        wakeLock.release()
-            .then(() => {
-                wakeLock = null;
-                console.log('Screen Wake Lock released.');
-            });
-    }
-}
-
-function startInstallationTimer() {
-    localStorage.setItem('pwa_installed_successfully', 'true');
-
-    // 🌟 ACTIVATE WAKE LOCK IMMEDIATELY
-    requestWakeLock();
-
-    if (promptState) promptState.style.display = 'none';
-    if (successState) successState.style.display = 'block';
-    if (appContent) appContent.style.display = 'none';
-    
-    if (downloadingState) downloadingState.style.display = 'none';
-    if (finalTimerState) finalTimerState.style.display = 'block';
-    
-    let logicalTimeLeft = 30;
-    
-    const countdownInterval = setInterval(() => {
-        logicalTimeLeft--;
-        if (timerDisplay) timerDisplay.innerText = logicalTimeLeft;
-        
-        if (logicalTimeLeft <= 0) {
-            clearInterval(countdownInterval);
-            
-            // 🌟 RELEASE THE WAKE LOCK WHEN TIMER ENDS
-            releaseWakeLock();
-            
-            window.close();
-            
-            setTimeout(() => {
-                document.body.innerHTML = `
-                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px;">
-                        <i class="fa fa-check-circle" style="font-size: 54px; color: #22c55e; margin-bottom: 15px;"></i>
-                        <h2 style="margin: 0 0 10px 0;">Setup Completed!</h2>
-                        <p style="color: #94a3b8; max-width: 400px; margin: 0 0 25px 0; line-height: 1.5;">
-                            The application configuration is complete. You can now leave this browser tab and use the official app.
-                        </p>
-                        <button onclick="window.location.href=window.location.origin" style="padding: 14px 28px; background: #22c55e; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 16px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);">
-                            Launch B.Ed Guru App
-                        </button>
-                    </div>
-                `;
-            }, 500);
-        }
-    }, 1000);
-}
-
-if (openAppBtn) {
-    openAppBtn.addEventListener('click', () => {
-        // Deep link action to fire app startup context if supported
-        window.location.href = window.location.origin;
-    });
-}
-
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-});
-
-if (installBtn) {
-    installBtn.addEventListener('click', async () => {
-        if (!deferredPrompt) {
-            alert("⏳ If the app is already on your phone, click 'Open B.Ed Guru App'.");
-            return;
-        }
-        
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        
-        if (outcome === 'accepted') {
-            deferredPrompt = null;
-            
-            if (promptState) promptState.style.display = 'none';
-            if (successState) successState.style.display = 'block';
-            if (downloadingState) downloadingState.style.display = 'block';
-            if (finalTimerState) finalTimerState.style.display = 'none';
-            
-            if (timerDisplay) timerDisplay.innerText = '--';
-        }
-    });
-}
-
-window.addEventListener('appinstalled', (event) => {
-    deferredPrompt = null;
-    startInstallationTimer();
-});
 
 // ==========================================
 // SERVICE WORKER REGISTRATION SETUP
