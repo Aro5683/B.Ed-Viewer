@@ -1808,15 +1808,25 @@ async function runGatekeeperRouting() {
         }
         
         // Adjust the gatekeeper block messages based on verified status
-        if (isAppTrulyPresent) {
-            const heading = document.getElementById('gatekeeperHeading');
-            const text = document.getElementById('gatekeeperText');
-            
-            if (heading) heading.innerText = "App Already Installed! 🎉";
-            if (text) text.innerText = "You cannot use the web version. Please open the official B.Ed Guru App on your device home screen to access features.";
-            
-            if (installBtn) installBtn.style.display = 'none';
-            if (openAppBtn) openAppBtn.style.display = 'block';
+       // Locate this section inside your main runGatekeeperRouting() function:
+if (isAppTrulyPresent) {
+    const heading = document.getElementById('gatekeeperHeading');
+    const text = document.getElementById('gatekeeperText');
+    
+    // Clean, clear production messaging for your students
+    if (heading) heading.innerText = "App Already Installed! 🎉";
+    if (text) {
+        text.innerHTML = `
+            You have already installed B.Ed Guru App on this device.<br><br>
+            <span style="color: #ef4444; font-weight: 600;">Security Notice:</span> 
+            To access the registration portal, study materials, and platform features, you must use the official application.<br><br>
+            Please close this browser tab and tap the <strong>B.Ed Guru</strong> icon on your device home screen.
+        `;
+    }
+    
+    if (installBtn) installBtn.style.display = 'none';
+    if (openAppBtn) openAppBtn.style.display = 'block';
+}
         } else {
             const heading = document.getElementById('gatekeeperHeading');
             const text = document.getElementById('gatekeeperText');
