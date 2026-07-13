@@ -1702,89 +1702,64 @@ document.addEventListener('copy', (e) => {
 
 
 <script>
+// ==========================================
+// PWA GATEKEEPER (DEEP LINK & AUTO-CLOSE LOCK)
+// ==========================================
 let deferredPrompt = null;
 let countdownInterval = null;
 let logicalTimeLeft = 60;
+let wakeLock = null;
 
+// Dynamic element lookup references
+const gatekeeper = document.getElementById('installGatekeeper');
+const promptState = document.getElementById('promptState');
+const successState = document.getElementById('successState');
+const appContent = document.getElementById('appContent');
+const installBtn = document.getElementById('installBtn');
+const openAppBtn = document.getElementById('openAppBtn');
+const timerDisplay = document.getElementById('timer');
+
+const downloadingState = document.getElementById('downloadingState');
+const finalTimerState = document.getElementById('finalTimerState');
+
+// Check if running inside standalone PWA window environment
 const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
-async function runGatekeeperRouting() {
-    let isRegistered = localStorage.getItem('bed_guru_user');
-    let isSetupDone = localStorage.getItem('pwa_installed_successfully') === 'true';
-    let isAppTrulyPresent = false;
-    
-    // 🟢 FIXED: Force the script to finish checking the device status before evaluating flags
-    if (!isStandalone && ('getInstalledRelatedApps' in navigator)) {
+// 🔒 SCREEN WAKE LOCK MANAGER
+async function requestWakeLock() {
+    if ('wakeLock' in navigator) {
         try {
-            const relatedApps = await navigator.getInstalledRelatedApps();
-            if (relatedApps.length > 0) {
-                isAppTrulyPresent = true;
-            } else {
-                localStorage.removeItem('pwa_installed_successfully');
-                isSetupDone = false;
-            }
+            wakeLock = await navigator.wakeLock.request('screen');
+            console.log('Screen Wake Lock activated successfully ☀️');
         } catch (err) {
-            isAppTrulyPresent = isSetupDone;
-        }
-    } else {
-        isAppTrulyPresent = isSetupDone;
-    }
-
-    const gk = document.getElementById('installGatekeeper');
-    const ac = document.getElementById('appContent');
-    const ib = document.getElementById('installBtn');
-    const ob = document.getElementById('openAppBtn');
-
-    if (isStandalone) {
-        if (gk) gk.style.setProperty('display', 'none', 'important');
-        if (ac) ac.style.setProperty('display', 'block', 'important');
-        if (countdownInterval) clearInterval(countdownInterval);
-    } else {
-        // 🟢 FIXED: If the app is uninstalled, explicitly block the registration app wrapper from displaying
-        if (isRegistered || isSetupDone) {
-            enforceAbsoluteLockout();
-            return;
-        }
-        
-        if (ac) ac.style.setProperty('display', 'none', 'important');
-        if (gk) gk.style.setProperty('display', 'flex', 'important');
-
-        if (isAppTrulyPresent) {
-            const heading = document.getElementById('gatekeeperHeading');
-            const text = document.getElementById('gatekeeperText');
-            if (heading) heading.innerText = "App Already Installed! 🎉";
-            if (text) text.innerText = "You have already configured B.Ed Guru on this device.";
-            if (ib) ib.style.setProperty('display', 'none', 'important');
-            if (ob) ob.style.setProperty('display', 'block', 'important');
-        } else {
-            const heading = document.getElementById('gatekeeperHeading');
-            const text = document.getElementById('gatekeeperText');
-            if (heading) heading.innerText = "Welcome!";
-            if (text) text.innerText = "You must install our official application to access the registration portal.";
-            if (ib) ib.style.setProperty('display', 'block', 'important');
-            if (ob) ob.style.setProperty('display', 'none', 'important');
+            console.error(`Wake Lock Error: ${err.name}, ${err.message}`);
         }
     }
 }
 
-function startCountdown() {
-    const timerElement = document.getElementById('timer');
-    if (!timerElement) return;
-    if (countdownInterval) clearInterval(countdownInterval);
-    
-    countdownInterval = setInterval(() => {
-        logicalTimeLeft--;
-        timerElement.innerText = logicalTimeLeft;
-        
-        if (logicalTimeLeft <= 0) {
-            clearInterval(countdownInterval);
-            window.close();
-        }
-    }, 1000);
+function releaseWakeLock() {
+    if (wakeLock !== null) {
+        wakeLock.release()
+            .then(() => {
+                wakeLock = null;
+                console.log('Screen Wake Lock released');
+            });
+    }
 }
 
+// Re-request wake lock if user switches away from tab and back during countdown
+document.addEventListener('visibilitychange', async () => {
+    if (countdownInterval && document.visibilityState === 'visible') {
+        await requestWakeLock();
+    }
+});
+
+// Hard enforcement block rule
 function enforceAbsoluteLockout() {
-    if (countdownInterval) clearInterval(countdownInterval);
+    if (countdownInterval) {
+        clearInterval(countdownInterval);
+    }
+    releaseWakeLock();
     
     document.body.innerHTML = `
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: 999999; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px; box-sizing: border-box;">
@@ -1801,68 +1776,191 @@ function enforceAbsoluteLockout() {
     `;
 }
 
+// System Deep-Link Engine Interception
 function launchAppViaHref() {
+    const currentOrigin = window.location.origin;
     window.location.hash = "pwa-launch";
-    window.open(`${window.location.origin}/?display=standalone&pwa=true`, '_blank');
-}
-
-function showInstallationProgress() {
-    const promptState = document.getElementById('promptState');
-    const successState = document.getElementById('successState');
-    if (promptState) promptState.style.display = 'none';
-    if (successState) successState.style.display = 'block';
-    startCountdown();
-}
-
-// 🟢 FIXED: Wrapped initial call in an async handler to safely await the routing steps
-window.addEventListener('DOMContentLoaded', async () => {
-    await runGatekeeperRouting();
+    const appWindow = window.open(`${currentOrigin}/?display=standalone&pwa=true`, '_blank');
     
-    const ob = document.getElementById('openAppBtn');
-    const ib = document.getElementById('installBtn');
+    if (appWindow) {
+        setTimeout(() => {
+            if (!isStandalone) {
+                console.log("Deep link attempted. If app fails to launch, click the native browser badge.");
+            }
+        }, 250);
+    }
+}
 
-    if (ob) ob.addEventListener('click', launchAppViaHref);
+async function runGatekeeperRouting() {
+    let isRegistered = localStorage.getItem('bed_guru_user');
+    let isSetupDone = localStorage.getItem('pwa_installed_successfully') === 'true';
+    
+    let isAppTrulyPresent = false;
+    
+    // 🔍 NATIVE SYSTEM VERIFICATION CHECK
+    if (!isStandalone && ('getInstalledRelatedApps' in navigator)) {
+        try {
+            const relatedApps = await navigator.getInstalledRelatedApps();
+            if (relatedApps.length > 0) {
+                isAppTrulyPresent = true;
+            } else {
+                // 🔄 FIXED: The device natively reports the app is uninstalled!
+                // Clear old stale local storage keys immediately to restore the install loop.
+                localStorage.removeItem('pwa_installed_successfully');
+                isSetupDone = false;
+                
+                // If they completely uninstalled the app, let's assume they might need to re-register
+                if (!isRegistered) {
+                    localStorage.removeItem('bed_guru_user');
+                    isRegistered = null;
+                }
+            }
+        } catch (err) {
+            isAppTrulyPresent = isSetupDone;
+        }
+    } else {
+        isAppTrulyPresent = isSetupDone;
+    }
+
+    // 🛑 CRITICAL ENFORCEMENT: Browser lockout wall
+    if (!isStandalone && (isRegistered || isSetupDone)) {
+        enforceAbsoluteLockout();
+        return;
+    }
+
+    const gk = document.getElementById('installGatekeeper') || gatekeeper;
+    const ac = document.getElementById('appContent') || appContent;
+    const ib = document.getElementById('installBtn') || installBtn;
+    const ob = document.getElementById('openAppBtn') || openAppBtn;
+
+    if (isStandalone) {
+        // 🟢 Inside PWA App: Unlock structural content display fully
+        if (gk) gk.style.display = 'none';
+        if (ac) ac.style.display = 'block';
+    } else {
+        // 🔴 Inside Web Browser: Show layout setup guide
+        if (gk) gk.style.display = 'flex';
+        if (ac) ac.style.display = 'none';
+        
+        if (isAppTrulyPresent) {
+            const heading = document.getElementById('gatekeeperHeading');
+            const text = document.getElementById('gatekeeperText');
+            
+            if (heading) heading.innerText = "App Already Installed! 🎉";
+            if (text) text.innerText = "You have already configured B.Ed Guru on this device.";
+            
+            if (ib) ib.style.display = 'none';
+            if (ob) ob.style.display = 'block';
+        } else {
+            const heading = document.getElementById('gatekeeperHeading');
+            const text = document.getElementById('gatekeeperText');
+            
+            if (heading) heading.innerText = "Welcome!";
+            if (text) text.innerText = "You must install our official application to access the registration portal.";
+            
+            if (ib) ib.style.display = 'block';
+            if (ob) ob.style.display = 'none';
+        }
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', runGatekeeperRouting);
+} else {
+    runGatekeeperRouting();
+}
+
+// Begins countdown and monitors visual update state
+async function startInstallationTimer() {
+    localStorage.setItem('pwa_installed_successfully', 'true');
+    
+    // Request Wake Lock immediately when timer starts to keep the screen bright
+    await requestWakeLock();
+    
+    const ps = document.getElementById('promptState') || promptState;
+    const ss = document.getElementById('successState') || successState;
+    const ac = document.getElementById('appContent') || appContent;
+    const ds = document.getElementById('downloadingState') || downloadingState;
+    const fs = document.getElementById('finalTimerState') || finalTimerState;
+    const td = document.getElementById('timer') || timerDisplay;
+
+    // Show download text layouts
+    if (ps) ps.style.display = 'none';
+    if (ss) ss.style.display = 'block';
+    if (ac) ac.style.display = 'none';
+    if (ds) ds.style.display = 'block';
+    if (fs) fs.style.display = 'none';
+
+    logicalTimeLeft = 60;
+    if (td) td.innerText = logicalTimeLeft;
+
+    if (countdownInterval) clearInterval(countdownInterval);
+
+    countdownInterval = setInterval(() => {
+        logicalTimeLeft--;
+        if (td) td.innerText = logicalTimeLeft;
+        
+        if (logicalTimeLeft <= 0) {
+            clearInterval(countdownInterval);
+            enforceAbsoluteLockout();
+        }
+    }, 1000);
+}
+
+// Attach interactive layout handlers safely
+document.addEventListener('DOMContentLoaded', () => {
+    const ob = document.getElementById('openAppBtn') || openAppBtn;
+    const ib = document.getElementById('installBtn') || installBtn;
+
+    if (ob) {
+        ob.addEventListener('click', () => {
+            launchAppViaHref();
+        });
+    }
+
     if (ib) {
         ib.addEventListener('click', async () => {
             if (!deferredPrompt) {
-                alert("⏳ Please make sure your browser supports PWA installation or try refreshing the page.");
+                alert("⏳ Please make sure your internet connection is stable. If the prompt doesn't appear, try reloading the page.");
                 return;
             }
+            
             deferredPrompt.prompt();
             const { outcome } = await deferredPrompt.userChoice;
+            
             if (outcome === 'accepted') {
                 deferredPrompt = null;
-                showInstallationProgress();
+                startInstallationTimer();
             }
         });
     }
 });
 
-window.addEventListener('beforeinstallprompt', async (e) => {
+window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    await runGatekeeperRouting();
 });
 
-window.addEventListener('appinstalled', () => {
+window.addEventListener('appinstalled', (event) => {
     deferredPrompt = null;
-    localStorage.setItem('pwa_installed_successfully', 'true');
-    
-    const downloadingState = document.getElementById('downloadingState');
-    const finalTimerState = document.getElementById('finalTimerState');
-    if (downloadingState) downloadingState.style.display = 'none';
-    if (finalTimerState) finalTimerState.style.display = 'block';
-    
-    setTimeout(() => {
-        enforceAbsoluteLockout();
-    }, 2000);
+    if (!countdownInterval) {
+        startInstallationTimer();
+    }
 });
 
+// ==========================================
+// SERVICE WORKER REGISTRATION SETUP
+// ==========================================
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-            .then(async () => { await runGatekeeperRouting(); })
-            .catch(err => console.error('SW Error:', err));
+        navigator.serviceWorker.register('sw.js') 
+            .then(registration => {
+                console.log('B.Ed Guru Service Worker registered successfully!', registration.scope);
+                runGatekeeperRouting();
+            })
+            .catch(error => {
+                console.error('Service Worker registration failed:', error);
+            });
     });
 }
 </script>
