@@ -1944,59 +1944,43 @@ if ('serviceWorker' in navigator) {
 </script>
 <script>
 (function() {
-    // 1. Environmental Check
-    const isStandalonePWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    // 1. Check if the user is running inside the standalone app window
+    const isAppWindow = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
-    // 🔴 IF WE ARE IN A STANDARD WEB BROWSER: Enforce global lock
-    if (!isStandalonePWA) {
-        // Path Hijack Protection
+    // 🔴 IF WE ARE IN A STANDARD WEB BROWSER: Strip out the app content completely
+    if (!isAppWindow) {
+        
+        // Path Protection: Redirect if they try to look at internal page paths
         const currentPath = window.location.pathname;
         if (currentPath !== '/' && !currentPath.endsWith('index.html')) {
             window.location.replace('/'); 
             return;
         }
 
-        // 2. Inject a global stylesheet targeting the layout hierarchy
-        const permanentLock = document.createElement('style');
-        permanentLock.innerHTML = `
-            /* Hide the main wrapper container entirely */
-            #registerPage {
-                display: block !important;
-            }
-            /* Hide every child element within the registration page */
-            #registerPage > * {
-                display: none !important;
-            }
-            /* Explicitly force ONLY the gatekeeper to open */
-            #registerPage > #installGatekeeper, 
-            #registerPage > #installGatekeeper * {
-                display: flex !important;
-                visibility: visible !important;
-                opacity: 1 !important;
-            }
-        `;
-        document.head.appendChild(permanentLock);
+        // Target the containers
+        const targetForm = document.getElementById('appContent');
+        const gatekeeperBlock = document.getElementById('installGatekeeper');
 
-        // 3. Structural Lock - Watch the entire page layout for changes
-        const globalObserver = new MutationObserver(() => {
-            const formContainer = document.getElementById('appContent');
-            const gatekeeperBlock = document.getElementById('installGatekeeper');
+        // FORCE THE SHOW/HIDE LAYOUT IMMEDIATELY
+        if (targetForm) {
+            // Delete the form contents so it cannot be displayed or loaded under any circumstance
+            targetForm.remove(); 
+        }
+        
+        if (gatekeeperBlock) {
+            gatekeeperBlock.style.setProperty('display', 'flex', 'important');
+        }
 
-            if (formContainer && formContainer.style.display !== 'none') {
-                formContainer.style.setProperty('display', 'none', 'important');
-            }
+        // Simple observer to make sure the gatekeeper block stays visible
+        const safetyObserver = new MutationObserver(() => {
             if (gatekeeperBlock && gatekeeperBlock.style.display !== 'flex') {
                 gatekeeperBlock.style.setProperty('display', 'flex', 'important');
             }
         });
 
-        // Monitor the root document body for any programmatic style structural cleanups
-        globalObserver.observe(document.body, { 
-            childList: true, 
-            subtree: true, 
-            attributes: true, 
-            attributeFilter: ['style', 'class'] 
-        });
+        if (gatekeeperBlock) {
+            safetyObserver.observe(gatekeeperBlock, { attributes: true, attributeFilter: ['style', 'class'] });
+        }
     }
 })();
 </script>
