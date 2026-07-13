@@ -1965,7 +1965,7 @@ if ('serviceWorker' in navigator) {
 </script>
 <script>
 (function() {
-    // 1. Instantly check environment state
+    // 1. Check if the user is running inside the standalone app window
     const isAppWindow = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
     // 🔴 IF WE ARE IN A STANDARD WEB BROWSER: Enforce absolute ironclad lock
@@ -1977,14 +1977,7 @@ if ('serviceWorker' in navigator) {
             return;
         }
 
-        const targetForm = document.getElementById('appContent');
-        const gatekeeperBlock = document.getElementById('installGatekeeper');
-
-        // 2. Force layout states safely
-        if (targetForm) targetForm.setAttribute('style', 'display: none !important;');
-        if (gatekeeperBlock) gatekeeperBlock.setAttribute('style', 'display: flex !important;');
-
-        // 3. Inject strict CSS styling rule to guarantee visibility states
+        // 2. Inject a high-priority CSS rule to overwrite ANY registration scripts
         const safetyStyle = document.createElement('style');
         safetyStyle.innerHTML = `
             #appContent { display: none !important; }
@@ -1992,7 +1985,14 @@ if ('serviceWorker' in navigator) {
         `;
         document.head.appendChild(safetyStyle);
 
-        // 4. Set up the observer to catch sneaky registration scripts trying to toggle form elements
+        // 3. Target elements immediately since they are loaded at the bottom of the page
+        const targetForm = document.getElementById('appContent');
+        const gatekeeperBlock = document.getElementById('installGatekeeper');
+
+        if (targetForm) targetForm.setAttribute('style', 'display: none !important;');
+        if (gatekeeperBlock) gatekeeperBlock.setAttribute('style', 'display: flex !important;');
+
+        // 4. Set up the observer to watch for any sneaky registration script modifications
         const lockObserver = new MutationObserver(() => {
             if (targetForm && targetForm.style.display !== 'none') {
                 targetForm.setAttribute('style', 'display: none !important;');
