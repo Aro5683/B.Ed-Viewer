@@ -1730,19 +1730,44 @@ const finalTimerState = document.getElementById('finalTimerState');
 // Check if running inside standalone PWA window environment
 const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
+// Hard enforcement block rule
+function enforceAbsoluteLockout() {
+    document.body.innerHTML = `
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: 999999; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px; box-sizing: border-box;">
+            <div style="width: 64px; height: 64px; background: rgba(34, 197, 94, 0.1); color: #22c55e; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; font-size: 32px;">✓</div>
+            <h2 style="margin: 0 0 10px 0; font-size: 22px; font-weight: 700;">Platform Security Lock</h2>
+            <p style="color: #94a3b8; max-width: 400px; margin: 0 0 25px 0; line-height: 1.6; font-size: 14px;">
+                Your account registration and device configurations are fully activated.<br><br>
+                Access via standard web browsers is strictly disabled for security compliance. Please use the official application installed on your home screen.
+            </p>
+            <button onclick="window.location.href=window.location.origin" style="padding: 12px 24px; background: #3b82f6; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 15px;">
+                Launch B.Ed Guru
+            </button>
+        </div>
+    `;
+}
+
 async function runGatekeeperRouting() {
-    // Re-verify elements dynamically to ensure they exist if layout loads asynchronously
+    // 1. STAGE ONE: Check if already registered or completed setup in the regular browser
+    const isRegistered = localStorage.getItem('bed_guru_user');
+    const isSetupDone = localStorage.getItem('pwa_installed_successfully') === 'true';
+    
+    if (!isStandalone && (isRegistered || isSetupDone)) {
+        enforceAbsoluteLockout();
+        return;
+    }
+
     const gk = document.getElementById('installGatekeeper') || gatekeeper;
     const ac = document.getElementById('appContent') || appContent;
     const ib = document.getElementById('installBtn') || installBtn;
     const ob = document.getElementById('openAppBtn') || openAppBtn;
 
     if (isStandalone) {
-        // 🟢 Inside PWA App: Unlock form display
+        // 🟢 Inside PWA App: Unlock structural content display fully
         if (gk) gk.style.display = 'none';
         if (ac) ac.style.display = 'block';
     } else {
-        // 🔴 Inside Web Browser: Lock form view completely
+        // 🔴 Inside Web Browser: Lock regular structural views immediately
         if (gk) gk.style.display = 'flex';
         if (ac) ac.style.display = 'none';
         
@@ -1757,23 +1782,14 @@ async function runGatekeeperRouting() {
                     localStorage.removeItem('pwa_installed_successfully');
                 }
             } catch (err) {
-                console.error('Failed to query device state:', err);
                 isAppTrulyPresent = localStorage.getItem('pwa_installed_successfully') === 'true';
             }
         } else {
             isAppTrulyPresent = localStorage.getItem('pwa_installed_successfully') === 'true';
         }
         
-        // Adjust elements using your verified HTML structural IDs
         if (isAppTrulyPresent) {
-            const heading = document.getElementById('gatekeeperHeading');
-            const text = document.getElementById('gatekeeperText');
-            
-            if (heading) heading.innerText = "App Already Installed! 🎉";
-            if (text) text.innerText = "You have already installed the App on this device.";
-            
-            if (ib) ib.style.display = 'none';
-            if (ob) ob.style.display = 'block';
+            enforceAbsoluteLockout();
         } else {
             const heading = document.getElementById('gatekeeperHeading');
             const text = document.getElementById('gatekeeperText');
@@ -1787,7 +1803,7 @@ async function runGatekeeperRouting() {
     }
 }
 
-// Initial execution sweep execution fallback
+// Check on early load states
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', runGatekeeperRouting);
 } else {
@@ -1796,45 +1812,10 @@ if (document.readyState === 'loading') {
 
 function startInstallationTimer() {
     localStorage.setItem('pwa_installed_successfully', 'true');
-
-    const ps = document.getElementById('promptState') || promptState;
-    const ss = document.getElementById('successState') || successState;
-    const ac = document.getElementById('appContent') || appContent;
-    const ds = document.getElementById('downloadingState') || downloadingState;
-    const fs = document.getElementById('finalTimerState') || finalTimerState;
-    const td = document.getElementById('timer') || timerDisplay;
-
-    if (ps) ps.style.display = 'none';
-    if (ss) ss.style.display = 'block';
-    if (ac) ac.style.display = 'none';
-    
-    if (ds) ds.style.display = 'none';
-    if (fs) fs.style.display = 'block';
-    
-    let logicalTimeLeft = 60;
-    
-    const countdownInterval = setInterval(() => {
-        logicalTimeLeft--;
-        if (td) td.innerText = logicalTimeLeft;
-        
-        if (logicalTimeLeft <= 0) {
-            clearInterval(countdownInterval);
-            window.close();
-            
-            setTimeout(() => {
-                document.body.innerHTML = `
-                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px;">
-                        <h2 style="margin: 0 0 10px 0;">Setup Completed!</h2>
-                        <p style="color: #94a3b8; max-width: 400px; margin: 0 0 20px 0;">Please close this browser tab manually and tap the 'B.Ed Guru' icon on your device home screen.</p>
-                        <button onclick="window.location.reload()" style="padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer;">Retry Portal</button>
-                    </div>
-                `;
-            }, 500);
-        }
-    }, 1000);
+    enforceAbsoluteLockout();
 }
 
-// Attach interactive element event listeners securely after load configuration
+// Attach interactive layout handlers safely
 document.addEventListener('DOMContentLoaded', () => {
     const ob = document.getElementById('openAppBtn') || openAppBtn;
     const ib = document.getElementById('installBtn') || installBtn;
@@ -1848,7 +1829,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (ib) {
         ib.addEventListener('click', async () => {
             if (!deferredPrompt) {
-                alert("⏳ If the app is already on your phone, click 'Open B.Ed Guru App'.");
+                alert("⏳ Preparing device installer link package. If already configured, please look for the app icon on your screen.");
                 return;
             }
             
@@ -1893,7 +1874,6 @@ if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js') 
             .then(registration => {
                 console.log('B.Ed Guru Service Worker registered successfully!', registration.scope);
-                // Run the application check using the shared configuration logic
                 runGatekeeperRouting();
             })
             .catch(error => {
