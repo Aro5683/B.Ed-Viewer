@@ -587,6 +587,28 @@ body {
     height: 15px;
 }
 </style>
+
+  <style>
+  /* 🔴 BULLETPROOF WEB TAB LOCKOUT */
+  @media not all and (display-mode: standalone) {
+    #appContent {
+      display: none !important;
+    }
+    #installGatekeeper {
+      display: flex !important;
+    }
+  }
+
+  /* 🟢 STANDALONE APP PERMISSIONS */
+  @media (display-mode: standalone) {
+    #appContent {
+      display: block !important;
+    }
+    #installGatekeeper {
+      display: none !important;
+    }
+  }
+</style>
 </head>
 
 <body>
