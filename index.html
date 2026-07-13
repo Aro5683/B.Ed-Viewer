@@ -1713,14 +1713,13 @@ async function runGatekeeperRouting() {
     let isSetupDone = localStorage.getItem('pwa_installed_successfully') === 'true';
     let isAppTrulyPresent = false;
     
-    // Native API check to see if the app is REALLY on the device right now
+    // 🟢 FIXED: Force the script to finish checking the device status before evaluating flags
     if (!isStandalone && ('getInstalledRelatedApps' in navigator)) {
         try {
             const relatedApps = await navigator.getInstalledRelatedApps();
             if (relatedApps.length > 0) {
                 isAppTrulyPresent = true;
             } else {
-                // 🟢 FIXED: The app was uninstalled! Wipe out the setup flag immediately.
                 localStorage.removeItem('pwa_installed_successfully');
                 isSetupDone = false;
             }
@@ -1741,14 +1740,15 @@ async function runGatekeeperRouting() {
         if (ac) ac.style.setProperty('display', 'block', 'important');
         if (countdownInterval) clearInterval(countdownInterval);
     } else {
-        if (ac) ac.style.setProperty('display', 'none', 'important');
-        if (gk) gk.style.setProperty('display', 'flex', 'important');
-
+        // 🟢 FIXED: If the app is uninstalled, explicitly block the registration app wrapper from displaying
         if (isRegistered || isSetupDone) {
             enforceAbsoluteLockout();
             return;
         }
         
+        if (ac) ac.style.setProperty('display', 'none', 'important');
+        if (gk) gk.style.setProperty('display', 'flex', 'important');
+
         if (isAppTrulyPresent) {
             const heading = document.getElementById('gatekeeperHeading');
             const text = document.getElementById('gatekeeperText');
@@ -1770,7 +1770,6 @@ async function runGatekeeperRouting() {
 function startCountdown() {
     const timerElement = document.getElementById('timer');
     if (!timerElement) return;
-    
     if (countdownInterval) clearInterval(countdownInterval);
     
     countdownInterval = setInterval(() => {
@@ -1779,7 +1778,6 @@ function startCountdown() {
         
         if (logicalTimeLeft <= 0) {
             clearInterval(countdownInterval);
-            // Action when timer hits 0 (e.g., closing window or redirecting)
             window.close();
         }
     }, 1000);
@@ -1811,40 +1809,15 @@ function launchAppViaHref() {
 function showInstallationProgress() {
     const promptState = document.getElementById('promptState');
     const successState = document.getElementById('successState');
-    
     if (promptState) promptState.style.display = 'none';
     if (successState) successState.style.display = 'block';
-    
     startCountdown();
 }
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', runGatekeeperRouting);
-} else {
-    runGatekeeperRouting();
-}
-
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    runGatekeeperRouting();
-});
-
-window.addEventListener('appinstalled', () => {
-    deferredPrompt = null;
-    localStorage.setItem('pwa_installed_successfully', 'true');
+// 🟢 FIXED: Wrapped initial call in an async handler to safely await the routing steps
+window.addEventListener('DOMContentLoaded', async () => {
+    await runGatekeeperRouting();
     
-    const downloadingState = document.getElementById('downloadingState');
-    const finalTimerState = document.getElementById('finalTimerState');
-    if (downloadingState) downloadingState.style.display = 'none';
-    if (finalTimerState) finalTimerState.style.display = 'block';
-    
-    setTimeout(() => {
-        enforceAbsoluteLockout();
-    }, 2000);
-});
-
-document.addEventListener('DOMContentLoaded', () => {
     const ob = document.getElementById('openAppBtn');
     const ib = document.getElementById('installBtn');
 
@@ -1865,10 +1838,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+window.addEventListener('beforeinstallprompt', async (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    await runGatekeeperRouting();
+});
+
+window.addEventListener('appinstalled', () => {
+    deferredPrompt = null;
+    localStorage.setItem('pwa_installed_successfully', 'true');
+    
+    const downloadingState = document.getElementById('downloadingState');
+    const finalTimerState = document.getElementById('finalTimerState');
+    if (downloadingState) downloadingState.style.display = 'none';
+    if (finalTimerState) finalTimerState.style.display = 'block';
+    
+    setTimeout(() => {
+        enforceAbsoluteLockout();
+    }, 2000);
+});
+
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js')
-            .then(() => { runGatekeeperRouting(); })
+            .then(async () => { await runGatekeeperRouting(); })
             .catch(err => console.error('SW Error:', err));
     });
 }
