@@ -1714,6 +1714,10 @@ document.addEventListener('copy', (e) => {
 // PWA GATEKEEPER (DEEP LINK & AUTO-CLOSE LOCK)
 // ==========================================
 let deferredPrompt = null;
+let wakeLock = null;
+let countdownInterval = null;
+let logicalTimeLeft = 60;
+let isConnectionRestoring = false;
 
 // Dynamic element lookup references
 const gatekeeper = document.getElementById('installGatekeeper');
@@ -1730,7 +1734,73 @@ const finalTimerState = document.getElementById('finalTimerState');
 // Check if running inside standalone PWA window environment
 const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
-// Hard enforcement block rule
+// 🔒 SCREEN WAKE LOCK: Keeps screen bright and active
+async function requestWakeLock() {
+    if ('wakeLock' in navigator) {
+        try {
+            wakeLock = await navigator.wakeLock.request('screen');
+            console.log('Screen Wake Lock is active ☀️');
+        } catch (err) {
+            console.error(`Wake Lock Error: ${err.name}, ${err.message}`);
+        }
+    }
+}
+
+document.addEventListener('visibilitychange', async () => {
+    if (wakeLock !== null && document.visibilityState === 'visible') {
+        await requestWakeLock();
+    }
+});
+
+// 🌐 NETWORK MONITORING: Ensures stable data line during install
+function checkNetworkHealth() {
+    const isOnline = navigator.onLine;
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    
+    // Check if network status exists and down-links are too slow (less than 1.5 Mbps)
+    const isSlow = connection && (connection.downlink < 1.5 || connection.saveData);
+
+    const existingWarning = document.getElementById('networkGuardOverlay');
+
+    if (!isOnline || isSlow) {
+        // Pause active timer if running
+        if (countdownInterval) {
+            clearInterval(countdownInterval);
+            countdownInterval = null;
+        }
+
+        if (!existingWarning) {
+            const warningEl = document.createElement('div');
+            warningEl.id = 'networkGuardOverlay';
+            warningEl.style = 'position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.95); z-index: 1000000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-family: sans-serif; text-align: center; padding: 20px; box-sizing: border-box;';
+            warningEl.innerHTML = `
+                <div style="width: 50px; height: 50px; border: 3px solid #f59e0b; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px;"></div>
+                <h3 style="margin: 0 0 10px 0; color: #f59e0b;">Unstable Connection Detected</h3>
+                <p style="color: #94a3b8; max-width: 320px; margin: 0; font-size: 14px; line-height: 1.5;">Optimizing network route. Please do not close this window. Setup will auto-resume once connection stabilizes.</p>
+                <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+            `;
+            document.body.appendChild(warningEl);
+        }
+        isConnectionRestoring = true;
+    } else {
+        if (existingWarning) {
+            existingWarning.remove();
+        }
+        // Resume countdown if it was active and interrupted
+        if (isConnectionRestoring && localStorage.getItem('pwa_installed_successfully') === 'true' && logicalTimeLeft > 0) {
+            isConnectionRestoring = false;
+            resumeInstallationTimer();
+        }
+    }
+}
+
+window.addEventListener('online', checkNetworkHealth);
+window.addEventListener('offline', checkNetworkHealth);
+if (navigator.connection) {
+    navigator.connection.addEventListener('change', checkNetworkHealth);
+}
+
+// Hard enforcement block rule for standard mobile browsers post-registration
 function enforceAbsoluteLockout() {
     document.body.innerHTML = `
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: 999999; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px; box-sizing: border-box;">
@@ -1748,11 +1818,12 @@ function enforceAbsoluteLockout() {
 }
 
 async function runGatekeeperRouting() {
-    // 1. STAGE ONE: Check if already registered or completed setup in the regular browser
+    await requestWakeLock();
+    checkNetworkHealth();
+
     const isRegistered = localStorage.getItem('bed_guru_user');
-    const isSetupDone = localStorage.getItem('pwa_installed_successfully') === 'true';
-    
-    if (!isStandalone && (isRegistered || isSetupDone)) {
+    // If registered inside standard browser, lock access right away
+    if (!isStandalone && isRegistered) {
         enforceAbsoluteLockout();
         return;
     }
@@ -1763,11 +1834,9 @@ async function runGatekeeperRouting() {
     const ob = document.getElementById('openAppBtn') || openAppBtn;
 
     if (isStandalone) {
-        // 🟢 Inside PWA App: Unlock structural content display fully
         if (gk) gk.style.display = 'none';
         if (ac) ac.style.display = 'block';
     } else {
-        // 🔴 Inside Web Browser: Lock regular structural views immediately
         if (gk) gk.style.display = 'flex';
         if (ac) ac.style.display = 'none';
         
@@ -1778,8 +1847,6 @@ async function runGatekeeperRouting() {
                 const relatedApps = await navigator.getInstalledRelatedApps();
                 if (relatedApps.length > 0) {
                     isAppTrulyPresent = true;
-                } else {
-                    localStorage.removeItem('pwa_installed_successfully');
                 }
             } catch (err) {
                 isAppTrulyPresent = localStorage.getItem('pwa_installed_successfully') === 'true';
@@ -1789,21 +1856,24 @@ async function runGatekeeperRouting() {
         }
         
         if (isAppTrulyPresent) {
-            enforceAbsoluteLockout();
+            // Adjust to show open options inside browser gatekeeper frame
+            const heading = document.getElementById('gatekeeperHeading');
+            const text = document.getElementById('gatekeeperText');
+            if (heading) heading.innerText = "App Already Installed! 🎉";
+            if (text) text.innerText = "You have already installed the App on this device.";
+            if (ib) ib.style.display = 'none';
+            if (ob) ob.style.display = 'block';
         } else {
             const heading = document.getElementById('gatekeeperHeading');
             const text = document.getElementById('gatekeeperText');
-            
             if (heading) heading.innerText = "Welcome!";
             if (text) text.innerText = "You must install our official application to access the registration portal.";
-            
             if (ib) ib.style.display = 'block';
             if (ob) ob.style.display = 'none';
         }
     }
 }
 
-// Check on early load states
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', runGatekeeperRouting);
 } else {
@@ -1812,10 +1882,48 @@ if (document.readyState === 'loading') {
 
 function startInstallationTimer() {
     localStorage.setItem('pwa_installed_successfully', 'true');
-    enforceAbsoluteLockout();
+    logicalTimeLeft = 60;
+    resumeInstallationTimer();
 }
 
-// Attach interactive layout handlers safely
+function resumeInstallationTimer() {
+    const ps = document.getElementById('promptState') || promptState;
+    const ss = document.getElementById('successState') || successState;
+    const ac = document.getElementById('appContent') || appContent;
+    const ds = document.getElementById('downloadingState') || downloadingState;
+    const fs = document.getElementById('finalTimerState') || finalTimerState;
+    const td = document.getElementById('timer') || timerDisplay;
+
+    if (ps) ps.style.display = 'none';
+    if (ss) ss.style.display = 'block';
+    if (ac) ac.style.display = 'none';
+    
+    if (ds) ds.style.display = 'none';
+    if (fs) fs.style.display = 'block';
+
+    if (countdownInterval) clearInterval(countdownInterval);
+    
+    countdownInterval = setInterval(() => {
+        logicalTimeLeft--;
+        if (td) td.innerText = logicalTimeLeft;
+        
+        if (logicalTimeLeft <= 0) {
+            clearInterval(countdownInterval);
+            window.close();
+            
+            setTimeout(() => {
+                document.body.innerHTML = `
+                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px;">
+                        <h2 style="margin: 0 0 10px 0;">Setup Completed!</h2>
+                        <p style="color: #94a3b8; max-width: 400px; margin: 0 0 20px 0;">Please close this browser tab manually and tap the 'B.Ed Guru' icon on your device home screen.</p>
+                        <button onclick="window.location.reload()" style="padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer;">Enter Portal</button>
+                    </div>
+                `;
+            }, 500);
+        }
+    }, 1000);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const ob = document.getElementById('openAppBtn') || openAppBtn;
     const ib = document.getElementById('installBtn') || installBtn;
@@ -1829,7 +1937,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (ib) {
         ib.addEventListener('click', async () => {
             if (!deferredPrompt) {
-                alert("⏳ Preparing device installer link package. If already configured, please look for the app icon on your screen.");
+                alert("⏳ Preparing system links. If already configured, please tap the app icon on your device screen.");
                 return;
             }
             
@@ -1850,7 +1958,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (ds) ds.style.display = 'block';
                 if (fs) fs.style.display = 'none';
                 
-                if (td) td.innerText = '--';
+                if (td) td.innerText = 'Connecting...';
             }
         });
     }
@@ -1882,6 +1990,5 @@ if ('serviceWorker' in navigator) {
     });
 }
 </script>
-
 </body>
 </html>
