@@ -608,7 +608,7 @@ body {
     <div id="promptState" style="text-align: center;">
         <h2 id="gatekeeperHeading">Welcome!</h2>
         <p id="gatekeeperText">You must install our official application to access the registration portal.</p>
-        
+        <br/>
         <!-- This button shows if the app is NOT installed yet -->
         <button class="primary-btn" id="installBtn" style="display: block; margin: 0 auto;">Install B.Ed Guru App</button>
         
@@ -1766,7 +1766,7 @@ async function runGatekeeperRouting() {
             const heading = document.getElementById('gatekeeperHeading');
             const text = document.getElementById('gatekeeperText');
             
-            if (heading) heading.innerText = "Install B.Ed Guru App";
+            if (heading) heading.innerText = "Welcome!";
             if (text) text.innerText = "You must install our official application to access the registration portal.";
             
             if (installBtn) installBtn.style.display = 'block';
@@ -1802,8 +1802,8 @@ function startInstallationTimer() {
                 document.body.innerHTML = `
                     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px;">
                         <h2 style="margin: 0 0 10px 0;">Setup Completed!</h2>
-                        <p style="color: #94a3b8; max-width: 400px; margin: 0 0 20px 0;">Please close this browser tab manually and tap the 'B.Ed Guru' icon on your device home screen.</p>
-                        <button onclick="window.close()" style="padding: 12px 24px; background: #ef4444; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Close Web Tab</button>
+                        <p style="color: #94a3b8; max-width: 400px; margin: 0 0 20px 0;">Please close this browser tab manually and tap the 'B.Ed Guru' icon on your device home screen. </p>
+                        <button
                     </div>
                 `;
             }, 500);
