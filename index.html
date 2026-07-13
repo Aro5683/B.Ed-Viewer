@@ -1777,11 +1777,17 @@ function enforceAbsoluteLockout() {
                 Your account registration and device configurations are fully activated.<br><br>
                 Access via standard web browsers is strictly disabled for security compliance. Please use the official application installed on your home screen.
             </p>
-            <button onclick="window.location.href=window.location.origin" style="padding: 12px 24px; background: #3b82f6; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 15px;">
+            <button onclick="launchAppViaHref()" style="padding: 12px 24px; background: #3b82f6; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 15px;">
                 Launch B.Ed Guru
             </button>
         </div>
     `;
+}
+
+// 🚀 Fix button execution logic to mirror the working open app behavior
+function launchAppViaHref() {
+    // Attempting navigation back to origin to force deep-linking interception
+    window.location.href = window.location.origin;
 }
 
 async function runGatekeeperRouting() {
