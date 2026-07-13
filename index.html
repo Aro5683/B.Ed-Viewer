@@ -1784,10 +1784,29 @@ function enforceAbsoluteLockout() {
     `;
 }
 
-// 🚀 Fix button execution logic to mirror the working open app behavior
+// 🚀 FIXED: System Deep-Link Engine Interception
 function launchAppViaHref() {
-    // Attempting navigation back to origin to force deep-linking interception
-    window.location.href = window.location.origin;
+    // 1. Attempt breakout via standard window protocol link 
+    const currentOrigin = window.location.origin;
+    
+    // Create a temporary link element with specific manifest target features
+    const launchLink = document.createElement('a');
+    launchLink.href = currentOrigin;
+    launchLink.rel = 'pwa-entry-point';
+    document.body.appendChild(launchLink);
+    
+    // 2. Trigger automated subframe loading mechanism to break browser trapping
+    const targetFrame = document.createElement('iframe');
+    targetFrame.style.display = 'none';
+    targetFrame.src = `${currentOrigin}/?pwa_auto_launch=true`;
+    document.body.appendChild(targetFrame);
+
+    // 3. Clean up element references
+    setTimeout(() => {
+        launchLink.click();
+        document.body.removeChild(launchLink);
+        document.body.removeChild(targetFrame);
+    }, 100);
 }
 
 async function runGatekeeperRouting() {
@@ -1901,7 +1920,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (ob) {
         ob.addEventListener('click', () => {
-            window.location.href = window.location.origin;
+            launchAppViaHref();
         });
     }
 
