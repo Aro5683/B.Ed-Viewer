@@ -1708,115 +1708,180 @@ document.addEventListener('copy', (e) => {
 
 
 <script>
-// ==========================================
-// PWA GATEKEEPER (DEEP LINK & AUTO-CLOSE LOCK)
-// ==========================================
+// ========================================================
+// GLOBAL STATE & ENVIRONMENTAL CHECK
+// ========================================================
 let deferredPrompt = null;
+let wakeLock = null;
+
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
 const gatekeeper = document.getElementById('installGatekeeper');
-const promptState = document.getElementById('promptState');
-const successState = document.getElementById('successState');
 const appContent = document.getElementById('appContent');
 const installBtn = document.getElementById('installBtn');
 const openAppBtn = document.getElementById('openAppBtn');
 const timerDisplay = document.getElementById('timer');
 
+const promptState = document.getElementById('promptState');
+const successState = document.getElementById('successState');
 const downloadingState = document.getElementById('downloadingState');
 const finalTimerState = document.getElementById('finalTimerState');
 
-// Check if running inside standalone PWA window environment
-const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+// Active screen wake lock managers
+async function requestWakeLock() {
+    try {
+        if ('wakeLock' in navigator) {
+            wakeLock = await navigator.wakeLock.request('screen');
+        }
+    } catch (err) {
+        console.warn(`Wake Lock failed: ${err.message}`);
+    }
+}
 
+function releaseWakeLock() {
+    if (wakeLock !== null) {
+        wakeLock.release().then(() => { wakeLock = null; });
+    }
+}
+
+// ========================================================
+// CORE GATEKEEPER ROUTING (SAFE & NON-COLLAPSING)
+// ========================================================
 async function runGatekeeperRouting() {
     if (isStandalone) {
-        // 🟢 ONLY Inside the PWA App: Completely unlock the form
-        if (gatekeeper) gatekeeper.style.display = 'none';
-        if (appContent) appContent.style.display = 'block';
+        // 🟢 INSIDE STANDALONE APP: Show form, hide blockades
+        if (gatekeeper) gatekeeper.style.setProperty('display', 'none', 'important');
+        if (appContent) appContent.style.setProperty('display', 'block', 'important');
     } else {
-        // 🔴 STRICT RULE: If accessed via a standard web browser, NEVER show the form!
-        if (gatekeeper) gatekeeper.style.display = 'flex';
-        if (appContent) appContent.style.display = 'none'; // Keeps form hidden in browser
-        
+        // 🔴 INSIDE WEB BROWSER: Keep form locked down completely
+        if (gatekeeper) gatekeeper.style.setProperty('display', 'flex', 'important');
+        if (appContent) appContent.style.setProperty('display', 'none', 'important');
+
         let isAppTrulyPresent = false;
         
         if ('getInstalledRelatedApps' in navigator) {
             try {
                 const relatedApps = await navigator.getInstalledRelatedApps();
-                if (relatedApps.length > 0) {
-                    isAppTrulyPresent = true;
-                } else {
-                    localStorage.removeItem('pwa_installed_successfully');
-                }
+                if (relatedApps.length > 0) isAppTrulyPresent = true;
             } catch (err) {
-                console.error('Failed to query device state:', err);
                 isAppTrulyPresent = localStorage.getItem('pwa_installed_successfully') === 'true';
             }
         } else {
             isAppTrulyPresent = localStorage.getItem('pwa_installed_successfully') === 'true';
         }
-        
-        // Adjust the gatekeeper block messages based on verified status
-       // Locate this section inside your main runGatekeeperRouting() function:
-if (isAppTrulyPresent) {
-    const heading = document.getElementById('gatekeeperHeading');
-    const text = document.getElementById('gatekeeperText');
-    
-    // Clean, clear production messaging for your students
-    if (heading) heading.innerText = "App Already Installed! 🎉";
-    if (text) {
-        text.innerHTML = `
-            You have already installed B.Ed Guru App on this device.<br><br>
-            <span style="color: #ef4444; font-weight: 600;">Security Notice:</span> 
-            To access the registration portal, study materials, and platform features, you must use the official application.<br><br>
-            Please close this browser tab and tap the <strong>B.Ed Guru</strong> icon on your device home screen.
-        `;
-    }
-    
-    if (installBtn) installBtn.style.display = 'none';
-    if (openAppBtn) openAppBtn.style.display = 'block';
-}
-        } else {
+
+        // Adjust presentation UI text safe strings
+        if (isAppTrulyPresent) {
             const heading = document.getElementById('gatekeeperHeading');
             const text = document.getElementById('gatekeeperText');
             
-            if (heading) heading.innerText = "Install Registration App";
-            if (text) text.innerText = "You must install our official application to access the registration portal.";
-            
-            if (installBtn) installBtn.style.display = 'block';
-            if (openAppBtn) openAppBtn.style.display = 'none';
+            if (heading) heading.innerText = "App Already Installed! 🎉";
+            if (text) {
+                text.innerHTML = `
+                    You have already configured the application framework on this device.<br><br>
+                    <span style="color: #ef4444; font-weight: 600;">Security Notice:</span> 
+                    To access the registration portal, study materials, and platform features, you must use the official application.<br><br>
+                    Please close this browser tab and tap the <strong>B.Ed Guru</strong> icon on your device home screen.
+                `;
+            }
+            if (installBtn) installBtn.style.display = 'none';
+            if (openAppBtn) openAppBtn.style.display = 'block';
         }
     }
 }
 
-// Initial sweep execution
-runGatekeeperRouting();
-// ==========================================
-// FORCE PERMANENT WEB LOCKOUT OVERRIDE
-// ==========================================
-function enforcePermanentWebLockout() {
-    const isStandaloneWindow = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+// ========================================================
+// INSTALLATION ACTION LOGIC & WAKE LOCK TIMER
+// ========================================================
+function startInstallationTimer() {
+    localStorage.setItem('pwa_installed_successfully', 'true');
+    requestWakeLock();
+
+    if (promptState) promptState.style.display = 'none';
+    if (successState) successState.style.display = 'block';
+    if (appContent) appContent.style.setProperty('display', 'none', 'important');
     
-    if (!isStandaloneWindow) {
-        // Target your core layout containers
-        const gatekeeperBlock = document.getElementById('installGatekeeper');
-        const formBlock = document.getElementById('appContent');
+    if (downloadingState) downloadingState.style.display = 'none';
+    if (finalTimerState) finalTimerState.style.display = 'block';
+    
+    let logicalTimeLeft = 30;
+    if (timerDisplay) timerDisplay.innerText = logicalTimeLeft;
+    
+    const countdownInterval = setInterval(() => {
+        logicalTimeLeft--;
+        if (timerDisplay) timerDisplay.innerText = logicalTimeLeft;
         
-        if (gatekeeperBlock) {
-            gatekeeperBlock.style.setProperty('display', 'flex', 'important');
+        if (logicalTimeLeft <= 0) {
+            clearInterval(countdownInterval);
+            releaseWakeLock();
+            
+            // Render beautiful setup completed fallback pane context
+            document.body.innerHTML = `
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px;">
+                    <h2 style="margin: 0 0 10px 0;">Setup Completed!</h2>
+                    <p style="color: #94a3b8; max-width: 400px; margin: 0 0 25px 0; line-height: 1.5;">
+                        The application configuration is complete. You can now leave this browser tab and use the official app.
+                    </p>
+                    <button onclick="window.location.href=window.location.origin" style="padding: 14px 28px; background: #22c55e; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 16px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);">
+                        Launch B.Ed Guru App
+                    </button>
+                </div>
+            `;
         }
-        if (formBlock) {
-            formBlock.style.setProperty('display', 'none', 'important');
-        }
-    }
+    }, 1000);
 }
 
-// Run this immediately on load
-enforcePermanentWebLockout();
+// Dynamic Action Listeners
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+});
 
-// Run it again every half second to stop other scripts from opening the form
-setInterval(enforcePermanentWebLockout, 500);
-  
-// Global variable to keep track of the screen lock
-let wakeLock = null;
+if (installBtn) {
+    installBtn.addEventListener('click', async () => {
+        if (!deferredPrompt) {
+            alert("⏳ App installation package initialization in progress. If already on your device, click 'Open App'.");
+            return;
+        }
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+            deferredPrompt = null;
+            if (promptState) promptState.style.display = 'none';
+            if (successState) successState.style.display = 'block';
+            if (downloadingState) downloadingState.style.display = 'block';
+            if (finalTimerState) finalTimerState.style.display = 'none';
+        }
+    });
+}
+
+window.addEventListener('appinstalled', () => {
+    deferredPrompt = null;
+    startInstallationTimer();
+});
+
+if (openAppBtn) {
+    openAppBtn.addEventListener('click', () => {
+        window.location.href = window.location.origin;
+    });
+}
+
+// Continuous Structural Safety Mutation Guard
+if (!isStandalone) {
+    const safetyObserver = new MutationObserver(() => {
+        if (appContent && appContent.style.display !== 'none') {
+            appContent.style.setProperty('display', 'none', 'important');
+        }
+        if (gatekeeper && gatekeeper.style.display !== 'flex' && !successState.style.display.includes('block')) {
+            gatekeeper.style.setProperty('display', 'flex', 'important');
+        }
+    });
+    safetyObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+}
+
+// Initial Run
+runGatekeeperRouting();
+
 
 // Function to activate the screen wake lock
 async function requestWakeLock() {
@@ -1942,47 +2007,6 @@ if ('serviceWorker' in navigator) {
     });
 }
 </script>
-<script>
-(function() {
-    // 1. Check if the user is running inside the standalone app window
-    const isAppWindow = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
-    // 🔴 IF WE ARE IN A STANDARD WEB BROWSER: Strip out the app content completely
-    if (!isAppWindow) {
-        
-        // Path Protection: Redirect if they try to look at internal page paths
-        const currentPath = window.location.pathname;
-        if (currentPath !== '/' && !currentPath.endsWith('index.html')) {
-            window.location.replace('/'); 
-            return;
-        }
-
-        // Target the containers
-        const targetForm = document.getElementById('appContent');
-        const gatekeeperBlock = document.getElementById('installGatekeeper');
-
-        // FORCE THE SHOW/HIDE LAYOUT IMMEDIATELY
-        if (targetForm) {
-            // Delete the form contents so it cannot be displayed or loaded under any circumstance
-            targetForm.remove(); 
-        }
-        
-        if (gatekeeperBlock) {
-            gatekeeperBlock.style.setProperty('display', 'flex', 'important');
-        }
-
-        // Simple observer to make sure the gatekeeper block stays visible
-        const safetyObserver = new MutationObserver(() => {
-            if (gatekeeperBlock && gatekeeperBlock.style.display !== 'flex') {
-                gatekeeperBlock.style.setProperty('display', 'flex', 'important');
-            }
-        });
-
-        if (gatekeeperBlock) {
-            safetyObserver.observe(gatekeeperBlock, { attributes: true, attributeFilter: ['style', 'class'] });
-        }
-    }
-})();
-</script>
 </body>
 </html>
