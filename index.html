@@ -1921,6 +1921,40 @@ if ('serviceWorker' in navigator) {
     });
 }
 </script>
+<script>
+(function() {
+    // Check if the user is running inside the standalone app wrapper
+    const isAppWindow = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
+    // 🔴 IF WE ARE IN A STANDARD WEB BROWSER: Enforce absolute ironclad lock
+    if (!isAppWindow) {
+        const targetForm = document.getElementById('appContent');
+        const gatekeeperBlock = document.getElementById('installGatekeeper');
+
+        // 1. Force the correct layout right away
+        if (targetForm) targetForm.setAttribute('style', 'display: none !important;');
+        if (gatekeeperBlock) gatekeeperBlock.setAttribute('style', 'display: flex !important;');
+
+        // 2. Set up a security observer to watch for any sneaky script modifications
+        const lockObserver = new MutationObserver(() => {
+            // If any script tries to make the form visible or change styles, catch it instantly
+            if (targetForm && targetForm.style.display !== 'none') {
+                targetForm.setAttribute('style', 'display: none !important;');
+            }
+            if (gatekeeperBlock && gatekeeperBlock.style.display !== 'flex') {
+                gatekeeperBlock.setAttribute('style', 'display: flex !important;');
+            }
+        });
+
+        // Start listening for changes to attributes (like style classes)
+        if (targetForm) {
+            lockObserver.observe(targetForm, { attributes: true, attributeFilter: ['style', 'class'] });
+        }
+        if (gatekeeperBlock) {
+            lockObserver.observe(gatekeeperBlock, { attributes: true, attributeFilter: ['style', 'class'] });
+        }
+    }
+})();
+</script>
 </body>
 </html>
