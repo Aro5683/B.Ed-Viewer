@@ -1784,29 +1784,24 @@ function enforceAbsoluteLockout() {
     `;
 }
 
-// 🚀 FIXED: System Deep-Link Engine Interception
+// 🚀 FIXED: Dual-Trigger Intent Handshake
 function launchAppViaHref() {
-    // 1. Attempt breakout via standard window protocol link 
     const currentOrigin = window.location.origin;
-    
-    // Create a temporary link element with specific manifest target features
-    const launchLink = document.createElement('a');
-    launchLink.href = currentOrigin;
-    launchLink.rel = 'pwa-entry-point';
-    document.body.appendChild(launchLink);
-    
-    // 2. Trigger automated subframe loading mechanism to break browser trapping
-    const targetFrame = document.createElement('iframe');
-    targetFrame.style.display = 'none';
-    targetFrame.src = `${currentOrigin}/?pwa_auto_launch=true`;
-    document.body.appendChild(targetFrame);
 
-    // 3. Clean up element references
-    setTimeout(() => {
-        launchLink.click();
-        document.body.removeChild(launchLink);
-        document.body.removeChild(targetFrame);
-    }, 100);
+    // 1. Force state route changes using anchor hashing to alert the web manifest scope
+    window.location.hash = "pwa-launch";
+
+    // 2. Try an absolute fallback route that triggers PWA display-mode parameters
+    const appWindow = window.open(`${currentOrigin}/?display=standalone&pwa=true`, '_blank');
+    
+    // 3. Close the current tab context if opened from an outside click helper
+    if (appWindow) {
+        setTimeout(() => {
+            if (!isStandalone) {
+                console.log("Deep link attempted. If app fails to launch, click the native browser badge.");
+            }
+        }, 250);
+    }
 }
 
 async function runGatekeeperRouting() {
