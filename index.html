@@ -606,14 +606,14 @@ body {
     
     <!-- STEP 1: WELCOME SCREEN (Shown First) -->
     <div id="promptState" style="text-align: center;">
-        <h2 id="gatekeeperHeading">Install Registration App</h2>
+        <h2 id="gatekeeperHeading">Welcome!</h2>
         <p id="gatekeeperText">You must install our official application to access the registration portal.</p>
         
         <!-- This button shows if the app is NOT installed yet -->
-        <button class="primary-btn" id="installBtn" style="display: block; margin: 0 auto;">Install Registration App</button>
+        <button class="primary-btn" id="installBtn" style="display: block; margin: 0 auto;">Install B.Ed Guru App</button>
         
         <!-- This button ONLY shows if they return to the browser AFTER installing -->
-        <button class="primary-btn" id="openAppBtn" style="display: none; margin: 0 auto; background-color: #22c55e;">Open B.Ed Guru App</button>
+      
     </div>
 
     <!-- STEP 2: STATUS SCREEN (Hidden at First) -->
@@ -632,7 +632,7 @@ body {
         <!-- 2. Final Instructional State (Shown after appinstalled fires) -->
         <div id="finalTimerState" style="display: none; margin-top: 20px;">
             <i class="fa fa-check-circle" style="font-size: 48px; color: #22c55e; margin-bottom: 15px;"></i>
-            <h2>App Registration Successful!</h2>
+            <h2>Installing..</h2>
             <p>Dont close the tab</p>
         </div>
 
@@ -640,7 +640,7 @@ body {
 
         <!-- The continuous countdown clock -->
         <div id="countdownBox" style="margin-top: 20px; font-weight: bold; color: #3d69a3; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px;">
-            Closing terminal automatically in: <span id="timer" style="color: #3b82f6; font-size: 1.2rem;">30</span>s
+            Closing terminal automatically in: <span id="timer" style="color: #3b82f6; font-size: 1.2rem;">60</span>s
         </div>
     </div> 
 </div> <!-- Closes #installGatekeeper -->
