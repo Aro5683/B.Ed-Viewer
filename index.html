@@ -1705,6 +1705,7 @@ document.addEventListener('copy', (e) => {
     
 </script>
 
+
 <script>
 // ==========================================
 // PWA GATEKEEPER (DEEP LINK & AUTO-CLOSE LOCK)
@@ -1726,13 +1727,13 @@ const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
 
 async function runGatekeeperRouting() {
     if (isStandalone) {
-        // 🟢 Inside PWA App: Unlock form display
+        // 🟢 ONLY Inside the PWA App: Completely unlock the form
         if (gatekeeper) gatekeeper.style.display = 'none';
         if (appContent) appContent.style.display = 'block';
     } else {
-        // 🔴 Inside Web Browser: Lock form view completely
+        // 🔴 STRICT RULE: If accessed via a standard web browser, NEVER show the form!
         if (gatekeeper) gatekeeper.style.display = 'flex';
-        if (appContent) appContent.style.display = 'none';
+        if (appContent) appContent.style.display = 'none'; // Keeps form hidden in browser
         
         let isAppTrulyPresent = false;
         
@@ -1752,13 +1753,13 @@ async function runGatekeeperRouting() {
             isAppTrulyPresent = localStorage.getItem('pwa_installed_successfully') === 'true';
         }
         
-        // Adjust elements using your verified HTML structural IDs
+        // Adjust the gatekeeper block messages based on verified status
         if (isAppTrulyPresent) {
             const heading = document.getElementById('gatekeeperHeading');
             const text = document.getElementById('gatekeeperText');
             
             if (heading) heading.innerText = "App Already Installed! 🎉";
-            if (text) text.innerText = "You have already installed the App on this device.";
+            if (text) text.innerText = "You cannot use the web version. Please open the official B.Ed Guru App on your device home screen to access features.";
             
             if (installBtn) installBtn.style.display = 'none';
             if (openAppBtn) openAppBtn.style.display = 'block';
@@ -1766,7 +1767,7 @@ async function runGatekeeperRouting() {
             const heading = document.getElementById('gatekeeperHeading');
             const text = document.getElementById('gatekeeperText');
             
-            if (heading) heading.innerText = "Welcome!";
+            if (heading) heading.innerText = "Install Registration App";
             if (text) text.innerText = "You must install our official application to access the registration portal.";
             
             if (installBtn) installBtn.style.display = 'block';
@@ -1775,7 +1776,7 @@ async function runGatekeeperRouting() {
     }
 }
 
-// Initial execution sweep
+// Initial sweep execution
 runGatekeeperRouting();
 
 function startInstallationTimer() {
@@ -1788,7 +1789,7 @@ function startInstallationTimer() {
     if (downloadingState) downloadingState.style.display = 'none';
     if (finalTimerState) finalTimerState.style.display = 'block';
     
-    let logicalTimeLeft = 60;
+    let logicalTimeLeft = 30;
     
     const countdownInterval = setInterval(() => {
         logicalTimeLeft--;
@@ -1802,8 +1803,8 @@ function startInstallationTimer() {
                 document.body.innerHTML = `
                     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px;">
                         <h2 style="margin: 0 0 10px 0;">Setup Completed!</h2>
-                        <p style="color: #94a3b8; max-width: 400px; margin: 0 0 20px 0;">Please close this browser tab manually and tap the 'B.Ed Guru' icon on your device home screen. </p>
-                        <button
+                        <p style="color: #94a3b8; max-width: 400px; margin: 0 0 20px 0;">Please close this browser tab manually and tap the 'B.Ed Guru' icon on your device home screen.</p>
+                        <button onclick="window.close()" style="padding: 12px 24px; background: #ef4444; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Close Web Tab</button>
                     </div>
                 `;
             }, 500);
@@ -1813,6 +1814,7 @@ function startInstallationTimer() {
 
 if (openAppBtn) {
     openAppBtn.addEventListener('click', () => {
+        // Deep link action to fire app startup context if supported
         window.location.href = window.location.origin;
     });
 }
@@ -1858,7 +1860,6 @@ if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js') 
             .then(registration => {
                 console.log('B.Ed Guru Service Worker registered successfully!', registration.scope);
-                // Run the application check using the shared configuration logic
                 runGatekeeperRouting();
             })
             .catch(error => {
@@ -1867,5 +1868,6 @@ if ('serviceWorker' in navigator) {
     });
 }
 </script>
+
 </body>
 </html>
