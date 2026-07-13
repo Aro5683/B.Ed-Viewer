@@ -1716,6 +1716,7 @@ document.addEventListener('copy', (e) => {
 let deferredPrompt = null;
 let countdownInterval = null;
 let logicalTimeLeft = 60;
+let wakeLock = null;
 
 // Dynamic element lookup references
 const gatekeeper = document.getElementById('installGatekeeper');
@@ -1732,11 +1733,41 @@ const finalTimerState = document.getElementById('finalTimerState');
 // Check if running inside standalone PWA window environment
 const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
+// 🔒 SCREEN WAKE LOCK MANAGER
+async function requestWakeLock() {
+    if ('wakeLock' in navigator) {
+        try {
+            wakeLock = await navigator.wakeLock.request('screen');
+            console.log('Screen Wake Lock activated successfully ☀️');
+        } catch (err) {
+            console.error(`Wake Lock Error: ${err.name}, ${err.message}`);
+        }
+    }
+}
+
+function releaseWakeLock() {
+    if (wakeLock !== null) {
+        wakeLock.release()
+            .then(() => {
+                wakeLock = null;
+                console.log('Screen Wake Lock released');
+            });
+    }
+}
+
+// Re-request wake lock if user switches away from tab and back during countdown
+document.addEventListener('visibilitychange', async () => {
+    if (countdownInterval && document.visibilityState === 'visible') {
+        await requestWakeLock();
+    }
+});
+
 // Hard enforcement block rule
 function enforceAbsoluteLockout() {
     if (countdownInterval) {
         clearInterval(countdownInterval);
     }
+    releaseWakeLock();
     
     document.body.innerHTML = `
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: 999999; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px; box-sizing: border-box;">
@@ -1757,8 +1788,7 @@ async function runGatekeeperRouting() {
     const isRegistered = localStorage.getItem('bed_guru_user');
     const isSetupDone = localStorage.getItem('pwa_installed_successfully') === 'true';
     
-    // 🛑 CRITICAL ENFORCEMENT: If they are in a standard browser AND they have a registered profile 
-    // OR have successfully gone through the install timer setup, lock them out instantly.
+    // 🛑 CRITICAL ENFORCEMENT: Browser lockout wall
     if (!isStandalone && (isRegistered || isSetupDone)) {
         enforceAbsoluteLockout();
         return;
@@ -1770,11 +1800,11 @@ async function runGatekeeperRouting() {
     const ob = document.getElementById('openAppBtn') || openAppBtn;
 
     if (isStandalone) {
-        // 🟢 Inside PWA App: Unlock structural content display fully (No Lockouts Here)
+        // 🟢 Inside PWA App: Unlock structural content display fully
         if (gk) gk.style.display = 'none';
         if (ac) ac.style.display = 'block';
     } else {
-        // 🔴 Inside Web Browser (Unregistered / Fresh Clean Slate): Show layout setup guide
+        // 🔴 Inside Web Browser: Show layout setup guide
         if (gk) gk.style.display = 'flex';
         if (ac) ac.style.display = 'none';
         
@@ -1793,7 +1823,6 @@ async function runGatekeeperRouting() {
             isAppTrulyPresent = isSetupDone;
         }
         
-        // Show context-aware installation screens depending on app detection status
         if (isAppTrulyPresent) {
             const heading = document.getElementById('gatekeeperHeading');
             const text = document.getElementById('gatekeeperText');
@@ -1816,7 +1845,6 @@ async function runGatekeeperRouting() {
     }
 }
 
-// Check on early load states
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', runGatekeeperRouting);
 } else {
@@ -1824,8 +1852,11 @@ if (document.readyState === 'loading') {
 }
 
 // Begins countdown and monitors visual update state
-function startInstallationTimer() {
+async function startInstallationTimer() {
     localStorage.setItem('pwa_installed_successfully', 'true');
+    
+    // Request Wake Lock immediately when timer starts to keep the screen bright
+    await requestWakeLock();
     
     const ps = document.getElementById('promptState') || promptState;
     const ss = document.getElementById('successState') || successState;
@@ -1834,7 +1865,7 @@ function startInstallationTimer() {
     const fs = document.getElementById('finalTimerState') || finalTimerState;
     const td = document.getElementById('timer') || timerDisplay;
 
-    // Show download text, warnings, and timer box layouts
+    // Show download text layouts
     if (ps) ps.style.display = 'none';
     if (ss) ss.style.display = 'block';
     if (ac) ac.style.display = 'none';
