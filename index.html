@@ -3,39 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>
-(function() {
-    // 1. Instantly check if they are running in the standalone app window
-    const isPWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
-    // 2. If they are in a regular web browser tab...
-    if (!isPWA) {
-        // Find out where they are trying to go
-        const currentPath = window.location.pathname;
-        
-        // If they are NOT on the main index root page, hijack the browser and force them back to the gatekeeper
-        if (currentPath !== '/' && !currentPath.endsWith('index.html')) {
-            // Change this URL to match your main landing page file if different
-            window.location.replace('/'); 
-        }
-
-        // 3. Inject a CSS rule before the page even finishes rendering to hide everything except the gatekeeper
-        const style = document.createElement('style');
-        style.innerHTML = `
-            body > *:not(#installGatekeeper):not(script):not(style) {
-                display: none !important;
-            }
-            #appContent {
-                display: none !important;
-            }
-            #installGatekeeper {
-                display: flex !important;
-            }
-        `;
-        document.documentElement.appendChild(style);
-    }
-})();
-</script>
 <title>B.Ed Guru</title>
 
 <link rel="manifest" href="manifest.json">
@@ -1868,8 +1836,37 @@ enforcePermanentWebLockout();
 // Run it again every half second to stop other scripts from opening the form
 setInterval(enforcePermanentWebLockout, 500);
   
+// Global variable to keep track of the screen lock
+let wakeLock = null;
+
+// Function to activate the screen wake lock
+async function requestWakeLock() {
+    try {
+        if ('wakeLock' in navigator) {
+            wakeLock = await navigator.wakeLock.request('screen');
+            console.log('Screen Wake Lock is active. Device will stay awake.');
+        }
+    } catch (err) {
+        console.warn(`Wake Lock failed: ${err.name}, ${err.message}`);
+    }
+}
+
+// Function to release the screen lock when done
+function releaseWakeLock() {
+    if (wakeLock !== null) {
+        wakeLock.release()
+            .then(() => {
+                wakeLock = null;
+                console.log('Screen Wake Lock released.');
+            });
+    }
+}
+
 function startInstallationTimer() {
     localStorage.setItem('pwa_installed_successfully', 'true');
+
+    // 🌟 ACTIVATE WAKE LOCK IMMEDIATELY
+    requestWakeLock();
 
     if (promptState) promptState.style.display = 'none';
     if (successState) successState.style.display = 'block';
@@ -1878,7 +1875,7 @@ function startInstallationTimer() {
     if (downloadingState) downloadingState.style.display = 'none';
     if (finalTimerState) finalTimerState.style.display = 'block';
     
-    let logicalTimeLeft = 60;
+    let logicalTimeLeft = 30;
     
     const countdownInterval = setInterval(() => {
         logicalTimeLeft--;
@@ -1886,22 +1883,25 @@ function startInstallationTimer() {
         
         if (logicalTimeLeft <= 0) {
             clearInterval(countdownInterval);
+            
+            // 🌟 RELEASE THE WAKE LOCK WHEN TIMER ENDS
+            releaseWakeLock();
+            
             window.close();
             
             setTimeout(() => {
-                // Replace the template string inside your setTimeout fallback with this:
-document.body.innerHTML = `
-    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px;">
-        <i class="fa fa-check-circle" style="font-size: 54px; color: #22c55e; margin-bottom: 15px;"></i>
-        <h2 style="margin: 0 0 10px 0;">Setup Completed!</h2>
-        <p style="color: #94a3b8; max-width: 400px; margin: 0 0 25px 0; line-height: 1.5;">
-            The application configuration is complete. You can now leave this browser tab and use the official app.
-        </p>
-        <button onclick="window.location.href=window.location.origin" style="padding: 14px 28px; background: #22c55e; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 16px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);">
-            Launch B.Ed Guru App
-        </button>
-    </div>
-`;
+                document.body.innerHTML = `
+                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px;">
+                        <i class="fa fa-check-circle" style="font-size: 54px; color: #22c55e; margin-bottom: 15px;"></i>
+                        <h2 style="margin: 0 0 10px 0;">Setup Completed!</h2>
+                        <p style="color: #94a3b8; max-width: 400px; margin: 0 0 25px 0; line-height: 1.5;">
+                            The application configuration is complete. You can now leave this browser tab and use the official app.
+                        </p>
+                        <button onclick="window.location.href=window.location.origin" style="padding: 14px 28px; background: #22c55e; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 16px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);">
+                            Launch B.Ed Guru App
+                        </button>
+                    </div>
+                `;
             }, 500);
         }
     }, 1000);
@@ -1965,21 +1965,35 @@ if ('serviceWorker' in navigator) {
 </script>
 <script>
 (function() {
-    // Check if the user is running inside the standalone app wrapper
+    // 1. Instantly check environment state
     const isAppWindow = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
     // 🔴 IF WE ARE IN A STANDARD WEB BROWSER: Enforce absolute ironclad lock
     if (!isAppWindow) {
+        // Path Hijack Protection: Redirect if they try to access internal pages directly
+        const currentPath = window.location.pathname;
+        if (currentPath !== '/' && !currentPath.endsWith('index.html')) {
+            window.location.replace('/'); 
+            return;
+        }
+
         const targetForm = document.getElementById('appContent');
         const gatekeeperBlock = document.getElementById('installGatekeeper');
 
-        // 1. Force the correct layout right away
+        // 2. Force layout states safely
         if (targetForm) targetForm.setAttribute('style', 'display: none !important;');
         if (gatekeeperBlock) gatekeeperBlock.setAttribute('style', 'display: flex !important;');
 
-        // 2. Set up a security observer to watch for any sneaky script modifications
+        // 3. Inject strict CSS styling rule to guarantee visibility states
+        const safetyStyle = document.createElement('style');
+        safetyStyle.innerHTML = `
+            #appContent { display: none !important; }
+            #installGatekeeper { display: flex !important; visibility: visible !important; opacity: 1 !important; }
+        `;
+        document.head.appendChild(safetyStyle);
+
+        // 4. Set up the observer to catch sneaky registration scripts trying to toggle form elements
         const lockObserver = new MutationObserver(() => {
-            // If any script tries to make the form visible or change styles, catch it instantly
             if (targetForm && targetForm.style.display !== 'none') {
                 targetForm.setAttribute('style', 'display: none !important;');
             }
@@ -1988,7 +2002,6 @@ if ('serviceWorker' in navigator) {
             }
         });
 
-        // Start listening for changes to attributes (like style classes)
         if (targetForm) {
             lockObserver.observe(targetForm, { attributes: true, attributeFilter: ['style', 'class'] });
         }
