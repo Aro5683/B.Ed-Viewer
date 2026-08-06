@@ -1,1961 +1,1113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>B.Ed Guru</title>
-
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#1e3a8a">
-  <link rel="icon" type="image/svg+xml" href="/icon-512.png" />
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-<style>
-:root {
-    --primary: #2563eb;
-    --primary-dark: #1e40af;
-    --accent: #3b82f6;
-    --text-main: #0f172a;
-    --text-muted: #475569;
-    --error: #ef4444;
-    /* Glassmorphism Essentials */
-    --glass-bg: rgba(255, 255, 255, 0.45);
-    --glass-bg-hover: rgba(255, 255, 255, 0.65);
-    --glass-border: rgba(255, 255, 255, 0.4);
-    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
-    --blur: blur(12px);
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-}
-
-/* Disable text selection and image dragging entirely */
-body {
-    -webkit-touch-callout: none; /* iOS Safari long-press */
-    -webkit-user-select: none;   /* Safari */
-    -khtml-user-select: none;     /* Konqueror HTML */
-    -moz-user-select: none;        /* Firefox */
-    -ms-user-select: none;         /* Internet Explorer/Edge */
-    user-select: none;             /* Non-prefixed version, currently supported by Chrome, Opera and Edge */
-}
-
-img {
-    pointer-events: none;
-    -webkit-user-drag: none;
-}
-
-    
-body {
-    background: linear-gradient(135deg, #e0f2fe 0%, #cce0ff 40%, #e0e7ff 100%);
-    background-attachment: fixed;
-    color: var(--text-main);
-    min-height: 100vh;
-    padding-bottom: 100px;
-}
-
-/* BRANDING HEADER */
-.header {
-    padding: 30px 20px;
-    background: rgba(255, 255, 255, 0.3);
-    backdrop-filter: var(--blur);
-    -webkit-backdrop-filter: var(--blur);
-    border-bottom: 1px solid var(--glass-border);
-    box-shadow: var(--glass-shadow);
-    text-align: center;
-    border-bottom-left-radius: 30px;
-    border-bottom-right-radius: 30px;
-}
-
-.brand-icon-wrapper {
-    width: 70px;
-    height: 70px;
-    margin: 0 auto 12px auto;
-    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-    border-radius: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
-}
-
-.brand-icon-wrapper i {
-    font-size: 32px;
-    color: white;
-}
-
-.header h1 {
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    background: linear-gradient(135deg, #1e3a8a, #2563eb);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.header p {
-    font-size: 13px;
-    color: var(--text-muted);
-    font-weight: 500;
-    margin-top: 2px;
-}
-
-/* GLASS CARD CONFIGURATION */
-.glass-panel {
-    background: var(--glass-bg);
-    backdrop-filter: var(--blur);
-    -webkit-backdrop-filter: var(--blur);
-    border: 1px solid var(--glass-border);
-    border-radius: 24px;
-    box-shadow: var(--glass-shadow);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* REGISTRATION CONTAINER */
-.register {
-    max-width: 300px;
-    margin: 30px auto;
-   padding: 30px 24px;
-}
-
-.register h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 18px;
-    font-weight: 600;
-    color: #1e3a8a;
-}
-
-/* MODERN TEXT FIELDS & INPUTS */
-.input {
-    position: relative;
-    margin-bottom: 16px;
-}
-
-.input i {
-    position: absolute;
-    top: 14px;
-    left: 16px;
-    color: #4b5563;
-    font-size: 14px;
-    transition: color 0.3s ease;
-}
-
-.input input, .input select {
-    width: 100%;
-    padding: 13px 16px 13px 44px;
-    border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    background: rgba(255, 255, 255, 0.5);
-    outline: none;
-    font-size: 13.5px;
-    color: var(--text-main);
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.input input::placeholder {
-    color: #64748b;
-}
-
-.input input:focus, .input select:focus {
-    background: rgba(255, 255, 255, 0.85);
-    border-color: var(--accent);
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
-}
-
-.input.input-error input, .input.input-error select {
-    border-color: var(--error) !important;
-    background: rgba(239, 68, 68, 0.05);
-    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15);
-}
-
-/* PREMIUM ACTION BUTTONS */
-.primary-btn {
-    width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 14px;
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 14px;
-    letter-spacing: 0.3px;
-    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
-    transition: all 0.2s ease;
-}
-
-.primary-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
-}
-
-/* CONTENT CONTAINER SPECIFICS */
-.page {
-    display: none;
-    padding: 20px 16px;
-    max-width: 480px;
-    margin: 0 auto;
-}
-
-.page.active {
-    display: block;
-    animation: fadeIn 0.4s ease forwards;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* SEARCH FIELDS */
-.search {
-    width: 100%;
-    padding: 14px 16px;
-    border-radius: 14px;
-    border: 1px solid var(--glass-border);
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: var(--blur);
-    -webkit-backdrop-filter: var(--blur);
-    margin-bottom: 20px;
-    font-size: 14px;
-    outline: none;
-    box-shadow: var(--glass-shadow);
-    transition: all 0.3s ease;
-}
-
-.search:focus {
-    background: rgba(255, 255, 255, 0.9);
-    border-color: var(--accent);
-}
-
-/* INTERACTION CARDS */
-.card {
-    background: var(--glass-bg);
-    backdrop-filter: var(--blur);
-    -webkit-backdrop-filter: var(--blur);
-    border: 1px solid var(--glass-border);
-    border-radius: 18px;
-    padding: 16px;
-    margin-bottom: 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: var(--glass-shadow);
-    transition: transform 0.2s ease, background 0.2s ease;
-}
-
-.card:hover {
-    background: var(--glass-bg-hover);
-    transform: translateY(-1px);
-}
-
-.card .info-layout {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    max-width: 75%;
-}
-
-.card .info-layout div {
-    display: flex;
-    flex-direction: column;
-}
-
-.card span {
-    font-size: 14px;
-    font-weight: 600;
-    color: #1e3a8a;   
-}
-
-.card small {
-    color: var(--text-muted);
-    font-size: 11px;
-    margin-top: 3px;
-    font-weight: 500;
-}
-
-.btn {
-    background: rgba(37, 99, 235, 0.1);
-    color: var(--primary);
-    border: 1px solid rgba(37, 99, 235, 0.2);
-    padding: 8px 16px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 12.5px;
-    font-weight: 600;
-    transition: all 0.2s ease;
-}
-
-.btn:hover {
-    background: var(--primary);
-    color: white;
-    border-color: var(--primary);
-}
-
-/* FLOATING NAVIGATION MATRIX */
-.nav {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 92%;
-    max-width: 430px;
-    background: rgba(255, 255, 255, 0.65);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 24px;
-    display: none;
-    justify-content: space-around;
-    padding: 10px 6px;
-    box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
-    z-index: 99;
-}
-
-.nav button {
-    border: none;
-    background: none;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 11px;
-    cursor: pointer;
-    color: #64748b;
-    font-weight: 600;
-    padding: 8px 10px;
-    border-radius: 14px;
-    transition: all 0.2s ease;
-    position: relative;
-    flex: 1;
-}
-
-.nav button i {
-    font-size: 18px;
-    margin-bottom: 4px;
-    color: #475569;
-}
-
-.nav button.active-tab {
-    color: var(--primary);
-    background: rgba(37, 99, 235, 0.1);
-}
-
-.nav button.active-tab i {
-    color: var(--primary);
-}
-
-.badge {
-    position: absolute;
-    top: 4px;
-    right: 14px;
-    background: #ef4444;
-    color: white;
-    font-size: 9px;
-    padding: 1px 5px;
-    border-radius: 8px;
-    font-weight: 700;
-}
-
-/* NOTICES FEED */
-.notice {
-    background: var(--glass-bg);
-    backdrop-filter: var(--blur);
-    -webkit-backdrop-filter: var(--blur);
-    border: 1px solid var(--glass-border);
-    padding: 16px;
-    border-radius: 18px;
-    margin-bottom: 12px;
-    box-shadow: var(--glass-shadow);
-    font-size: 13.5px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-}
-
-.notice span {
-    font-weight: 500;
-    line-height: 1.4;
-    color: var(--text-main);
-}
-
-/* PROFILE VIEW SPECIFICS */
-.profile-section {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.5));
-    border-radius: 20px;
-    padding: 20px;
-    margin-bottom: 20px;
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-shadow);
-}
-
-.profile-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    font-size: 13.5px;
-}
-
-.profile-row:last-child {
-    border-bottom: none;
-}
-
-.profile-row .label {
-    font-weight: 500;
-    color: var(--text-muted);
-}
-
-.profile-row .value {
-    font-weight: 600;
-    color: var(--text-main);
-}
-
-.section-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: #1e3a8a;
-    margin: 20px 0 10px 4px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-/* OVERLAYS & POPUPS */
-.popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(15, 23, 42, 0.3);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-    padding: 20px;
-}
-
-.popup-box {
-    position: relative;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    padding: 28px 24px;
-    border-radius: 24px;
-    text-align: center;
-    width: 100%;
-    max-width: 340px;
-    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.15);
-    animation: popupScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-.gdrive-popup-box {
-    border: 1px solid rgba(37, 99, 235, 0.25);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 246, 255, 0.85));
-}
-
-.close-btn {
-    position: absolute;
-    top: 14px;
-    right: 16px;
-    font-size: 18px;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: color 0.2s ease;
-}
-
-.close-btn:hover {
-    color: var(--error);
-}
-
-@keyframes popupScale {
-    from { transform: scale(0.9); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
-
-.popup-box h3 {
-    font-size: 17px;
-    font-weight: 600;
-    color: #1e3a8a;
-    margin-bottom: 8px;
-}
-
-.popup button {
-    margin-top: 14px;
-    padding: 12px;
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    width: 100%;
-    transition: background 0.2s;
-}
-
-.popup button:hover {
-    background: var(--primary-dark);
-}
-
-/* BOOK LISTINGS CONFIGS */
-.card.premium {
-    border: 1px solid rgba(245, 158, 11, 0.4);
-    background: linear-gradient(135deg, rgba(254, 243, 199, 0.5), rgba(255, 255, 255, 0.5));
-}
-
-.card.premium div {
-    font-weight: 600;
-    color: #92400e;
-}
-
-.card.premium .btn {
-    background: #f59e0b;
-    color: white;
-    border-color: #d97706;
-    font-weight: 600;
-}
-
-#resalePopup input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 12px;
-    border-radius: 12px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    background: rgba(255, 255, 255, 0.6);
-    font-size: 13.5px;
-    outline: none;
-}
-
-#resalePopup button:last-child {
-    background: rgba(0, 0, 0, 0.05);
-    color: var(--text-muted);
-    margin-top: 8px;
-}
-
-#buyBooks h3 {
-    font-size: 15px;
-    margin: 20px 0 10px 4px;
-    color: #1e3a8a;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.price-tag {
-    color: #16a34a;
-    font-weight: 700;
-    font-size: 14px;
-    margin-right: 8px;
-}
-
-.spinner {
-    width: 42px;
-    height: 42px;
-    border: 4px solid rgba(37, 99, 235, 0.1);
-    border-top: 4px solid var(--primary);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 12px auto;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.checkbox {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    font-size: 12.5px;
-    margin: 16px 0;
-    color: var(--text-muted);
-    font-weight: 500;
-}
-.checkbox input {
-    margin-top: 3px;
-    width: 15px;
-    height: 15px;
-}
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>B.Ed Study Pro</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        :root{
+        --primary:#2563eb;
+        --accent:#6366f1;
+        --bg:#eef2ff;
+        --card:#ffffff;
+        --text:#1e293b;
+        --shadow:0 20px 40px rgba(0,0,0,0.08);
+        }
+
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+
+        body{
+        background:linear-gradient(135deg,#eef2ff,#e0e7ff);
+        }
+
+        /* HEADER */
+        .header{
+        padding:20px;
+        background:linear-gradient(135deg,#2563eb,#6366f1);
+        color:white;
+        border-bottom-left-radius:25px;
+        border-bottom-right-radius:25px;
+        box-shadow:var(--shadow);
+        text-align:center;
+        }
+
+        .header h1{font-size:20px;}
+        .header p{font-size:12px;opacity:0.9;margin-top:4px;}
+
+        /* REGISTER */
+        .register{
+        max-width:320px;
+        margin:30px auto;
+        background:white;
+        padding:25px;
+        border-radius:20px;
+        box-shadow:var(--shadow);
+        }
+
+        .input{
+        position:relative;
+        margin-bottom:12px;
+        }
+        .input i{
+        position:absolute;top:12px;left:12px;color:#64748b;
+        }
+        .input input,.input select{
+        width:100%;
+        padding:12px 12px 12px 38px;
+        border-radius:10px;
+        border:1px solid #ddd;
+        }
+
+        .primary-btn{
+        width:100%;
+        padding:13px;
+        border:none;
+        border-radius:12px;
+        background:linear-gradient(90deg,var(--primary),var(--accent));
+        color:white;
+        font-weight:600;
+        cursor:pointer;
+        }
+
+        /* PAGE */
+        .page{display:none;padding:16px;padding-bottom:100px;}
+        .page.active{display:block;}
+
+        /* SEARCH */
+        .search{
+        width:100%;
+        padding:12px;
+        border-radius:10px;
+        border:1px solid #ddd;
+        margin-bottom:12px;
+        }
+
+        /* CARD */
+        .card{
+        background:white;
+        border-radius:16px;
+        padding:16px;
+        margin-bottom:12px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        box-shadow:var(--shadow);
+          font-size:14px;
+        }
+
+        .btn{
+        background:var(--primary);
+        color:white;
+        border:none;
+        padding:4px 12px;
+        border-radius:8px;
+        cursor:pointer;
+        }
+
+        /* NAV */
+        .nav{
+        position:fixed;
+        bottom:10px;
+        left:50%;
+        transform:translateX(-50%);
+        width:90%;
+        max-width:420px;
+        background:white;
+        border-radius:20px;
+        display:none;
+        justify-content:space-around;
+        padding:10px;
+        box-shadow:0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .nav button{
+        border:none;
+        background:none;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        font-size:11px;
+        position:relative;
+        }
+
+        .nav i{font-size:18px;color:var(--primary);}
+
+        /* BADGE */
+        .badge{
+        position:absolute;
+        top:-3px;
+        right:6px;
+        background:red;
+        color:white;
+        font-size:10px;
+        padding:2px 6px;
+        border-radius:10px;
+        display:none;
+        }
+
+        /* NOTICE */
+        .notice{
+        background:white;
+        padding:14px;
+        border-radius:14px;
+        margin-bottom:10px;
+        box-shadow:var(--shadow);
+        }
+        .notice{
+        font-size:14px; /* change this value */
+        }
+        /* POPUP */
+        .popup{
+        position:fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        background:rgba(0,0,0,0.5);
+        display:none;
+        justify-content:center;
+        align-items:center;
+        z-index:999;
+        }
+        .popup-box{
+        background:white;
+        padding:20px;
+        border-radius:16px;
+        text-align:center;
+        width:300px;
+        }
+        .popup button{
+        margin-top:10px;
+        padding:10px;
+        background:var(--primary);
+        color:white;
+        border:none;
+        border-radius:8px;
+        }
+
+        /* CHECKBOX */
+        .checkbox{
+        display:flex;
+        align-items:center;
+        gap:8px;
+        font-size:13px;
+        margin:10px 0;
+        }
+
+        /* ================= PREMIUM RESALE CARD ================= */
+        .card.premium{
+        border-left:4px solid gold;
+        background:linear-gradient(135deg,#fffbe6,#fff);
+        }
+
+        .card.premium .btn{
+        background:gold;
+        color:#000;
+        font-weight:600;
+        }
+
+        /* ================= RESALE POPUP ================= */
+        #resalePopup .popup-box{
+        width:320px;
+        padding:22px;
+        border-radius:18px;
+        box-shadow:0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        #resalePopup h3{
+        margin-bottom:12px;
+        font-size:18px;
+        color:#1e293b;
+        }
+
+        #resalePopup input{
+        width:100%;
+        padding:10px;
+        margin-bottom:10px;
+        border-radius:10px;
+        border:1px solid #ddd;
+        font-size:13px;
+        }
+
+        /* FILE INPUT */
+        #resalePopup input[type="file"]{
+        border:none;
+        padding:5px;
+        font-size:12px;
+        }
+
+        /* BUTTONS */
+        #resalePopup button{
+        width:100%;
+        padding:10px;
+        margin-top:6px;
+        border:none;
+        border-radius:10px;
+        background:linear-gradient(90deg,#2563eb,#6366f1);
+        color:white;
+        font-weight:600;
+        cursor:pointer;
+        }
+
+        #resalePopup button:last-child{
+        background:#e5e7eb;
+        color:#333;
+        }
+
+        /* ================= THANK YOU POPUP ================= */
+        #thankPopup .popup-box{
+        width:260px;
+        border-radius:16px;
+        padding:20px;
+        text-align:center;
+        }
+
+        #thankPopup h3{
+        color:#22c55e;
+        margin-bottom:8px;
+        }
+
+        #thankPopup button{
+        background:#2563eb;
+        color:white;
+        padding:10px 16px;
+        border:none;
+        border-radius:10px;
+        margin-top:10px;
+        }
+
+        /* ================= BUY BOOK SECTION ================= */
+        #buyBooks h3{
+        font-size:16px;
+        margin:10px 0;
+        color:#1e293b;
+        }
+
+        /* BUY CARD */
+        #buyBooks .card{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        padding:14px;
+        border-radius:14px;
+        box-shadow:0 10px 25px rgba(0,0,0,0.06);
+        transition:0.2s;
+        }
+
+        #buyBooks .card:hover{
+        transform:translateY(-2px);
+        }
+
+        /* TEXT */
+        #buyBooks b{
+        font-size:14px;
+        }
+
+        #buyBooks small{
+        color:#64748b;
+        font-size:12px;
+        }
+
+        /* PRICE */
+        #buyBooks .price{
+        color:#16a34a;
+        font-weight:600;
+        }
+
+        /* BUY BUTTON */
+        #buyBooks .btn{
+        background:linear-gradient(90deg,#16a34a,#22c55e);
+        font-size:12px;
+        padding:8px 12px;
+        }
+
+        /* ================= SMOOTH ANIMATION ================= */
+        .popup{
+        animation:fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn{
+        from{opacity:0;transform:scale(0.95);}
+        to{opacity:1;transform:scale(1);}
+        }
+    </style>
 </head>
 
 <body>
 
 <div class="header">
-    <div class="brand-icon-wrapper">
-        <i class="fa-solid fa-graduation-cap"></i>
-    </div>
-    <h1>B.Ed Guru</h1>
-    <p id="welcomeText">Smart Mobile App Platform</p>
+    <h1><i class="fa-solid fa-graduation-cap"></i> B.Ed Study</h1>
+    <p id="welcomeText">Smart Study App</p>
 </div>
 
-<div id="registerPage" class="register glass-panel">
 
-    <!-- YOUR ORIGINAL APP CONTENT -->
-    <div id="appContent" style="display: none;">
-        <h2>Student Registration</h2>
-        <div class="input" id="container-name">
-            <i class="fa fa-user"></i>
-            <input id="name" placeholder="Full Name" oninput="clearError('name')">
-        </div>
+<!-- REGISTER -->
+<div id="registerPage" class="register">
 
-        <div class="input" id="container-gender">
-            <i class="fa fa-venus-mars"></i>
-            <select id="gender" onchange="clearError('gender')">
-                <option value="">Gender</option>
-                <option>Male</option>
-                <option>Female</option>
-                <option>Other</option>
-            </select>
-        </div>
+    <h2 style="text-align:center;margin-bottom:10px;">Student Registration</h2>
 
-        <div class="input" id="container-semester">
-            <i class="fa fa-layer-group"></i>
-            <select id="semester" onchange="clearError('semester')">
-                <option value="">Semester</option>
-                <option>Semester 1</option>
-                <option>Semester 2</option>
-            </select>
-        </div>
-
-        <div class="input" id="container-medium">
-            <i class="fa fa-language"></i>
-            <select id="medium" onchange="clearError('medium')">
-                <option value="">Study Medium</option>
-                <option value="Tamil">Tamil Medium</option>
-                <option value="English">English Medium</option>
-            </select>
-        </div>
-
-        <div class="input" id="container-pedagogy">
-            <i class="fa fa-book-open"></i>
-            <select id="pedagogy" onchange="clearError('pedagogy')">
-                <option value="">Pedagogy Subject</option>
-                <option value="TA">Tamil (TA)</option>
-                <option value="EN">English (EN)</option>
-                <option value="MA">Mathematics (MA)</option>
-                <option value="PS">Physical Science (PS)</option>
-                <option value="BS">Biological Science (BS)</option>
-                <option value="CS">Computer Science (CS)</option>
-                <option value="CA">Commerce and Accountancy (CA)</option>
-                <option value="HI">History (HI)</option>
-            </select>
-        </div>
-
-        <div class="input" id="container-phone">
-            <i class="fa fa-phone"></i>
-            <input id="phone" type="tel" placeholder="Phone Number" oninput="clearError('phone')">
-        </div>
-
-        <div class="checkbox">
-            <input type="checkbox" id="agree">
-            <label>I agree to <a href="https://bedstudyapp.netlify.app/terms.html" target="_blank" style="color:#2563eb;font-weight:600;text-decoration:none;">Terms & Conditions</a></label>
-        </div>
-
-        <button class="primary-btn" onclick="registerUser()">Register Platform</button>
+    <div class="input">
+        <i class="fa fa-user"></i>
+        <input id="name" placeholder="Full Name">
     </div>
 
-    <!-- THE GATEKEEPER INSTALL SCREEN -->
-    <div id="installGatekeeper" style="display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 300px; padding: 20px; text-align: center; font-family: sans-serif;">
-        
-        <!-- STEP 1: WELCOME SCREEN -->
-        <div id="promptState" style="text-align: center;">
-            <h2 id="gatekeeperHeading">Welcome!</h2>
-            <p id="gatekeeperText">You must install our official application to access the registration portal.</p>
-            <br/>
-            <button class="primary-btn" id="installBtn" style="display: block; margin: 0 auto;">Install B.Ed Guru App</button>
-            <!-- 🟢 ADDED BACK: This button was missing from your markup -->
-            <button class="primary-btn" id="openAppBtn" style="display: none; margin: 10px auto 0 auto;">Launch Application</button>
-        </div>
-
-        <!-- STEP 2: STATUS SCREEN -->
-        <div id="successState" style="display: none; text-align: center;">
-            <div id="downloadingState">
-                <i class="fa fa-spinner fa-spin" style="font-size: 48px; color: #2563eb; margin-bottom: 15px;"></i>
-                <h2>Google Play Setup in Progress...</h2>
-                <p style="color: #94a3b8; max-width: 450px; margin: 0 auto 10px auto; line-height: 1.5;">
-                    Please wait while Android secures your application files and creates the app icon on your home screen.
-                </p>
-                <p style="color: #e2e8f0; font-weight: 600;">⚠️ Do not close this tab or press back.</p>
-            </div>
-
-            <div id="finalTimerState" style="display: none; margin-top: 20px;">
-                <i class="fa fa-check-circle" style="font-size: 48px; color: #22c55e; margin-bottom: 15px;"></i>
-                <h2>Installing..</h2>
-                <p>Don't close the tab</p>
-            </div>
-
-            <p style="color: #94a3b8; margin: 10px 0;">also make sure your internet connection is good</p>
-
-            <div id="countdownBox" style="margin-top: 20px; font-weight: bold; color: #3d69a3; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px;">
-                Closing terminal automatically in: <span id="timer" style="color: #3b82f6; font-size: 1.2rem;">60</span>s
-            </div>
-        </div> 
+    <div class="input">
+        <i class="fa fa-calendar"></i>
+        <input id="dob" type="date">
     </div>
+
+    <div class="input">
+        <i class="fa fa-venus-mars"></i>
+        <select id="gender">
+            <option value="">Gender</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+        </select>
+    </div>
+
+    <div class="input">
+        <i class="fa fa-school"></i>
+        <input id="college" placeholder="College">
+    </div>
+
+    <div class="input">
+        <i class="fa fa-location-dot"></i>
+        <input id="district" placeholder="District">
+    </div>
+
+    <div class="input">
+        <i class="fa fa-phone"></i>
+        <input id="phone" placeholder="Phone">
+    </div>
+
+    <!-- NEW: PEDAGOGY -->
+    <div class="input">
+        <i class="fa fa-book-open"></i>
+        <select id="pedagogy">
+            <option value="">Select Pedagogy</option>
+            <option>English</option>
+            <option>Tamil</option>
+            <option>Maths</option>
+            <option>Physical Science</option>
+            <option>Biological Science</option>
+            <option>History</option>
+            <option>Computer Science</option>
+            <option>Commerce</option>
+        </select>
+    </div>
+
+    <div class="input">
+        <i class="fa fa-language"></i>
+        <select id="medium">
+            <option value="">Medium</option>
+            <option>English</option>
+            <option>Tamil</option>
+        </select>
+    </div>
+
+    <div class="input">
+        <i class="fa fa-layer-group"></i>
+        <select id="semester">
+            <option value="">Semester</option>
+            <option>Semester 1</option>
+            <option>Semester 2</option>
+        </select>
+    </div>
+    <br/>
+    <div class="checkbox">
+        <input type="checkbox" id="agree">
+        <label>
+            I agree to
+            <a href="https://bedstudyapp.netlify.app/terms.html" target="_blank" style="color:#2563eb;font-weight:600;text-decoration:none;">
+                Terms & Conditions
+            </a>
+        </label>
+    </div>
+
+    <button class="primary-btn" onclick="registerUser()">Register</button>
 
 </div>
-<div id="homePage" class="page">
 
- <div class="card premium home-card">
-        <div>💰 Resale Old B.Ed Books</div>
-        <button class="btn" onclick="openResale()">Sell Now</button>
+<!-- HOME -->
+<div id="notes" class="page">
+
+
+
+    <!-- 🔥 PREMIUM RESALE -->
+    <div class="card" style="border-left:4px solid gold">
+        💰 Resale Your Old B.Ed Books
+        <button class="btn" style="background:gold;color:black" onclick="openResale()">Sell</button>
     </div>
-    <input id="homeSearch" class="search" placeholder="Search prev. question.." onkeyup="searchHomeCards()">
 
-   
+    <!-- 🔥 BUY BOOK SECTION -->
     <div id="buyBooks"></div>
-    
-    <div class="card home-card">
-      <div class="info-layout">
-        <i class="fa-solid fa-file-pdf" style="color:#ef4444; font-size:20px;"></i>
-        <div>
-          <span>old.Year Questions</span>
-          <small>Format: GDrive Link</small>
-        </div>
-      </div>
-      <button class="btn" onclick="triggerGdrivePopup('https://drive.google.com/drive/folders/your-dummy-folder-id')">Open</button>
+    <div class="card" >
+        Prev.Year Questions Coming soon!
+
     </div>
-    
-    <div class="card home-card">
-        <span>Important Questions</span>
-        <small>Coming soon!</small>
+    <div class="card" >
+        Important Questions Coming soon!
     </div>
 </div>
 
+<!-- RESALE POPUP -->
 <div id="resalePopup" class="popup">
     <div class="popup-box">
+
         <h3>Sell Your Book</h3>
-        <p style="font-size:12px; color:var(--text-muted); margin-bottom:15px;">List your core material for other students.</p>
-        <input id="bookName" placeholder="Book Name">
-        <input id="author" placeholder="Author Name">
-        <input id="edition" placeholder="Edition Year">
-        <input id="price" placeholder="Price (₹)">
-        <button onclick="sendResale()">Submit Listing</button>
+
+        <input id="bookName" placeholder="Book Name"><br><br>
+        <input id="author" placeholder="Author"><br><br>
+        <input id="edition" placeholder="Edition Year"><br><br>
+        <input id="price" placeholder="Price"><br><br>
+
+        <p>Also Send photos of your book front and back</p><br>
+
+        <button onclick="sendResale()">Add Photo</button>
         <button onclick="closeResale()">Cancel</button>
+
     </div>
 </div>
 
-<div id="notesPage" class="page">
-    <h3 id="semTitle" style="font-size:16px; margin-bottom:4px; font-weight:600; color:#1e3a8a;"></h3>
-    <p id="medTitle" style="font-size:12px; margin-bottom:14px; font-weight:500; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.3px;"></p>
-    <input id="search" class="search" placeholder="Search" onkeyup="searchNotes()">
+
+<!-- THANK YOU POPUP -->
+<div id="thankPopup" class="popup">
+    <div class="popup-box">
+        <h3>✅ Thank You!</h3>
+        <p>Your request submitted</p>
+        <button onclick="closeThank()">Close</button>
+    </div>
+</div>
+
+<!-- NOTES -->
+<div id="home" class="page">
+    <h3 id="semTitle"></h3><br/>
+    <input id="search" class="search" placeholder="Search..." onkeyup="searchNotes()">
     <div id="noteList"></div>
 </div>
-<div id="qaPage" class="page">
-    <h3 id="qaSubTitle" style="font-size:16px; margin-bottom:14px; font-weight:600; color:#1e3a8a; text-transform:uppercase;">📝 VERIFIED Q&A</h3>
-    <div id="qaContainer"></div>
 
-</div>
-<div id="noticesPage" class="page">
-    <div id="noticeList"><div class='notice'><span>Checking feed updates...</span></div></div>
+<!-- NOTICES -->
+<div id="notices" class="page">
+    <div id="noticeList"></div>
 </div>
 
-<div id="accountPage" class="page">
-    <div class="section-title">Student Profile</div>
-    <div class="profile-section">
-        <div class="profile-row">
-            <span class="label">Full Name</span>
-            <span class="value" id="prof-name">-</span>
-        </div>
-        <div class="profile-row">
-            <span class="label">Gender</span>
-            <span class="value" id="prof-gender">-</span>
-        </div>
-        <div class="profile-row">
-            <span class="label">Current Term</span>
-            <span class="value" id="prof-semester">-</span>
-        </div>
-        <div class="profile-row">
-            <span class="label">Medium</span>
-            <span class="value" id="prof-medium">-</span>
-        </div>
-        <div class="profile-row">
-            <span class="label">Pedagogy</span>
-            <span class="value" id="prof-pedagogy">-</span>
-        </div>
-        <div class="profile-row">
-            <span class="label">Phone Contact</span>
-            <span class="value" id="prof-phone">-</span>
-        </div>
-    </div>
 
-    <div class="section-title">B.Ed Academic Tools</div>
-    <div class="card">
-        <span>Syllabus & Curriculum Guide</span>
-        <button class="btn" onclick="openExternalLink('https://www.tnteu.ac.in/syllabus.php', 'Opening Syllabus Guidelines...')">View</button>
-    </div>
-    <div class="card">
-        <span>Lesson Plan Formats & Samples</span>
-        <button class="btn" onclick="showPopup('Sample lesson plan guidelines are being compiled for your teaching training session.')">Explore</button>
-    </div>
-    <div class="section-title">Application Control</div>
-    <div class="card">
-        <span>Privacy Policy</span>
-        <button class="btn" onclick="openExternalLink('https://bedstudyapp.netlify.app/terms.html', 'Opening Privacy Policy...')">View</button>
-    </div>
-    <div class="card">
-        <span>Terms & Conditions</span>
-        <button class="btn" onclick="openExternalLink('https://bedstudyapp.netlify.app/terms.html', 'Opening Terms...')">View</button>
-    </div>
-       
-    <div class="card" style="background: rgba(37, 99, 235, 0.08);">
-        <span>Share App </span>
-        <button class="btn" onclick="shareContent()"><i class="fa fa-share-alt"></i> Share</button>
-    </div>
 
-    <button class="primary-btn" style="background: linear-gradient(135deg, #ef4444, #b91c1c); margin-top: 15px; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.25);" onclick="resetAccount()">Reset Registration Data</button>
-</div>
 
+
+<!-- NAV -->
 <div id="nav" class="nav">
-    <button id="nav-home" onclick="showPage('homePage')"><i class="fa fa-house"></i>Home</button>
-    <button id="nav-notes" onclick="showPage('notesPage')"><i class="fa fa-book"></i>Notes</button>
-   <button id="nav-qa" onclick="showPage('qaPage')">
-    <i class="fa-solid fa-circle-question"></i>Q&A<span id="qaBadge" class="badge" style="display:none; background:#3b82f6;">0</span>
-</button>
-    <button id="nav-notices" onclick="showPage('noticesPage')"><i class="fa fa-bell"></i>Updates<span id="badge" class="badge">1</span></button>
-    <button id="nav-account" onclick="showPage('accountPage')"><i class="fa fa-user"></i>Account</button>
+    <button onclick="showPage('home')">
+        <i class="fa fa-book"></i> Notes
+    </button>
+
+    <button onclick="showPage('notes')">
+        <i class="fa fa-house"></i> Home
+    </button>
+
+    <button onclick="showPage('notices')">
+        <i class="fa fa-bell"></i> Updates
+        <span id="badge" class="badge">1</span>
+    </button>
+
+    <!-- Share Button -->
+    <button onclick="shareContent()">
+        <i class="fa fa-share-alt"></i> Share
+    </button>
 </div>
+
+<!-- POPUP -->
 <div id="popup" class="popup">
     <div class="popup-box">
-        <div id="popupMsg" style="font-size:14px; font-weight:500; color:var(--text-main);"></div>
-        <button onclick="document.getElementById('popup').style.display='none'">OK</button>
+        <div id="popupMsg"></div>
+        <button onclick="popup.style.display='none'">OK</button>
     </div>
 </div>
 
-<div id="gdrivePopup" class="popup">
-    <div class="popup-box gdrive-popup-box">
-        <span class="close-btn" onclick="closeGdrivePopup()">&times;</span>
-        <div style="width: 50px; height: 50px; background: rgba(37, 99, 235, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px auto;">
-            <i class="fa-brands fa-google-drive" style="color: #2563eb; font-size: 24px;"></i>
-        </div>
-        <h3>Opening Google Drive</h3>
-        
-        <ul style="font-size:13px; color:var(--text-muted); margin:14px 0 18px 0; line-height:1.6; font-weight:500; text-align:left; padding-left:20px;">
-            <li style="margin-bottom: 6px;">Please use the same Google Account for every PDF.</li>
-            <li>Loading large PDFs can take up to 2 minutes.</li>
-        </ul>
-        
-        <button id="gdriveConfirmBtn" style="margin-top:0;">OK</button>
-    </div>
-</div>
 
 <div id="whatsappPopup" class="popup">
     <div class="popup-box">
+
         <h3>📢 Join WhatsApp Group</h3>
-        <p style="font-size:12px; margin:10px 0; color:#475569; line-height:1.5;">Get instant study tracking alerts, exam routines & verified notice briefs directly.</p>
-        <button onclick="joinWhatsapp()" style="background:#25D366; box-shadow: 0 4px 12px rgba(37,211,102,0.3);"><i class="fa-brands fa-whatsapp"></i> Join Now</button>
+        <p style="font-size:13px;margin:10px 0;">
+            Get latest updates, notes & notifications
+        </p>
+
+        <button onclick="joinWhatsapp()" style="background:#25D366;">
+            <i class="fa-brands fa-whatsapp"></i> Join Now
+        </button>
+
+
+
     </div>
 </div>
-
-<div id="loader" class="popup">
-  <div class="popup-box">
-    <div class="spinner"></div>
-    <p id="loaderText" style="font-size:13px;color:#475569;margin-top:10px;font-weight:500;">Opening Resource Link...</p>
-  </div>
-</div>
-<div id="qaChatbotBtn" style="position: fixed; bottom: 80px; right: 20px; width: 56px; height: 56px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4); cursor: pointer; z-index: 999; transition: transform 0.2s;" onclick="toggleQaChatbot(true)">
-    <i class="fa-solid fa-comment-dots"></i>
-</div>
-
-<div id="qaChatbotModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 10000; display: none; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
-    <div style="background: white; width: 100%; max-width: 360px; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); overflow: hidden; animation: qaPopupScale 0.3s ease-out;">
-        
-        <div style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); padding: 16px; color: white; display: flex; align-items: center; justify-content: space-between;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <div style="width: 10px; height: 10px; background: #10b981; border-radius: 50%; box-shadow: 0 0 8px #10b981;"></div>
-                <span style="font-weight: 600; font-size: 15px;">Q&A Assistant</span>
-            </div>
-            <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 18px;" onclick="toggleQaChatbot(false)"></i>
-        </div>
-        
-        <div style="padding: 20px; background: #f8fafc; max-height: 200px; overflow-y: auto;">
-            <div style="background: white; padding: 12px 14px; border-radius: 12px; border-top-left-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); font-size: 13.5px; color: #1e293b; line-height: 1.5; font-weight: 500;">
-                <span id="chatbotTypingText"></span><span id="chatbotCursor" style="font-weight: bold; color: #3b82f6; animation: blink 0.7s infinite;">|</span>
-            </div>
-        </div>
-        
-        <div style="padding: 12px; background: white; display: flex; gap: 8px; border-top: 1px solid #e2e8f0; align-items: center;">
-            <input id="chatbotUserMsg" type="text" placeholder="Type your question here..." style="flex: 1; border: 1px solid #cbd5e1; padding: 10px 14px; border-radius: 24px; font-size: 13px; outline: none; transition: border 0.2s;" onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#cbd5e1'">
-            <button onclick="sendChatbotRequest()" style="background: #3b82f6; color: white; border: none; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s;">
-                <i class="fa-solid fa-paper-plane" style="font-size: 14px; margin-left: 2px;"></i>
-            </button>
-        </div>
-    </div>
-</div>
-
-<div id="chatbotSuccessModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(5px); z-index: 10001; display: none; align-items: center; justify-content: center; padding: 20px;">
-    <div style="background: white; width: 100%; max-width: 320px; padding: 24px; border-radius: 16px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
-        <div style="width: 56px; height: 56px; background: #d1fae5; color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; font-size: 24px;">
-            <i class="fa-solid fa-circle-check"></i>
-        </div>
-        <h4 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600; color: #0f172a;">Request Dispatched!</h4>
-        <p style="margin: 0 0 20px 0; font-size: 13px; color: #64748b; line-height: 1.5;">Your question details have been successfully prepared and sent via WhatsApp.</p>
-        <button class="btn" style="width: 100%; padding: 10px;" onclick="document.getElementById('chatbotSuccessModal').style.display='none'">Dismiss</button>
-    </div>
-</div>
-
-
-<style>
-@keyframes qaPopupScale { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-</style>
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwXpP5qxC_4vwnF7yZB3VjLYiHWvFt4W-ziYZv1cDXsUQWiorUtVGLgl9JZ4rn1b6w0CA/exec";
-const PROXY_URL = "https://whatsapp.arotesting54.workers.dev/?url=";
 
-let pendingDriveUrl = "";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0yVkhugqqVYtKK-9xLNOJ981ob5GnDI8_gTApwgmAwxC0OsWIWZHI_fajvKFGxihr/exec";
 
-function showPopup(msg){
+    /* ================= POPUP ================= */
+    function showPopup(msg){
     document.getElementById("popupMsg").innerText = msg;
     document.getElementById("popup").style.display = "flex";
-}
-
-function clearError(id) {
-    document.getElementById("container-" + id).classList.remove("input-error");
-}
-// ==========================================
-// OFFLINE FORM PERSISTENCE
-// ==========================================
-
-// 1. Save values immediately when the student changes an option
-window.addEventListener('DOMContentLoaded', () => {
-    const inputs = ['name', 'gender', 'semester', 'medium', 'pedagogy', 'phone'];
-    
-    inputs.forEach(id => {
-        const element = document.getElementById(id);
-        if (element) {
-            element.addEventListener('input', (e) => {
-                localStorage.setItem('draft_' + id, e.target.value);
-            });
-            // Also listen for select dropdown changes
-            element.addEventListener('change', (e) => {
-                localStorage.setItem('draft_' + id, e.target.value);
-            });
-        }
-    });
-
-    // 2. Restore values automatically when the page reloads
-    inputs.forEach(id => {
-        const savedValue = localStorage.getItem('draft_' + id);
-        const element = document.getElementById(id);
-        if (savedValue && element) {
-            element.value = savedValue;
-        }
-    });
-});
-
-// ==========================================
-function registerUser(){
-    const fields = ["name", "gender", "semester", "medium", "pedagogy", "phone"];
-    let hasError = false;
-    let firstErrorElement = null;
-    let missingFieldLabel = "";
-
-    fields.forEach(id => {
-        document.getElementById("container-" + id).classList.remove("input-error");
-    });
-
-    let data = {
-        name: document.getElementById("name").value.trim(),
-        gender: document.getElementById("gender").value,
-        semester: document.getElementById("semester").value,
-        medium: document.getElementById("medium").value,
-        pedagogy: document.getElementById("pedagogy").value,
-        phone: document.getElementById("phone").value.trim()
-    };
-
-    for(let key in data){
-        if(!data[key]){
-            let containerEl = document.getElementById("container-" + key);
-            containerEl.classList.add("input-error");
-            
-            if(!hasError) {
-                hasError = true;
-                firstErrorElement = document.getElementById(key);
-                if(key === "phone") missingFieldLabel = "Phone Number";
-                else if(key === "pedagogy") missingFieldLabel = "Pedagogy Subject";
-                else if(key === "medium") missingFieldLabel = "Study Medium";
-                else missingFieldLabel = key.charAt(0).toUpperCase() + key.slice(1);
-            }
-        }
     }
 
-    if(hasError) {
-        if(firstErrorElement) firstErrorElement.focus();
-        showPopup("⚠️ Please fill out or select your " + missingFieldLabel);
-        return;
+    /* ================= REGISTER ================= */
+    function registerUser(){
+
+    let data = {
+    name: document.getElementById("name").value.trim(),
+    dob: document.getElementById("dob").value,
+    gender: document.getElementById("gender").value,
+    college: document.getElementById("college").value.trim(),
+    district: document.getElementById("district").value.trim(),
+    phone: document.getElementById("phone").value.trim(),
+    pedagogy: document.getElementById("pedagogy").value,
+    medium: document.getElementById("medium").value,
+    semester: document.getElementById("semester").value
+    };
+
+    /* VALIDATION */
+    for(let key in data){
+    if(!data[key]){
+    showPopup("⚠️ Fill all fields");
+    return;
+    }
     }
 
     if(!document.getElementById("agree").checked){
-        showPopup("⚠️ You must agree to the Terms & Conditions.");
-        return;
+    showPopup("⚠️ Accept Terms & Conditions");
+    return;
     }
 
-    // Save final registration data
+    /* SAVE */
+    /* AFTER SAVE + FETCH */
+
     localStorage.setItem("user", JSON.stringify(data));
-    
-    // Clear the temporary form drafts since registration is successful
-    ['name', 'gender', 'semester', 'medium', 'pedagogy', 'phone'].forEach(id => {
-        localStorage.removeItem('draft_' + id);
+
+    fetch(SCRIPT_URL,{
+    method:"POST",
+    mode:"no-cors",
+    body:JSON.stringify(data)
     });
-    
-    if(SCRIPT_URL && SCRIPT_URL !== "") {
-        fetch(PROXY_URL + encodeURIComponent(SCRIPT_URL), {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => console.log("Google Sheet layout synced successfully!"))
-        .catch(err => console.log("Sheet network tracking offline, saving locally."));
+
+    /* 👉 SHOW WHATSAPP POPUP FIRST */
+    document.getElementById("whatsappPopup").style.display = "flex";
+
+
     }
 
-    document.getElementById("whatsappPopup").style.display = "flex";
-}
-function joinWhatsapp(){
+      function joinWhatsapp(){
+
+    /* YOUR GROUP LINK */
     let link = "https://chat.whatsapp.com/CgNt3lBmhlGG0Yjvi2g3FW?mode=gi_t";
-    window.open(link, '_blank');
+
+    /* OPEN WHATSAPP */
+    window.open(link);
+
+    /* CLOSE POPUP */
     document.getElementById("whatsappPopup").style.display = "none";
 
+    /* AFTER RETURN → SHOW SUCCESS */
     setTimeout(()=>{
-        showPopup("🎉 Registration Completed Successfully!");
-        initDashboard();
-    },1000);
-}
+    showPopup("🎉 Registration Successful!");
+    location.reload();
+    },1500);
 
-function initDashboard(){
+    }
+
+
+    /* ================= INIT ================= */
+    window.addEventListener("DOMContentLoaded", ()=>{
+
     let user = JSON.parse(localStorage.getItem("user"));
+
     if(user){
-        document.getElementById("registerPage").style.display="none";
-        document.getElementById("nav").style.display="flex";
-        document.getElementById("welcomeText").innerText = "Welcome, " + user.name;
-        
-        document.getElementById("prof-name").innerText = user.name;
-        document.getElementById("prof-gender").innerText = user.gender;
-        document.getElementById("prof-semester").innerText = user.semester;
-        document.getElementById("prof-medium").innerText = user.medium + " Medium";
-        document.getElementById("prof-pedagogy").innerText = user.pedagogy;
-        document.getElementById("prof-phone").innerText = user.phone;
 
-        showPage('homePage');
-        loadNotes();
-        loadNotices();
-        loadBuyBooks();
+    document.getElementById("registerPage").style.display="none";
+    document.getElementById("nav").style.display="flex";
+    document.getElementById("home").classList.add("active");
+
+    document.getElementById("welcomeText").innerHTML =
+    "Welcome, " + user.name;
+    loadNotes();
+    loadNotices();
+      loadBuyBooks();
     }
-}
 
-function resetAccount() {
-    if(confirm("Are you sure you want to delete registration logs from this local device view?")) {
-        localStorage.removeItem("user");
-        location.reload();
-    }
-}
+    });
 
-window.addEventListener("DOMContentLoaded", initDashboard);
+    /* ================= BOOK DATA ================= */
+    const BASE_URL = "https://aro5683.github.io/B.Ed-Viewer/web/PDFs/";
+    const books = [
 
-const books = [
-  // SEMESTER 1 - TAMIL MEDIUM
-  {sem:"Semester 1", medium:"Tamil", title:"BD1PS Unit-5 TAM", file:"https://drive.google.com/file/d/1fj8VXaBi2ztoiif2ZSZrCUPB_m9NKRe0/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1PS Unit-4 TAM", file:"https://drive.google.com/file/d/1rF1A0qLXXsd_8Uvky0mUk1hPAJMy2ppY/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1PS Unit-3 TAM", file:"https://drive.google.com/file/d/1nR_QmGzip8X75ZyyAVUOc0pitMNnBK2h/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1PS Unit-2 TAM", file:"https://drive.google.com/file/d/1WBqkqBtEXiEgMZB39CjEQn1qi8U1mW8W/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1PS Unit-1 TAM", file:"https://drive.google.com/file/d/18XBwDGWMXNRgcCD_X-L7TniZlY9bQ9Is/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1TA Unit-5 TAM", file:"https://drive.google.com/file/d/16XFoMPwrC2qcY1agt9suDNN9eSR3xzeX/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1TA Unit-4 TAM", file:"https://drive.google.com/file/d/10wpzETcvS7h3qWZaeh7Badd6t-QPNQJs/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1TA Unit-3 TAM", file:"https://drive.google.com/file/d/1MTyk0XjfNheLZFZeellgCHrH65kiN_Md/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1TA Unit-2 TAM", file:"https://drive.google.com/file/d/1O-enXP_ZtFUchGan1571SGEp8TwqdT6Z/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1TA Unit-1 TAM", file:"https://drive.google.com/file/d/1Q18DZGXhvxuogWNVMDFgk78IZppmWodC/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1MA Unit-5 TAM", file:"https://drive.google.com/file/d/14mDdCOW20Xl1Leg-kmJAur2LzhyuNZ-4/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1MA Unit-4 TAM", file:"https://drive.google.com/file/d/1zqB6IWk-Dj1aDU0l6E1_9p56X314fIbB/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1MA Unit-3 TAM", file:"https://drive.google.com/file/d/1z0Fsx9ZjISdUVbUmgm-OSvSOUNEbUIUr/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1MA Unit-2 TAM", file:"https://drive.google.com/file/d/1OG3DLj6RTbZ8YyUPQMt1iUCdI55Ds7_r/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1MA Unit-1 TAM", file:"https://drive.google.com/file/d/1-sXqYYI-hkft8qrbcF0LlpnVVoUJLT2V/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1CS Unit-5 TAM", file:"https://drive.google.com/file/d/1DQtJrFCpx-Ee_MaT5uGhiuy6BRd23CFN/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1CS Unit-4 TAM", file:"https://drive.google.com/file/d/1naXni_ysSMaq4k0XSRoLbHos1wPLNBRu/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1CS Unit-3 TAM", file:"https://drive.google.com/file/d/1ZmwfD6HE1g466LBbyXMy_BzXkxQ_BFRD/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1CS Unit-2 TAM", file:"https://drive.google.com/file/d/1mxyqKg5c9mPUU3UKvhuURFDIy65PdoVA/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1CS Unit-1 TAM", file:"https://drive.google.com/file/d/1Eql_9E6Ly3YBkV_uqWLR1tP2U6iTnld_/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1BS Unit-5 TAM", file:"https://drive.google.com/file/d/1LoY-LKIQecEk8_Cr7CmJD28GQUDwGwVJ/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1BS Unit-4 TAM", file:"https://drive.google.com/file/d/1byP_DulJZu0pZXnAsZJwl8kgDCVpKq1n/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1BS Unit-3 TAM", file:"https://drive.google.com/file/d/1kZLknc4VxZGi5L85gyEfRoHpVPaEqevG/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1BS Unit-2 TAM", file:"https://drive.google.com/file/d/1ZqxYZya9-9ANYCodyy-ffKiI9BhuTYM7/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1BS Unit-1 TAM", file:"https://drive.google.com/file/d/1x9ZP7H-3kT6petvDRPK_aNmW8q53CHiK/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1CA Unit-5 TAM", file:"https://drive.google.com/file/d/1_Q3L8hHjgKoF9Sa6iH930RWzfrgZnnqQ/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1CA Unit-4 TAM", file:"https://drive.google.com/file/d/12ALWFEyhUpogH0oEK98jyjNDzBupt5AA/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1CA Unit-3 TAM", file:"https://drive.google.com/file/d/1aAJDjpZMteIDhGalq1DbZEdny3_pzo4g/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1CA Unit-2 TAM", file:"https://drive.google.com/file/d/1ru1oAH0nsQoZNao_wSec_W6StUKLbnIQ/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1CA Unit-1 TAM", file:"https://drive.google.com/file/d/1hZso8tCzHuHJQbAmVONu-13R2TMHF2UX/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1TL Unit-5 TAM", file:"https://drive.google.com/file/d/1BTtXBGixm6cgN_i0qVlp6_YZV3QP0Tuz/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1TL Unit-4 TAM", file:"https://drive.google.com/file/d/11KXD3QFo2puZjA5y9CSzhanWqospmpOY/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1TL Unit-3 TAM", file:"https://drive.google.com/file/d/120HlQbf5c8pQ-5gp_rwp5OIYXvHoUl8Y/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1TL Unit-2 TAM", file:"https://drive.google.com/file/d/12QuCrT_74199-WaJT_eNvLo0tSKZ0ZBX/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1TL Unit-1 TAM", file:"https://drive.google.com/file/d/1EFHetyVZ-ABrtrxdl9Wpb1ad_6hhkibW/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1LC Unit-5 TAM", file:"https://drive.google.com/file/d/1e3dzdKvC5e5hLFjnsV9EIcsJHwO4jwMe/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1LC Unit-4 TAM", file:"https://drive.google.com/file/d/1cQG4E7EEcXpihQ-Ayd_b5ihxquOpNaIu/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1LC Unit-3 TAM", file:"https://drive.google.com/file/d/15Htf5h8Dx0UW7TlwSAdIZQxUVsc17_Gs/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1LC Unit-2 TAM", file:"https://drive.google.com/file/d/1YQSzGRsr0IyLfhcyDaWDiYNSHqi0do0D/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1LC Unit-1 TAM", file:"https://drive.google.com/file/d/1yUsx0jUjOKg5Vnznbn-RNFxWFls5vhZw/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1EP Unit-1 TAM(1)", file:"https://drive.google.com/file/d/10SSWeRlkPbcp7B1nFy-AFmvJmd0MLyFe/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1EP Unit-5 TAM", file:"https://drive.google.com/file/d/15ZPP7vdf0qF8F3YDNPIDKSNTr3tVlwy7/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1EP Unit-4 TAM", file:"https://drive.google.com/file/d/1WctyLcicM16JlwM31k9E-5h69uvwuFqG/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1EP Unit-3 TAM", file:"https://drive.google.com/file/d/1m4pbi4_fRKXssmXcNFrSEZ3tV95EPynL/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1EP Unit-2 TAM", file:"https://drive.google.com/file/d/1Qdvcp9Ab2aJXkPl-lpanTr1Ahof5atc7/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1EP Unit-1 TAM", file:"https://drive.google.com/file/d/10tFUW9u1yo-Sj9Dglf56WVrH9P6V5ToH/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1CE Unit-7 TAM", file:"https://drive.google.com/file/d/1XNsbSfGzXhxf5YSPfkr9AClOGgWT-8vj/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1CE Unit-6 TAM", file:"https://drive.google.com/file/d/13RvDrzZHbifyQ_TdttLVH7cfSNsZZO2K/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1CE Unit-5 TAM", file:"https://drive.google.com/file/d/1OjbwP1rx0fnVZpvvLF9wQEWzhqOAp0ht/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1CE Unit-4 TAM", file:"https://drive.google.com/file/d/1A7RP-UxDVm0kqG04AI5-p0RlJD3TLFL2/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1CE Unit-3 TAM", file:"https://drive.google.com/file/d/1wSM17STE2waPdYAMfDn8XEuTBxfONjX5/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1CE Unit-2 TAM", file:"https://drive.google.com/file/d/1UAvaUKHzDAFecf7dwNg0gw7QdKzJrpuv/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"Tamil", title:"BD1CE Unit-1 TAM", file:"https://drive.google.com/file/d/1kdHNmzAFNXMrhaMLbrZ_byCnQ4U3-MWm/view?usp=drivesdk"},
+    /* ================= CORE SUBJECTS ================= */
 
-  // SEMESTER 1 - ENGLISH MEDIUM
-  {sem:"Semester 1", medium:"English", title:"BD1EN Unit-5 ENG", file:"https://drive.google.com/file/d/1QF2j7JNg6bMtLP9UjDcTFUczml_qsSKo/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1EN Unit-4 ENG", file:"https://drive.google.com/file/d/1weCP6LM6-K_NYKKIQyxNAcNXBzaCH8K2/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1EN Unit-3 ENG", file:"https://drive.google.com/file/d/1Bf-xD4b5tP4NN2HQVhFLV0Yj9mr7dd_H/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1EN Unit-2 ENG", file:"https://drive.google.com/file/d/1v3DY6kBL0Dr0Wo0U4a2o1a9vzUmTERPn/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1EN Unit-1 ENG", file:"https://drive.google.com/file/d/1fTrA28wnU5ZuzGIP_hDMXiCX_IMukHeU/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1PS Unit-5 ENG", file:"https://drive.google.com/file/d/1BW06mwH-Nt8IRphLSp_CEANkLg_LgMY2/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1PS Unit-4 ENG", file:"https://drive.google.com/file/d/1HW3x14MJCsEeQba-wNk_3_fD2w-YPlcx/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1PS Unit-3 ENG", file:"https://drive.google.com/file/d/1KnXVOd4tmUBiEWb6snvXp9x2eQbYDUmY/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1PS Unit-2 ENG", file:"https://drive.google.com/file/d/1PRjsi3pU8jEPNr9jnsNvm9U19rsAt8mn/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1PS Unit-1 ENG", file:"https://drive.google.com/file/d/13jxhmSItV8rLRNELSCvEl6RmoRjlHrtJ/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1MA Unit-5 ENG", file:"https://drive.google.com/file/d/1zZN-QCOkxg8oNjmc1V6t-EN1BW9yrB5q/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1MA Unit-4 ENG", file:"https://drive.google.com/file/d/1QGL6Znadg22K8ta0x_a1nVAb2sM7JB7P/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1MA Unit-3 ENG", file:"https://drive.google.com/file/d/1xJQMChR7izUpABwdK2F2nTn7YIoW68C8/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1MA Unit-2 ENG", file:"https://drive.google.com/file/d/1GXM6BCPWMPon3Z7uTkUMIEQgABfUPIm9/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1MA Unit-1 ENG", file:"https://drive.google.com/file/d/1-d-XO8iHTgGa8R3JBwG6lGmcB5CqWAet/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1HI Unit-5 ENG", file:"https://drive.google.com/file/d/1SBq6zxoAWj7h5TG8D7P9UbPHlFbkPW2g/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1HI Unit-4 ENG", file:"https://drive.google.com/file/d/1Md11ZOPIXQ3luEq8-SxSoBONjqy28N5W/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1HI Unit-3 ENG", file:"https://drive.google.com/file/d/1hk6rVsWh6WcVGupvWYm4bT54N-NKOUYC/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1HI Unit-2 ENG", file:"https://drive.google.com/file/d/1gIq4CtFHzsvfzFrbooNda2CDgab0WHOm/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1HI Unit-1 ENG", file:"https://drive.google.com/file/d/1W03Tb1zVhNOemIjYN5pAkOsWXaBHUnxf/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1BS Unit-5 ENG", file:"https://drive.google.com/file/d/1Wnv26RRXK6HR2nNCRY5E3aM1h_USFXdJ/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1BS Unit-4 ENG", file:"https://drive.google.com/file/d/1n4-szRBsEFXKQm7k8KZ3n7qlSJTyXqZX/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1BS Unit-3 ENG", file:"https://drive.google.com/file/d/1Y8QoWpvTbbnNcqHZ0xjhb7QsNdTt-euk/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1BS Unit-2 ENG", file:"https://drive.google.com/file/d/18A8Xx2_hFAVQ8KT3SYFD6miACT2-tBIu/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1BS Unit-1 ENG", file:"https://drive.google.com/file/d/1FzF27sYKpVBo4eRRMiU1rjUTN7LcUBal/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1CS Unit-5 ENG", file:"https://drive.google.com/file/d/1-_1hGgF1WI_rBVodhpwvov6VgUnyzVr9/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1CS Unit-4 ENG", file:"https://drive.google.com/file/d/1z2FOtknWnl0KRpqZzmreOOyhQVbVPA2Q/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1CS Unit-3 ENG", file:"https://drive.google.com/file/d/1Go-hEPJaLEoOQsFvNM4poAr1OOzdMMTq/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1CS Unit-2 ENG", file:"https://drive.google.com/file/d/1q9aG95YVdjJu6G2_v49VzabVvnsq59Mi/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1CS Unit-1 ENG", file:"https://drive.google.com/file/d/1H56MbxshH6ftbkl3BMSmDfs2oadCX3NZ/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1CA Unit-5 ENG", file:"https://drive.google.com/file/d/1__eTBuW5wejBMOCdLmmpLyX6VUtlnzFq/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1CA Unit-4 ENG", file:"https://drive.google.com/file/d/1XLcRF7voxvOwiJ01fv-DjNbAmELtzRSl/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1CA Unit-3 ENG", file:"https://drive.google.com/file/d/1yzfnPbUN_toUBqr1rRlZ8XZvTmfAZoqG/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1CA Unit-2 ENG", file:"https://drive.google.com/file/d/1kPq9Pf2kY6AU-nEf2O9B28PTNeXbZjAC/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1CA Unit-1 ENG", file:"https://drive.google.com/file/d/1gWj26-KZh6qKDQCaTpcBXzxQNbIMtk9Y/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1TL Unit-5 ENG", file:"https://drive.google.com/file/d/1EtlZ659I1OhB0xQ1Qw0TWIDyDqPer_lm/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1TL Unit-4 ENG", file:"https://drive.google.com/file/d/1wZK8qIDC2pKuFBM7ZR80T14jXY7ZPeWd/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1TL Unit-3 ENG", file:"https://drive.google.com/file/d/1SfKFFlaui9_9_gMdB3VtYt9gUEBEjH8A/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1TL Unit-2 ENG", file:"https://drive.google.com/file/d/1QOnoInnL11dN0xa7-US41h1_OfNmLrTl/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1TL Unit-1 ENG", file:"https://drive.google.com/file/d/1uWEXUtrBDgj8feCEj9JeeEHAhAhhInSn/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1LC Unit-5 ENG", file:"https://drive.google.com/file/d/1rxMDwh1zPd_D_NA30bKfbCDVWqeOrqMy/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1LC Unit-4 ENG", file:"https://drive.google.com/file/d/1x4mOQ1_u4GHpdbM8FItePJLDPKd8oKZ7/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1LC Unit-3 ENG", file:"https://drive.google.com/file/d/1LGO1nl8CtDwKMggO4of3sYWHjGnRHdNt/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1LC Unit-2 ENG", file:"https://drive.google.com/file/d/1aYOZObgC5YMrNU6PG7I_PRTzV7KgudmB/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1LC Unit-1 ENG", file:"https://drive.google.com/file/d/1TM-YKN0osUApA2zLxym1uRxA6_LZABYt/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1EP Unit-5 ENG", file:"https://drive.google.com/file/d/1oe_30Djw4nudha2xkL1yr_t5cInANQlG/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1EP Unit-4 ENG", file:"https://drive.google.com/file/d/1-8GNAZdQ145m7KuOPHFt2P27k_kMO1zE/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1EP Unit-3 ENG", file:"https://drive.google.com/file/d/14EDLHE2WpTi33aQ6JkAXvdy1DeTffP6V/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1EP Unit-2 ENG", file:"https://drive.google.com/file/d/1m0T9icRd-_E8k-VEuEBBRdavM6x-hli7/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1EP Unit-1 ENG", file:"https://drive.google.com/file/d/12C7Xsk5cU_8WkS75ekutLTS8HV-uluBE/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1CE Unit-7 ENG", file:"https://drive.google.com/file/d/1MxEpRHaUlP-aLYls24nqj_2y3g7aZ1SJ/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1CE Unit-6 ENG", file:"https://drive.google.com/file/d/1-H32vpsh66PeROAiJhtwJRT5w05OTWOR/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1CE Unit-5 ENG", file:"https://drive.google.com/file/d/1o7fA6XHh2KhcIFEsQV0ZUS6ESAojG8JI/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1CE Unit-4 ENG", file:"https://drive.google.com/file/d/1ELUMFR1qNkT924xCCBKg-8z7Kk3ZfkgV/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1CE Unit-3 ENG", file:"https://drive.google.com/file/d/1ztq_VMh4wuJQSXFYbOcScOkpyQir9jK1/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1CE Unit-2 ENG", file:"https://drive.google.com/file/d/1n6KikaW1Ok7pZZmdpCntE8bWQQVb6VE9/view?usp=drivesdk"},
-  {sem:"Semester 1", medium:"English", title:"BD1CE Unit-1 ENG", file:"https://drive.google.com/file/d/1GdGYu5QEmD1FRt100FzmJt0Xd8vu0ovZ/view?usp=drivesdk"},
+    /* BD1CE */
+    {type:"core", sem:"Semester 1", medium:"English", title:"BD1CE Unit 1 ENG", file:"BD1CE Unit-1 ENG.pdf"},
+    {type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1CE Unit 1 TAM", file:"BD1CE Unit-1 TAM.pdf"},
+    {type:"core", sem:"Semester 1", medium:"English", title:"BD1CE Unit 2 ENG", file:"BD1CE Unit-2 ENG.pdf"},
+    {type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1CE Unit 2 TAM", file:"BD1CE Unit-2 TAM.pdf"},
+    {type:"core", sem:"Semester 1", medium:"English", title:"BD1CE Unit 3 ENG", file:"BD1CE Unit-3 ENG.pdf"},
+    {type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1CE Unit 3 TAM", file:"BD1CE Unit-3 TAM.pdf"},
+    {type:"core", sem:"Semester 1", medium:"English", title:"BD1CE Unit 4 ENG", file:"BD1CE Unit-4 ENG.pdf"},
+    {type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1CE Unit 4 TAM", file:"BD1CE Unit-4 TAM.pdf"},
+    {type:"core", sem:"Semester 1", medium:"English", title:"BD1CE Unit 5 ENG", file:"BD1CE Unit-5 ENG.pdf"},
+    {type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1CE Unit 5 TAM", file:"BD1CE Unit-5 TAM.pdf"},
+    {type:"core", sem:"Semester 1", medium:"English", title:"BD1CE Unit 6 ENG", file:"BD1CE Unit-6 ENG.pdf"},
+    {type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1CE Unit 6 TAM", file:"BD1CE Unit-6 TAM.pdf"},
+    {type:"core", sem:"Semester 1", medium:"English", title:"BD1CE Unit 7 ENG", file:"BD1CE Unit-7 ENG.pdf"},
+    {type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1CE Unit 7 TAM", file:"BD1CE Unit-7 TAM.pdf"},
 
-  // SEMESTER 2 - TAMIL MEDIUM
-  {sem:"Semester 2", medium:"Tamil", title:"BD2AL Unit-1 TAM", file:"https://drive.google.com/file/d/1e6hS0PjULUnLAfBpDPtRkPSesUnkFM8C/view"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2AL Unit-2 TAM", file:"https://drive.google.com/file/d/1lvoX6-oy542Jng6VfZlF0mZjbyczFyuG/view"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2AL Unit-3 TAM", file:"https://drive.google.com/file/d/1LoiWyFFI_MbpCwbMDauccNzqZkBCtKAx/view"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2AL Unit-4 TAM", file:"https://drive.google.com/file/d/1aOj2yb5CUOHRPthUdUUq1CJWWxD3TUfS/view"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2AL Unit-5 TAM", file:"https://drive.google.com/file/d/1sbKy26V5KWTgu6FTUKqLhG97VzwxwwNH/view"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2CR Unit-1 TAM", file:"https://drive.google.com/file/d/1BYm0Vyny2cSCOhHaz5-WJhQVv7xdhZDX/view"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2CR Unit-2 TAM", file:"https://drive.google.com/file/d/1T8ljq8OwpOP2yTjEX8XWdqSWNJOQKWJp/view"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2CR Unit-3 TAM", file:"https://drive.google.com/file/d/1fBxTVMDLWqMC5l-LHRv4BV5jz_2ZcELW/view"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2CR Unit-4 TAM", file:"https://drive.google.com/file/d/1QY2fV1IYertvvuthk10KzEeDdllBCjbx/view"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2CR Unit-5 TAM", file:"https://drive.google.com/file/d/1UC_pnpWu2ORBuOghTcnKKEyQvOQbwWYA/view"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2EE Unit-1 TAM", file:"https://drive.google.com/file/d/1v7hmrP5Qf7SxI4wxRUn3NLOPT-36WDEq/view"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2EE Unit-2 TAM", file:"https://drive.google.com/file/d/1asM7Ha9DeroXNSYEO7FEy3KbCfSoaivo/view"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2EE Unit-3 TAM", file:"https://drive.google.com/file/d/1KZgdg2Bf5D8DAUPkC0ESdLtFOAx7vBk_/view"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2EE Unit-4 TAM", file:"https://drive.google.com/file/d/1dEHCxD4Vkw70ontTvExf2qoez-scLkwv/view"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2EE Unit-5 TAM", file:"https://drive.google.com/file/d/1OU89RWAhQnqIF0Q1dRSLlh4lo4B0gGlu/view"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2SM Unit-1 TAM", file:"https://drive.google.com/file/d/1JDAebC4ugOmB8wGEPuZv9HrD73fArE3n/view"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2SM Unit-2 TAM", file:"https://drive.google.com/file/d/1eXj38dX9zWfxNgiKM6un5EfMQKJ-H8U9/view"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2SM Unit-3 TAM", file:"https://drive.google.com/file/d/1LUsdBuw2qw__wkt06cwT1pUpNkq_katW/view"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2SM Unit-4 TAM", file:"https://drive.google.com/file/d/1utCmYZrYgNg4MMtuv6SAjlPPMi9NtE2P/view"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2SM Unit-5 TAM", file:"https://drive.google.com/file/d/1KMXCDiQ_881BAlD5VRZl10OlyzCzYMGo/view"},
-  
-  // SEMESTER 2 PEDAGOGY ITEMS - TAMIL MEDIUM
-  {sem:"Semester 2", medium:"Tamil", title:"BD2TA Unit-1 TAM (Tamil Pedagogy)", file:"#"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2TA Unit-2 TAM (Tamil Pedagogy)", file:"#"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2TA Unit-3 TAM (Tamil Pedagogy)", file:"#"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2TA Unit-4 TAM (Tamil Pedagogy)", file:"#"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2TA Unit-5 TAM (Tamil Pedagogy)", file:"#"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2MA Unit-1 TAM (Math Pedagogy)", file:"#"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2MA Unit-2 TAM (Math Pedagogy)", file:"#"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2PS Unit-1 TAM (Physical Science Pedagogy)", file:"#"},
-  {sem:"Semester 2", medium:"Tamil", title:"BD2BS Unit-1 TAM (Biological Science Pedagogy)", file:"#"},
+    /* BD1EP */
+    {type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1EP Unit 1 TAM", file:"BD1EP Unit-1 TAM.pdf"},
+    {type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1EP Unit 1 TAM (Alt)", file:"BD1EP Unit-1 TAM(1).pdf"},
+    {type:"core", sem:"Semester 1", medium:"English", title:"BD1EP Unit 2 ENG", file:"BD1EP Unit-2 ENG.pdf"},
+    {type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1EP Unit 2 TAM", file:"BD1EP Unit-2 TAM.pdf"},
+    {type:"core", sem:"Semester 1", medium:"English", title:"BD1EP Unit 3 ENG", file:"BD1EP Unit-3 ENG.pdf"},
+    {type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1EP Unit 3 TAM", file:"BD1EP Unit-3 TAM.pdf"},
+    {type:"core", sem:"Semester 1", medium:"English", title:"BD1EP Unit 4 ENG", file:"BD1EP Unit-4 ENG.pdf"},
+    {type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1EP Unit 4 TAM", file:"BD1EP Unit-4 TAM.pdf"},
+    {type:"core", sem:"Semester 1", medium:"English", title:"BD1EP Unit 5 ENG", file:"BD1EP Unit-5 ENG.pdf"},
+    {type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1EP Unit 5 TAM", file:"BD1EP Unit-5 TAM.pdf"},
 
-  // SEMESTER 2 - ENGLISH MEDIUM
-  {sem:"Semester 2", medium:"English", title:"BD2AL Unit-1 ENG", file:"https://drive.google.com/file/d/1vVQb1vX28VLydDI75APmiUnZ8aj1x_F5/view"},
-  {sem:"Semester 2", medium:"English", title:"BD2AL Unit-2 ENG", file:"https://drive.google.com/file/d/1i1bAp0Y-pS2gDzCbXizSeNqeaBFBLxMn/view"},
-  {sem:"Semester 2", medium:"English", title:"BD2AL Unit-3 ENG", file:"https://drive.google.com/file/d/1RMlXRg_Np_dEd1gbvv1S_Mjm5WiD4Ntt/view"},
-  {sem:"Semester 2", medium:"English", title:"BD2AL Unit-4 ENG", file:"https://drive.google.com/file/d/1I5I8bXNP0RjHYbQmOUhBKMQsr6wkXl4B/view"},
-  {sem:"Semester 2", medium:"English", title:"BD2AL Unit-5 ENG", file:"https://drive.google.com/file/d/1xRtnVoA4qHk3LR_UuBx7nhpqJ5MLg-iU/view"},
-  {sem:"Semester 2", medium:"English", title:"BD2CR Unit-1 ENG", file:"https://drive.google.com/file/d/1REkfQjVs8KCPq0Ev_kT-jupTnqLyDsOS/view"},
-  {sem:"Semester 2", medium:"English", title:"BD2CR Unit-2 ENG", file:"https://drive.google.com/file/d/1kzLt3hB0UTq-JgwAijPvWiv4WDiJ-5No/view"},
-  {sem:"Semester 2", medium:"English", title:"BD2CR Unit-3 ENG", file:"https://drive.google.com/file/d/1TFIW_842-nStlNVeppOn0ZWlm5sLl0TT/view"},
-  {sem:"Semester 2", medium:"English", title:"BD2CR Unit-4 ENG", file:"https://drive.google.com/file/d/1tG471JsTLXVboDZVP5SJwIEfN22UV22h/view"},
-  {sem:"Semester 2", medium:"English", title:"BD2CR Unit-5 ENG", file:"https://drive.google.com/file/d/1JlqYQyJmFQQhWh9RIzDMGICFDizBfZHu/view"},
-  {sem:"Semester 2", medium:"English", title:"BD2EE Unit-1 ENG", file:"https://drive.google.com/file/d/1D20Gi8YwHNDgVimTnIQ2493_YRT-55b0/view"},
-  {sem:"Semester 2", medium:"English", title:"BD2EE Unit-2 ENG", file:"https://drive.google.com/file/d/1JJQM9E0-Or64f0cVnkYWCp2WNiyXMZo3/view"},
-  {sem:"Semester 2", medium:"English", title:"BD2EE Unit-3 ENG", file:"https://drive.google.com/file/d/1oK4km0PgEkuL2824LLFlnaeTZd_KKRBW/view"},
-  {sem:"Semester 2", medium:"English", title:"BD2EE Unit-4 ENG", file:"https://drive.google.com/file/d/1WWwvs7H0UlLzvqbl05GQ-KQxGgl16V6P/view"},
-  {sem:"Semester 2", medium:"English", title:"BD2EE Unit-5 ENG", file:"https://drive.google.com/file/d/1lF0wulhRBH4NOSURuCTBsMBbEFz4ay9m/view"},
-  {sem:"Semester 2", medium:"English", title:"BD2SM Unit-1 ENG", file:"https://drive.google.com/file/d/1xIdjPbp0J1Q8Dg9qRI3Ad6tL-q2HSjJD/view"},
-  {sem:"Semester 2", medium:"English", title:"BD2SM Unit-2 ENG", file:"https://drive.google.com/file/d/1jSmRJEbeZjJLJkAASGLs7S5KrIVtju5g/view"},
-  {sem:"Semester 2", medium:"English", title:"BD2SM Unit-3 ENG", file:"https://drive.google.com/file/d/1uJXgF0oEOe9UiscOv29j3bvNniWkOyRE/view"},
-  {sem:"Semester 2", medium:"English", title:"BD2SM Unit-4 ENG", file:"https://drive.google.com/file/d/1b88uqqXLWiU580AenD_JTyT_0d6VtLry/view"},
-  {sem:"Semester 2", medium:"English", title:"BD2SM Unit-5 ENG", file:"https://drive.google.com/file/d/1cEeWpt5gw_D3Q7M8G5VF_xfhTpmeWfBO/view"},
-  
-  // SEMESTER 2 PEDAGOGY ITEMS - ENGLISH MEDIUM
-  {sem:"Semester 2", medium:"English", title:"BD2EN Unit-1 ENG (English Pedagogy)", file:"#"},
-  {sem:"Semester 2", medium:"English", title:"BD2MA Unit-1 ENG (Math Pedagogy)", file:"#"},
-  {sem:"Semester 2", medium:"English", title:"BD2PS Unit-1 ENG (Physical Science Pedagogy)", file:"#"}
-];
+    /* BD1LC */
+    {type:"core", sem:"Semester 1", medium:"English", title:"BD1LC Unit 1 ENG", file:"BD1LC Unit-1 ENG.pdf"},
+    {type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1LC Unit 1 TAM", file:"BD1LC Unit-1 TAM.pdf"},
+    {type:"core", sem:"Semester 1", medium:"English", title:"BD1LC Unit 2 ENG", file:"BD1LC Unit-2 ENG.pdf"},
+    {type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1LC Unit 2 TAM", file:"BD1LC Unit-2 TAM.pdf"},
+    {type:"core", sem:"Semester 1", medium:"English", title:"BD1LC Unit 3 ENG", file:"BD1LC Unit-3 ENG.pdf"},
+    {type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1LC Unit 3 TAM", file:"BD1LC Unit-3 TAM.pdf"},
+    {type:"core", sem:"Semester 1", medium:"English", title:"BD1LC Unit 4 ENG", file:"BD1LC Unit-4 ENG.pdf"},
+    {type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1LC Unit 4 TAM", file:"BD1LC Unit-4 TAM.pdf"},
+    {type:"core", sem:"Semester 1", medium:"English", title:"BD1LC Unit 5 ENG", file:"BD1LC Unit-5 ENG.pdf"},
+    {type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1LC Unit 5 TAM", file:"BD1LC Unit-5 TAM.pdf"},
 
-function loadNotes(){
+    /* BD1TL */
+    {type:"core", sem:"Semester 1", medium:"English", title:"BD1TL Unit 1 ENG", file:"BD1TL Unit-1 ENG.pdf"},
+    {type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1TL Unit 1 TAM", file:"BD1TL Unit-1 TAM.pdf"},
+    {type:"core", sem:"Semester 1", medium:"English", title:"BD1TL Unit 2 ENG", file:"BD1TL Unit-2 ENG.pdf"},
+    {type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1TL Unit 2 TAM", file:"BD1TL Unit-2 TAM.pdf"},
+    {type:"core", sem:"Semester 1", medium:"English", title:"BD1TL Unit 3 ENG", file:"BD1TL Unit-3 ENG.pdf"},
+    {type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1TL Unit 3 TAM", file:"BD1TL Unit-3 TAM.pdf"},
+    {type:"core", sem:"Semester 1", medium:"English", title:"BD1TL Unit 4 ENG", file:"BD1TL Unit-4 ENG.pdf"},
+    {type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1TL Unit 4 TAM", file:"BD1TL Unit-4 TAM.pdf"},
+    {type:"core", sem:"Semester 1", medium:"English", title:"BD1TL Unit 5 ENG", file:"BD1TL Unit-5 ENG.pdf"},
+    {type:"core", sem:"Semester 1", medium:"Tamil", title:"BD1TL Unit 5 TAM", file:"BD1TL Unit-5 TAM.pdf"},
+
+    /* ================= PEDAGOGY SUBJECTS ================= */
+
+    /* BD1TA (Tamil) */
+    {type:"pedagogy", pedagogy:"Tamil", sem:"Semester 1", medium:"Tamil", title:"BD1TA Unit 1 TAM", file:"BD1TA Unit-1 TAM.pdf"},
+    {type:"pedagogy", pedagogy:"Tamil", sem:"Semester 1", medium:"Tamil", title:"BD1TA Unit 2 TAM", file:"BD1TA Unit-2 TAM.pdf"},
+    {type:"pedagogy", pedagogy:"Tamil", sem:"Semester 1", medium:"Tamil", title:"BD1TA Unit 3 TAM", file:"BD1TA Unit-3 TAM.pdf"},
+    {type:"pedagogy", pedagogy:"Tamil", sem:"Semester 1", medium:"Tamil", title:"BD1TA Unit 4 TAM", file:"BD1TA Unit-4 TAM.pdf"},
+    {type:"pedagogy", pedagogy:"Tamil", sem:"Semester 1", medium:"Tamil", title:"BD1TA Unit 5 TAM", file:"BD1TA Unit-5 TAM.pdf"},
+
+    /* BD1EN (English) */
+    {type:"pedagogy", pedagogy:"English", sem:"Semester 1", medium:"English", title:"BD1EN Unit 1 ENG", file:"BD1EN Unit-1 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"English", sem:"Semester 1", medium:"English", title:"BD1EN Unit 2 ENG", file:"BD1EN Unit-2 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"English", sem:"Semester 1", medium:"English", title:"BD1EN Unit 3 ENG", file:"BD1EN Unit-3 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"English", sem:"Semester 1", medium:"English", title:"BD1EN Unit 4 ENG", file:"BD1EN Unit-4 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"English", sem:"Semester 1", medium:"English", title:"BD1EN Unit 5 ENG", file:"BD1EN Unit-5 ENG.pdf"},
+
+    /* BD1MA (Maths) */
+    {type:"pedagogy", pedagogy:"Maths", sem:"Semester 1", medium:"English", title:"BD1MA Unit 1 ENG", file:"BD1MA Unit-1 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"Maths", sem:"Semester 1", medium:"Tamil", title:"BD1MA Unit 1 TAM", file:"BD1MA Unit-1 TAM.pdf"},
+    {type:"pedagogy", pedagogy:"Maths", sem:"Semester 1", medium:"English", title:"BD1MA Unit 2 ENG", file:"BD1MA Unit-2 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"Maths", sem:"Semester 1", medium:"Tamil", title:"BD1MA Unit 2 TAM", file:"BD1MA Unit-2 TAM.pdf"},
+    {type:"pedagogy", pedagogy:"Maths", sem:"Semester 1", medium:"English", title:"BD1MA Unit 3 ENG", file:"BD1MA Unit-3 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"Maths", sem:"Semester 1", medium:"Tamil", title:"BD1MA Unit 3 TAM", file:"BD1MA Unit-3 TAM.pdf"},
+    {type:"pedagogy", pedagogy:"Maths", sem:"Semester 1", medium:"English", title:"BD1MA Unit 4 ENG", file:"BD1MA Unit-4 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"Maths", sem:"Semester 1", medium:"Tamil", title:"BD1MA Unit 4 TAM", file:"BD1MA Unit-4 TAM.pdf"},
+    {type:"pedagogy", pedagogy:"Maths", sem:"Semester 1", medium:"English", title:"BD1MA Unit 5 ENG", file:"BD1MA Unit-5 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"Maths", sem:"Semester 1", medium:"Tamil", title:"BD1MA Unit 5 TAM", file:"BD1MA Unit-5 TAM.pdf"},
+
+    /* BD1PS (Science) */
+    {type:"pedagogy", pedagogy:"Physical Science", sem:"Semester 1", medium:"English", title:"BD1PS Unit 1 ENG", file:"BD1PS Unit-1 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"Physical Science", sem:"Semester 1", medium:"Tamil", title:"BD1PS Unit 1 TAM", file:"BD1PS Unit-1 TAM.pdf"},
+    {type:"pedagogy", pedagogy:"Physical Science", sem:"Semester 1", medium:"English", title:"BD1PS Unit 2 ENG", file:"BD1PS Unit-2 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"Physical Science", sem:"Semester 1", medium:"Tamil", title:"BD1PS Unit 2 TAM", file:"BD1PS Unit-2 TAM.pdf"},
+    {type:"pedagogy", pedagogy:"Physical Science", sem:"Semester 1", medium:"English", title:"BD1PS Unit 3 ENG", file:"BD1PS Unit-3 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"Physical Science", sem:"Semester 1", medium:"Tamil", title:"BD1PS Unit 3 TAM", file:"BD1PS Unit-3 TAM.pdf"},
+    {type:"pedagogy", pedagogy:"Physical Science", sem:"Semester 1", medium:"English", title:"BD1PS Unit 4 ENG", file:"BD1PS Unit-4 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"Physical Science", sem:"Semester 1", medium:"Tamil", title:"BD1PS Unit 4 TAM", file:"BD1PS Unit-4 TAM.pdf"},
+    {type:"pedagogy", pedagogy:"Physical Science", sem:"Semester 1", medium:"English", title:"BD1PS Unit 5 ENG", file:"BD1PS Unit-5 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"Physical Science", sem:"Semester 1", medium:"Tamil", title:"BD1PS Unit 5 TAM", file:"BD1PS Unit-5 TAM.pdf"},
+
+    /* BD1BS (Biological Science) */
+    {type:"pedagogy", pedagogy:"Biological Science", sem:"Semester 1", medium:"English", title:"BD1BS Unit 1 ENG", file:"BD1BS Unit-1 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"Biological Science", sem:"Semester 1", medium:"Tamil", title:"BD1BS Unit 1 TAM", file:"BD1BS Unit-1 TAM.pdf"},
+    {type:"pedagogy", pedagogy:"Biological Science", sem:"Semester 1", medium:"English", title:"BD1BS Unit 2 ENG", file:"BD1BS Unit-2 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"Biological Science", sem:"Semester 1", medium:"Tamil", title:"BD1BS Unit 2 TAM", file:"BD1BS Unit-2 TAM.pdf"},
+    {type:"pedagogy", pedagogy:"Biological Science", sem:"Semester 1", medium:"English", title:"BD1BS Unit 3 ENG", file:"BD1BS Unit-3 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"Biological Science", sem:"Semester 1", medium:"Tamil", title:"BD1BS Unit 3 TAM", file:"BD1BS Unit-3 TAM.pdf"},
+    {type:"pedagogy", pedagogy:"Biological Science", sem:"Semester 1", medium:"English", title:"BD1BS Unit 4 ENG", file:"BD1BS Unit-4 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"Biological Science", sem:"Semester 1", medium:"Tamil", title:"BD1BS Unit 4 TAM", file:"BD1BS Unit-4 TAM.pdf"},
+    {type:"pedagogy", pedagogy:"Biological Science", sem:"Semester 1", medium:"English", title:"BD1BS Unit 5 ENG", file:"BD1BS Unit-5 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"Biological Science", sem:"Semester 1", medium:"Tamil", title:"BD1BS Unit 5 TAM", file:"BD1BS Unit-5 TAM.pdf"},
+
+    /* BD1CS (Computer Science) */
+    {type:"pedagogy", pedagogy:"Computer Science", sem:"Semester 1", medium:"English", title:"BD1CS Unit 1 ENG", file:"BD1CS Unit-1 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"Computer Science", sem:"Semester 1", medium:"Tamil", title:"BD1CS Unit 1 TAM", file:"BD1CS Unit-1 TAM.pdf"},
+    {type:"pedagogy", pedagogy:"Computer Science", sem:"Semester 1", medium:"English", title:"BD1CS Unit 2 ENG", file:"BD1CS Unit-2 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"Computer Science", sem:"Semester 1", medium:"Tamil", title:"BD1CS Unit 2 TAM", file:"BD1CS Unit-2 TAM.pdf"},
+    {type:"pedagogy", pedagogy:"Computer Science", sem:"Semester 1", medium:"English", title:"BD1CS Unit 3 ENG", file:"BD1CS Unit-3 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"Computer Science", sem:"Semester 1", medium:"Tamil", title:"BD1CS Unit 3 TAM", file:"BD1CS Unit-3 TAM.pdf"},
+    {type:"pedagogy", pedagogy:"Computer Science", sem:"Semester 1", medium:"English", title:"BD1CS Unit 4 ENG", file:"BD1CS Unit-4 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"Computer Science", sem:"Semester 1", medium:"Tamil", title:"BD1CS Unit 4 TAM", file:"BD1CS Unit-4 TAM.pdf"},
+    {type:"pedagogy", pedagogy:"Computer Science", sem:"Semester 1", medium:"English", title:"BD1CS Unit 5 ENG", file:"BD1CS Unit-5 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"Computer Science", sem:"Semester 1", medium:"Tamil", title:"BD1CS Unit 5 TAM", file:"BD1CS Unit-5 TAM.pdf"},
+
+    /* BD1HI (Social Science) */
+    {type:"pedagogy", pedagogy:"History", sem:"Semester 1", medium:"English", title:"BD1HI Unit 1 ENG", file:"BD1HI Unit-1 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"History", sem:"Semester 1", medium:"English", title:"BD1HI Unit 2 ENG", file:"BD1HI Unit-2 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"History", sem:"Semester 1", medium:"English", title:"BD1HI Unit 3 ENG", file:"BD1HI Unit-3 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"History", sem:"Semester 1", medium:"English", title:"BD1HI Unit 4 ENG", file:"BD1HI Unit-4 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"History", sem:"Semester 1", medium:"English", title:"BD1HI Unit 5 ENG", file:"BD1HI Unit-5 ENG.pdf"},
+
+    /* BD1CA (Commerce) */
+    {type:"pedagogy", pedagogy:"Commerce", sem:"Semester 1", medium:"English", title:"BD1CA Unit 1 ENG", file:"BD1CA Unit-1 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"Commerce", sem:"Semester 1", medium:"Tamil", title:"BD1CA Unit 1 TAM", file:"BD1CA Unit-1 TAM.pdf"},
+    {type:"pedagogy", pedagogy:"Commerce", sem:"Semester 1", medium:"English", title:"BD1CA Unit 2 ENG", file:"BD1CA Unit-2 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"Commerce", sem:"Semester 1", medium:"Tamil", title:"BD1CA Unit 2 TAM", file:"BD1CA Unit-2 TAM.pdf"},
+    {type:"pedagogy", pedagogy:"Commerce", sem:"Semester 1", medium:"English", title:"BD1CA Unit 3 ENG", file:"BD1CA Unit-3 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"Commerce", sem:"Semester 1", medium:"Tamil", title:"BD1CA Unit 3 TAM", file:"BD1CA Unit-3 TAM.pdf"},
+    {type:"pedagogy", pedagogy:"Commerce", sem:"Semester 1", medium:"English", title:"BD1CA Unit 4 ENG", file:"BD1CA Unit-4 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"Commerce", sem:"Semester 1", medium:"Tamil", title:"BD1CA Unit 4 TAM", file:"BD1CA Unit-4 TAM.pdf"},
+    {type:"pedagogy", pedagogy:"Commerce", sem:"Semester 1", medium:"English", title:"BD1CA Unit 5 ENG", file:"BD1CA Unit-5 ENG.pdf"},
+    {type:"pedagogy", pedagogy:"Commerce", sem:"Semester 1", medium:"Tamil", title:"BD1CA Unit 5 TAM", file:"BD1CA Unit-5 TAM.pdf"},
+
+    /* ================= SEMESTER 2 CORE ================= */
+
+    {type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2EE Unit 1", file:"BD2EE Unit-1.pdf"},
+    {type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2EE Unit 2", file:"BD2EE Unit-2.pdf"},
+    {type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2EE Unit 3", file:"BD2EE Unit-3.pdf"},
+    {type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2EE Unit 4", file:"BD2EE Unit-4.pdf"},
+    {type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2EE Unit 5", file:"BD2EE Unit-5.pdf"},
+
+    {type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2AL Unit 1", file:"BD2AL Unit-1.pdf"},
+    {type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2AL Unit 2", file:"BD2AL Unit-2.pdf"},
+    {type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2AL Unit 3", file:"BD2AL Unit-3.pdf"},
+    {type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2AL Unit 4", file:"BD2AL Unit-4.pdf"},
+    {type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2AL Unit 5", file:"BD2AL Unit-5.pdf"},
+
+    {type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2SA Unit 1", file:"BD2SA Unit-1.pdf"},
+    {type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2SA Unit 2", file:"BD2SA Unit-2.pdf"},
+    {type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2SA Unit 3", file:"BD2SA Unit-3.pdf"},
+    {type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2SA Unit 4", file:"BD2SA Unit-4.pdf"},
+    {type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2SA Unit 5", file:"BD2SA Unit-5.pdf"},
+
+    {type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2CP Unit 1 TAM", file:"BD2CP Unit-1 TAM.pdf"},
+    {type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2CP Unit 2 TAM", file:"BD2CP Unit-2 TAM.pdf"},
+    {type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2CP Unit 3 TAM", file:"BD2CP Unit-3 TAM.pdf"},
+    {type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2CP Unit 4 TAM", file:"BD2CP Unit-4 TAM.pdf"},
+    {type:"core", sem:"Semester 2", medium:"Tamil", title:"BD2CP Unit 5 TAM", file:"BD2CP Unit-5 TAM.pdf"},
+
+    {type:"core", sem:"Semester 2", medium:"English", title:"BD2EE Unit 1 ENG", file:"BD2EE Unit-1 ENG.pdf"},
+    {type:"core", sem:"Semester 2", medium:"English", title:"BD2EE Unit 2 ENG", file:"BD2EE Unit-2 ENG.pdf"},
+    {type:"core", sem:"Semester 2", medium:"English", title:"BD2EE Unit 3 ENG", file:"BD2EE Unit-3 ENG.pdf"},
+    {type:"core", sem:"Semester 2", medium:"English", title:"BD2EE Unit 4 ENG", file:"BD2EE Unit-4 ENG.pdf"},
+    {type:"core", sem:"Semester 2", medium:"English", title:"BD2EE Unit 5 ENG", file:"BD2EE Unit-5 ENG.pdf"},
+
+    {type:"core", sem:"Semester 2", medium:"English", title:"BD2AL Unit 1 ENG", file:"BD2AL Unit-1 ENG.pdf"},
+    {type:"core", sem:"Semester 2", medium:"English", title:"BD2AL Unit 2 ENG", file:"BD2AL Unit-2 ENG.pdf"},
+    {type:"core", sem:"Semester 2", medium:"English", title:"BD2AL Unit 3 ENG", file:"BD2AL Unit-3 ENG.pdf"},
+    {type:"core", sem:"Semester 2", medium:"English", title:"BD2AL Unit 4 ENG", file:"BD2AL Unit-4 ENG.pdf"},
+    {type:"core", sem:"Semester 2", medium:"English", title:"BD2AL Unit 5 ENG", file:"BD2AL Unit-5 ENG.pdf"},
+
+    {type:"core", sem:"Semester 2", medium:"English", title:"BD2SA Unit 1 ENG", file:"BD2SA Unit-1 ENG.pdf"},
+    {type:"core", sem:"Semester 2", medium:"English", title:"BD2SA Unit 2 ENG", file:"BD2SA Unit-2 ENG.pdf"},
+    {type:"core", sem:"Semester 2", medium:"English", title:"BD2SA Unit 3 ENG", file:"BD2SA Unit-3 ENG.pdf"},
+    {type:"core", sem:"Semester 2", medium:"English", title:"BD2SA Unit 4 ENG", file:"BD2SA Unit-4 ENG.pdf"},
+    {type:"core", sem:"Semester 2", medium:"English", title:"BD2SA Unit 5 ENG", file:"BD2SA Unit-5 ENG.pdf"},
+
+    {type:"core", sem:"Semester 2", medium:"English", title:"BD2CP Unit 1 ENG", file:"BD2CP Unit-1 ENG.pdf"},
+    {type:"core", sem:"Semester 2", medium:"English", title:"BD2CP Unit 2 ENG", file:"BD2CP Unit-2 ENG.pdf"},
+    {type:"core", sem:"Semester 2", medium:"English", title:"BD2CP Unit 3 ENG", file:"BD2CP Unit-3 ENG.pdf"},
+    {type:"core", sem:"Semester 2", medium:"English", title:"BD2CP Unit 4 ENG", file:"BD2CP Unit-4 ENG.pdf"},
+    {type:"core", sem:"Semester 2", medium:"English", title:"BD2CP Unit 5 ENG", file:"BD2CP Unit-5 ENG.pdf"}
+
+    ];
+
+    /* ================= LOAD NOTES ================= */
+    function loadNotes(){
+
     let user = JSON.parse(localStorage.getItem("user"));
     let list = document.getElementById("noteList");
-    if(!user) return;
 
     list.innerHTML = "";
-    document.getElementById("semTitle").innerText = user.semester + " ";
-    document.getElementById("medTitle").innerText = " " + user.medium + " Medium";
+    document.getElementById("semTitle").innerText = user.semester + " Notes";
+
     let found = false;
 
     books.forEach(b=>{
-        // Filter Step 1: Filter strict match on Medium
-        if(b.medium.toLowerCase() !== user.medium.toLowerCase()) return;
 
-        // Filter Step 2: Filter strict match on Semester
-        if(b.sem === user.semester){
-            let txt = b.title.toUpperCase();
-            let userPedCode = user.pedagogy ? user.pedagogy.toUpperCase() : "";
-            
-            // Filter Step 3: Check subject logic rules based on dynamic core and pedagogy configurations
-            if(user.semester === "Semester 1") {
-                // S1 Core: BD1CE, BD1EP, BD1TL, BD1LC
-                let isCommon = txt.includes("BD1CE") || txt.includes("BD1EP") || txt.includes("BD1TL") || txt.includes("BD1LC");
-                let matchesPedagogy = userPedCode && txt.includes("BD1" + userPedCode);
-                if(!isCommon && !matchesPedagogy) return;
-            } else if(user.semester === "Semester 2") {
-                // S2 Core: BD2AL, BD2SM, BD2CR, BD2EE
-                let isCommon = txt.includes("BD2AL") || txt.includes("BD2SM") || txt.includes("BD2CR") || txt.includes("BD2EE");
-                let matchesPedagogy = userPedCode && txt.includes("BD2" + userPedCode);
-                if(!isCommon && !matchesPedagogy) return;
-            }
+    if(
+    b.sem === user.semester &&
+    (
+      /* ✅ CORE → FILTER BY MEDIUM */
+      (b.type === "core" && b.medium === user.medium) ||
 
-            list.innerHTML += `
-            <div class="card">
-              <div class="info-layout">
-                <i class="fa-solid fa-file-pdf" style="color:#ef4444; font-size:20px;"></i>
-                <div>
-                  <span>${b.title}</span>
-                  <small>Format: GDrive Link</small>
-                </div>
-              </div>
-              <button class="btn" onclick="triggerGdrivePopup('${b.file}')">Open</button>
-            </div>`;
-            found = true;
-        }
+      /* ✅ PEDAGOGY → FILTER BY BOTH */
+      (
+        b.type === "pedagogy" &&
+        b.pedagogy === user.pedagogy &&
+        b.medium === user.medium
+      )
+    )
+    ){
+    addNote(b);
+    found = true;
+    }
+
     });
 
     if(!found){
-        list.innerHTML = `<div style="text-align:center;margin-top:30px;font-size:13px;color:var(--text-muted);font-weight:500;">Study guides for your selection are coming up shortly!</div>`;
+    list.innerHTML = `<div style="text-align:center;margin-top:30px"> Notes Coming soon..</div>`;
     }
-}
 
-function triggerGdrivePopup(url) {
-    if(url === "#") {
-        showPopup("ℹ️ This specific pedagogy asset is being uploaded to GDrive. Check back soon!");
-        return;
     }
-    pendingDriveUrl = url;
-    document.getElementById("gdrivePopup").style.display = "flex";
-    document.getElementById("gdriveConfirmBtn").onclick = function() {
-        closeGdrivePopup();
-        openExternalLink(pendingDriveUrl, 'Opening Google Drive Link...');
-    };
-}
+    /* ================= ADD CARD ================= */
+    function addNote(b){
+    document.getElementById("noteList").innerHTML += `
+    <div class="card">
+    <div>
+    <i class="fa-solid fa-file-pdf" style="color:#e11d48"></i>
+    ${b.title}
+    </div>
+    <button class="btn" onclick="openPDF('${b.file}')">Open</button>
+    </div>`;
+    }
 
-function closeGdrivePopup() {
-    document.getElementById("gdrivePopup").style.display = "none";
-}
-
-function openExternalLink(url, textLabel){
-    if(url === "#") return;
-    let loader = document.getElementById("loader");
-    document.getElementById("loaderText").innerText = textLabel || "Opening Link...";
-    loader.style.display = "flex";
-    setTimeout(()=>{ 
-        loader.style.display = "none";
-        window.open(url, '_blank'); 
-    }, 750);
-}
-
-function searchNotes(){
+    /* ================= SEARCH ================= */
+    function searchNotes(){
     let s = document.getElementById("search").value.toLowerCase();
+
     document.querySelectorAll("#noteList .card").forEach(c=>{
-        c.style.display = c.innerText.toLowerCase().includes(s) ? "flex" : "none";
+    c.style.display = c.innerText.toLowerCase().includes(s) ? "flex" : "none";
     });
-}
+    }
 
-function searchHomeCards() {
-    let query = document.getElementById("homeSearch").value.toLowerCase();
-    let cards = document.querySelectorAll(".home-card");
-    
-    cards.forEach(card => {
-        let text = card.innerText.toLowerCase();
-        if (text.includes(query)) {
-            card.style.display = "flex";
-        } else {
-            card.style.display = "none";
-        }
-    });
-}
-function showPage(p){
+    /* ================= PDF ================= */
+    function openPDF(file){
+
+    let url = BASE_URL + file;
+
+    let viewerURL = "https://aro5683.github.io/B.Ed-Viewer/web/viewer.html?file="
+    + encodeURIComponent(url);
+
+    window.location.href = viewerURL;
+
+    }
+    /* ================= NAV ================= */
+    function showPage(p){
     document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
-    document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active-tab"));
-
     document.getElementById(p).classList.add("active");
 
-    if(p === 'homePage') document.getElementById('nav-home').classList.add("active-tab");
-    if(p === 'notesPage') document.getElementById('nav-notes').classList.add("active-tab");
-   
-    if(p === 'qaPage') {
-        document.getElementById('nav-qa').classList.add("active-tab");
-        
-        let user = JSON.parse(localStorage.getItem("user"));
-        let chosenSem = (user && user.semester) ? user.semester : "Semester 1";
-        
-        document.getElementById("qaSubTitle").innerText = ` Q&A FOR ${chosenSem.toUpperCase()}`;
-        
-        // Define your exact blogger site target locations
-        let bloggerUrl = "";
-        if(chosenSem === "Semester 1") {
-            bloggerUrl = "https://semester1-questions.blogspot.com"; // 👈 Your Sem 1 Link
-        } else {
-            bloggerUrl = "https://semester2-questions.blogspot.com"; // 👈 Your Sem 2 Link
-        }
-        
-        loadBloggerPosts(bloggerUrl);
+    if(p==="notices"){
+    document.getElementById("badge").style.display="none";
     }
-    
-    if(p === 'noticesPage') {
-        document.getElementById('nav-notices').classList.add("active-tab");
-        document.getElementById("badge").style.display="none";
     }
-     if(p === 'accountPage') document.getElementById('nav-account').classList.add("active-tab");
-handleQaFloatingWidget(p);
-}
 
-function initDashboard(){
-    let user = JSON.parse(localStorage.getItem("user"));
-    if(user){
-        document.getElementById("registerPage").style.display="none";
-        document.getElementById("nav").style.display="flex";
-        document.getElementById("welcomeText").innerText = "Welcome, " + user.name;
-        document.getElementById("prof-name").innerText = user.name;
-        document.getElementById("prof-gender").innerText = user.gender;
-        document.getElementById("prof-semester").innerText = user.semester;
-        document.getElementById("prof-medium").innerText = user.medium + " Medium";
-        document.getElementById("prof-pedagogy").innerText = user.pedagogy;
-        document.getElementById("prof-phone").innerText = user.phone;
-        showPage('homePage');
-        loadNotes();
-        loadNotices();
-        loadBuyBooks();
-    }
-}
+    /* ================= NOTIFICATIONS ================= */
+    async function loadNotices(){
 
+    const proxy="https://whatsapp.arotesting54.workers.dev/?url=";
+    const target="https://www.tnteu.ac.in/notifications.php?nid=5";
 
-function loadBloggerPosts(blogUrl) {
-    let container = document.getElementById("qaContainer");
-    
-    container.innerHTML = `
-        <div id="qaFrameLoader" class="loader-box" style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 50px;">
-            <div class="spinner"></div>
-            <p style="margin-top: 10px; color: var(--text-muted);">Loading Q&A Library...</p>
-        </div>`;
-
-    let cleanUrl = blogUrl.replace(/\/$/, "");
-    let finalRequestUrl = PROXY_URL + encodeURIComponent(cleanUrl + "/feeds/posts/default?alt=json");
-
-    fetch(finalRequestUrl)
-        .then(response => {
-            if (!response.ok) throw new Error("Proxy connection issue");
-            return response.json();
-        })
-        .then(data => {
-            container.innerHTML = ""; 
-            
-            if (!data || !data.feed || !data.feed.entry) {
-                container.innerHTML = "<div class='card' style='display:block;'><span>No questions posted yet.</span></div>";
-                return;
-            }
-            
-            let entries = data.feed.entry;
-            
-            // Badge counter logic
-            if (entries && entries.length > 0) {
-                let badge = document.getElementById("qaBadge");
-                badge.innerText = entries.length;
-                // Only display badge indicator if user is on a different page tab right now
-                if(document.getElementById("qaPage").classList.contains("active") === false) {
-                    badge.style.display = "inline-block";
-                }
-            }
-            
-            // Render entries
-            entries.forEach((entry, index) => {
-                let title = entry.title.$t;
-                let fullContent = entry.content ? entry.content.$t : (entry.summary ? entry.summary.$t : "No content provided.");
-                
-                // Store the full raw content globally to retrieve during the detail view expansion
-                window[`fullPost_${index}`] = fullContent;
-                window[`titlePost_${index}`] = title;
-
-                let postHtml = `
-                    <div class="card" style="display: block; margin-bottom: 15px; padding: 15px; text-align: left; position: relative;">
-                        <h4 style="color: var(--primary); margin: 0 0 8px 0; font-size: 15px; font-weight: 600;">🌷 ${title}</h4>
-                        
-                        <div style="position: relative; max-height: 22px; overflow: hidden; font-size: 13px; color: var(--text-main); line-height: 1.6; margin-bottom: 12px; padding-right: 5px;">
-                            ${fullContent}
-                            <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, var(--bg-card) 95%); pointer-events: none;"></div>
-                        </div>
-                        
-                        <button class="btn" style="width: 100%; padding: 6px 12px; font-size: 12px;" onclick="viewFullQaArticle(${index})">View Full Answer</button>
-                    </div>
-                `;
-                container.innerHTML += postHtml;
-            });
-        })
-        .catch(error => {
-            console.error("Layout error:", error);
-            container.innerHTML = `
-                <div class='card' style='text-align:center; padding: 20px; color: var(--error); display:block;'>
-                    <span>Unable to load posts natively.</span><br/>
-                   
-                </div>`;
-        });
-}
-
-function viewFullQaArticle(id) {
-    let title = window[`titlePost_${id}`];
-    let body = window[`fullPost_${id}`];
-    
-    // Create an overlay full view panel on the fly
-    let overlay = document.createElement("div");
-    overlay.id = "qaFullViewOverlay";
-    overlay.style = "position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background-color:wheat; z-index: 9999; overflow-y: auto; padding: 20px 15px; box-sizing: border-box;";
-    
-    overlay.innerHTML = `
-        <div style="display: flex; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(0,0,0,0.08); padding-bottom: 12px;">
-            <button onclick="closeFullQaArticle()" style="background: none; border: none; color: var(--primary); font-size: 16px; cursor: pointer; display: flex; align-items: center; font-weight: 500;">
-                <i class="fa fa-arrow-left" style="margin-right: 8px;"></i> Back
-            </button>
-            <span style="margin-left: 15px; font-weight: 600; font-size: 15px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></span>
-        </div>
-        
-        <div class="card" style="display: block; padding: 18px; text-align: left;">
-            <h3 style="color: var(--primary); margin: 0 0 14px 0; font-size: 16px; font-weight: 600; line-height: 1.4;">🌷 ${title}</h3>
-            <div style="font-size: 14px; color: var(--text-main); line-height: 1.7;">
-                ${body}
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(overlay);
-}
-
-function closeFullQaArticle() {
-    let overlay = document.getElementById("qaFullViewOverlay");
-    if(overlay) overlay.remove();
-}
-
-
-
-async function loadNotices(){
-    const target = "https://www.tnteu.ac.in/notifications.php?nid=5";
     try{
-        let res = await fetch(PROXY_URL + encodeURIComponent(target));
-        let html = await res.text();
-        let doc = new DOMParser().parseFromString(html, "text/html");
-        let notices = doc.querySelectorAll(".sectionWrapper ul.list.prim li a");
-        let out = "";
-        notices.forEach((a, i)=>{
-            if(i >= 10) return;
-            let title = a.textContent.trim();
-            let href = a.getAttribute("href");
-            let url = href.startsWith("http") ? href : "https://www.tnteu.ac.in/" + encodeURI(href);
-            out += `
-            <div class="notice">
-              <span style="max-width:75%;">${title}</span>
-              <button class="btn" onclick="openExternalLink('${url}', 'Opening Circular Notice BRIEF...')">View</button>
-            </div>`;
-        });
-        document.getElementById("noticeList").innerHTML = out || "<div class='notice'><span>No updates listed at this moment.</span></div>";
-    }catch(err){
-        document.getElementById("noticeList").innerHTML = "<div class='notice'><span>Portal feeds are securely available on your active dashboard view.</span></div>";
+
+    let res=await fetch(proxy+encodeURIComponent(target));
+    let html=await res.text();
+
+    let doc=new DOMParser().parseFromString(html,"text/html");
+    let links=doc.querySelectorAll(".sectionWrapper a");
+
+    let first="", saved=localStorage.getItem("lastNotice"), out="";
+
+    links.forEach((a,i)=>{
+
+    if(i>20) return;
+
+    let title=a.innerText;
+    let url="https://www.tnteu.ac.in/"+a.getAttribute("href");
+
+    if(i===0) first=title;
+
+    out+=`
+    <div class="notice">
+    ${title}
+    <button class="btn" onclick="window.open('${url}')">View</button>
+    </div>`;
+    });
+
+    document.getElementById("noticeList").innerHTML = out;
+
+    if(saved && saved !== first){
+    document.getElementById("badge").style.display="block";
     }
-}
 
-function openResale(){ document.getElementById("resalePopup").style.display="flex"; }
-function closeResale(){ document.getElementById("resalePopup").style.display="none"; }
+    localStorage.setItem("lastNotice", first);
 
-function sendResale(){
+    }catch{
+    document.getElementById("noticeList").innerText = "Failed to load";
+    }
+
+    }
+
+      /* ================= RESALE POPUP ================= */
+
+    function openResale(){
+    document.getElementById("resalePopup").style.display="flex";
+    }
+
+    function closeResale(){
+    document.getElementById("resalePopup").style.display="none";
+    }
+
+    /* ================= SEND TO WHATSAPP ================= */
+
+    function sendResale(){
+
     let name = document.getElementById("bookName").value;
     let author = document.getElementById("author").value;
     let edition = document.getElementById("edition").value;
     let price = document.getElementById("price").value;
-    if(!name || !author || !edition || !price){ showPopup("⚠️ Please fill out all parameters."); return; }
-    let msg = `📚 Book Resale Request\n\nBook: ${name}\nAuthor: ${author}\nEdition: ${edition}\nPrice: ₹${price}\n\nI want to sell this book.`;
+
+    if(!name || !author || !edition || !price){
+    showPopup("⚠️ Fill all fields");
+    return;
+    }
+
+    /* WHATSAPP MESSAGE */
+    let msg =
+    `📚 Book Resale Request
+
+    Book: ${name}
+    Author: ${author}
+    Edition: ${edition}
+    Price: ₹${price}
+
+    I want to sell this book.`;
+
+    /* OPEN WHATSAPP */
     let url = "https://wa.me/919655969516?text=" + encodeURIComponent(msg);
-    window.open(url, '_blank');
+
+    window.open(url);
+
+    /* CLOSE POPUP */
     closeResale();
-}
 
-const resaleBooks = [{name:"",author:"",price:""}];
-function loadBuyBooks(){
+    /* THANK YOU POPUP */
+    setTimeout(()=>{
+    document.getElementById("thankPopup").style.display="flex";
+    },1000);
+
+    }
+
+    function closeThank(){
+    document.getElementById("thankPopup").style.display="none";
+    }
+
+    /* ================= BUY BOOKS ================= */
+
+    const resaleBooks = [
+    {
+    name:"",
+    author:"",
+    price:""
+    },
+    {
+    name:"",
+    author:"",
+    price:""
+    }
+    ];
+
+    /* LOAD BUY BOOKS */
+    function loadBuyBooks(){
+
     let container = document.getElementById("buyBooks");
-    container.innerHTML = "<h3>Previous year question papers</h3>";
-    let counter = 0;
-    resaleBooks.forEach(b=>{ 
-        if(b.name) { 
-            container.innerHTML += `<div class="card"><div><b>${b.name}</b><br><small>${b.author}</small></div><div><span class="price-tag">₹${b.price}</span> <button class="btn" onclick="buyBook('${b.name}','${b.author}','${b.price}')">Buy</button></div></div>`; 
-            counter++;
-        } 
-    });
-    if(counter === 0) {
-        container.innerHTML += "<div class='car'><span></span></div>";
-    }
-}
 
-function buyBook(name,author,price){
-    let user = JSON.parse(localStorage.getItem("user"));
-    let msg = `📚 Book Purchase Request\n\nBook: ${name}\nAuthor: ${author}\nPrice: ₹${price}\n\nBuyer: ${user?.name || "User"}\n\nI want to buy this book.`;
-    let url = "https://wa.me/919655969516?text=" + encodeURIComponent(msg);
-    window.open(url, '_blank');
-}
+    container.innerHTML = "<h3 style='margin-top:20px'>Home</h3><br/>";
 
-function shareContent() {
-    const text = `🎓 *தமிழ்நாட்டில் முதன்முறையாக!*\n\n📚 B.Ed மாணவர்களுக்கு அனைத்து Study Materials ஒரே App-ல்!\n✅ Core Subject Books (Sem 1 & 2)\n📄 Previous Year Questions (PYQ)\n⭐ Important Questions\n📝 Lesson Plan Models\n🔔 TNTEU Circulars\n📱 தமிழ் & ஆங்கிலம் Medium Available\n🔥 100% FREE\n⚠️ Limited Registration Only\n\n👉 இப்போதே பதிவு செய்யுங்கள்:\n*Download here:*\nhttps://bedguru.netlify.app/`;
-    if (navigator.share) { navigator.share({ title: "B.Ed Guru", text: text, url: "https://bedstudyapp.netlify.app/" }); } 
-    else { window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank"); }
-}
+    resaleBooks.forEach(b=>{
+
+    container.innerHTML += `
 
 
-
-
-
-// Active controller tracking typewriter loops
-let typingInterval = null;
-
-// Extends your navigation router logic to show/hide the floating button dynamically
-function handleQaFloatingWidget(activePage) {
-    let botBtn = document.getElementById("qaChatbotBtn");
-    if(activePage === 'qaPage') {
-        botBtn.style.display = "flex";
-        // Dismiss the badge alert counter when user arrives at the Q&A page
-        document.getElementById("qaBadge").style.display = "none";
-    } else {
-        botBtn.style.display = "none";
-    }
-}
-
-// Controls Popup visibility and triggers typing animations
-function toggleQaChatbot(show) {
-    let modal = document.getElementById("qaChatbotModal");
-    let textSpan = document.getElementById("chatbotTypingText");
-    clearInterval(typingInterval);
-    
-    if(show) {
-        modal.style.display = "flex";
-        textSpan.innerText = "";
-        document.getElementById("chatbotCursor").style.display = "inline";
-        document.getElementById("chatbotUserMsg").value = "";
-        
-        let fullTxt = "Do you want to request another question's explanation? Just send your question..";
-        let index = 0;
-        
-        typingInterval = setInterval(() => {
-            if(index < fullTxt.length) {
-                textSpan.innerText += fullTxt.charAt(index);
-                index++;
-            } else {
-                clearInterval(typingInterval);
-                document.getElementById("chatbotCursor").style.display = "none";
-            }
-        }, 35); // Adjust typing speed here
-    } else {
-        modal.style.display = "none";
-    }
-}
-
-// Fires when user submits via chatbot modal interface
-function sendChatbotRequest() {
-    let typedMsg = document.getElementById("chatbotUserMsg").value.trim();
-    if(!typedMsg) return;
-    
-    let user = JSON.parse(localStorage.getItem("user"));
-    let finalPayload = `❓ *New Q&A Explanation Request*\n\n` +
-                       `• *Student Name:* ${user?.name || 'User'}\n` +
-                       `• *Registered Semester:* ${user?.semester || 'N/A'}\n` +
-                       `• *Question Text:* ${typedMsg}`;
-                       
-    let targetWhatsAppUrl = "https://wa.me/919655969516?text=" + encodeURIComponent(finalPayload);
-    
-    // 1. Instantly hide conversational popups
-    toggleQaChatbot(false);
-    
-    // 2. Open pre-filled messaging stream to your target WhatsApp number
-    window.open(targetWhatsAppUrl, '_blank');
-    
-    // 3. Render modern native success modal
-    setTimeout(() => {
-        document.getElementById("chatbotSuccessModal").style.display = "flex";
-    }, 400);
-}
-
-
-// ==========================================
-// SCREENSHOT DETERRENT & SECURITY LOGIC
-// ==========================================
-
-// 1. Detect when the user changes windows or pulls down notification shade (common during screenshots)
-document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
-        // Blur the entire page content instantly when focus is lost
-        document.body.style.filter = "blur(0px)";
-    } else {
-        // Unblur when they return
-        setTimeout(() => {
-            document.body.style.filter = "none";
-        }, 300);
-    }
-});
-
-window.addEventListener("blur", () => {
-    document.body.style.filter = "blur(0px)";
-});
-
-window.addEventListener("focus", () => {
-    document.body.style.filter = "none";
-});
-
-// 2. Block Right-Click (Context Menu) and Long-press text selections
-document.addEventListener('contextmenu', event => event.preventDefault());
-
-// 3. Block Keyboard Shortcuts for Screenshots/Saving (PrintScreen, Ctrl+S, Ctrl+P, Inspect Element)
-document.addEventListener('keydown', (e) => {
-    // Block Print Screen key
-    if (e.key === 'PrintScreen') {
-        navigator.clipboard.writeText(""); // Clear clipboard immediately
-        alert("Screenshots are disabled for security reasons.");
-        e.preventDefault();
-    }
-    // Block Ctrl+P (Print), Ctrl+S (Save), Ctrl+Shift+I (Inspect)
-    if (e.ctrlKey && (e.key === 'p' || e.key === 's' || e.key === 'u' || (e.shiftKey && e.key === 'I'))) {
-        e.preventDefault();
-        return false;
-    }
-});
-
-// 4. Wipe clipboard if they try to copy anything
-document.addEventListener('copy', (e) => {
-    e.preventDefault();
-    navigator.clipboard.writeText("[Protected Content]");
-});
-
-    
-</script>
-
-
-
-
-<script>
-// ==========================================
-// PWA GATEKEEPER (DEEP LINK & AUTO-CLOSE LOCK)
-// ==========================================
-let deferredPrompt = null;
-let countdownInterval = null;
-let logicalTimeLeft = 60;
-let wakeLock = null;
-
-// Dynamic element lookup references
-const gatekeeper = document.getElementById('installGatekeeper');
-const promptState = document.getElementById('promptState');
-const successState = document.getElementById('successState');
-const appContent = document.getElementById('appContent');
-const installBtn = document.getElementById('installBtn');
-const openAppBtn = document.getElementById('openAppBtn');
-const timerDisplay = document.getElementById('timer');
-
-const downloadingState = document.getElementById('downloadingState');
-const finalTimerState = document.getElementById('finalTimerState');
-
-// Check if running inside standalone PWA window environment
-const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-
-// 🔒 SCREEN WAKE LOCK MANAGER
-async function requestWakeLock() {
-    if ('wakeLock' in navigator) {
-        try {
-            wakeLock = await navigator.wakeLock.request('screen');
-            console.log('Screen Wake Lock activated successfully ☀️');
-        } catch (err) {
-            console.error(`Wake Lock Error: ${err.name}, ${err.message}`);
-        }
-    }
-}
-
-function releaseWakeLock() {
-    if (wakeLock !== null) {
-        wakeLock.release()
-            .then(() => {
-                wakeLock = null;
-                console.log('Screen Wake Lock released');
-            });
-    }
-}
-
-// Re-request wake lock if user switches away from tab and back during countdown
-document.addEventListener('visibilitychange', async () => {
-    if (countdownInterval && document.visibilityState === 'visible') {
-        await requestWakeLock();
-    }
-});
-
-// Hard enforcement block rule
-function enforceAbsoluteLockout() {
-    if (countdownInterval) {
-        clearInterval(countdownInterval);
-    }
-    releaseWakeLock();
-    
-    document.body.innerHTML = `
-        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: 999999; font-family: sans-serif; text-align: center; background: #0f172a; color: #fff; padding: 20px; box-sizing: border-box;">
-            <div style="width: 64px; height: 64px; background: rgba(34, 197, 94, 0.1); color: #22c55e; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; font-size: 32px;">✓</div>
-            <h2 style="margin: 0 0 10px 0; font-size: 22px; font-weight: 700;">Platform Security Lock</h2>
-            <p style="color: #94a3b8; max-width: 400px; margin: 0 0 25px 0; line-height: 1.6; font-size: 14px;">
-                Your account registration and device configurations are fully activated.<br><br>
-                Access via standard web browsers is strictly disabled for security compliance. Please use the official application installed on your home screen.
-            </p>
-            <button onclick="launchAppViaHref()" style="padding: 12px 24px; background: #3b82f6; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 15px;">
-                Launch B.Ed Guru
-            </button>
-        </div>
     `;
-}
 
-// 🚀 FIXED: Dual-Trigger Intent Handshake
-function launchAppViaHref() {
-    const currentOrigin = window.location.origin;
-
-    // 1. Force state route changes using anchor hashing to alert the web manifest scope
-    window.location.hash = "pwa-launch";
-
-    // 2. Try an absolute fallback route that triggers PWA display-mode parameters
-    const appWindow = window.open(`${currentOrigin}/?display=standalone&pwa=true`, '_blank');
-    
-    // 3. Close the current tab context if opened from an outside click helper
-    if (appWindow) {
-        setTimeout(() => {
-            if (!isStandalone) {
-                console.log("Deep link attempted. If app fails to launch, click the native browser badge.");
-            }
-        }, 250);
-    }
-}
-
-async function runGatekeeperRouting() {
-    const isRegistered = localStorage.getItem('bed_guru_user');
-    const isSetupDone = localStorage.getItem('pwa_installed_successfully') === 'true';
-    
-    // 🛑 CRITICAL ENFORCEMENT: Browser lockout wall
-    if (!isStandalone && (isRegistered || isSetupDone)) {
-        enforceAbsoluteLockout();
-        return;
-    }
-
-    const gk = document.getElementById('installGatekeeper') || gatekeeper;
-    const ac = document.getElementById('appContent') || appContent;
-    const ib = document.getElementById('installBtn') || installBtn;
-    const ob = document.getElementById('openAppBtn') || openAppBtn;
-
-    if (isStandalone) {
-        // 🟢 Inside PWA App: Unlock structural content display fully
-        if (gk) gk.style.display = 'none';
-        if (ac) ac.style.display = 'block';
-    } else {
-        // 🔴 Inside Web Browser: Show layout setup guide
-        if (gk) gk.style.display = 'flex';
-        if (ac) ac.style.display = 'none';
-        
-        let isAppTrulyPresent = false;
-        
-        if ('getInstalledRelatedApps' in navigator) {
-            try {
-                const relatedApps = await navigator.getInstalledRelatedApps();
-                if (relatedApps.length > 0) {
-                    isAppTrulyPresent = true;
-                }
-            } catch (err) {
-                isAppTrulyPresent = isSetupDone;
-            }
-        } else {
-            isAppTrulyPresent = isSetupDone;
-        }
-        
-        if (isAppTrulyPresent) {
-            const heading = document.getElementById('gatekeeperHeading');
-            const text = document.getElementById('gatekeeperText');
-            
-            if (heading) heading.innerText = "App Already Installed! 🎉";
-            if (text) text.innerText = "You have already configured B.Ed Guru on this device.";
-            
-            if (ib) ib.style.display = 'none';
-            if (ob) ob.style.display = 'block';
-        } else {
-            const heading = document.getElementById('gatekeeperHeading');
-            const text = document.getElementById('gatekeeperText');
-            
-            if (heading) heading.innerText = "Welcome!";
-            if (text) text.innerText = "You must install our official application to access the registration portal.";
-            
-            if (ib) ib.style.display = 'block';
-            if (ob) ob.style.display = 'none';
-        }
-    }
-}
-
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', runGatekeeperRouting);
-} else {
-    runGatekeeperRouting();
-}
-
-// Begins countdown and monitors visual update state
-async function startInstallationTimer() {
-    localStorage.setItem('pwa_installed_successfully', 'true');
-    
-    // Request Wake Lock immediately when timer starts to keep the screen bright
-    await requestWakeLock();
-    
-    const ps = document.getElementById('promptState') || promptState;
-    const ss = document.getElementById('successState') || successState;
-    const ac = document.getElementById('appContent') || appContent;
-    const ds = document.getElementById('downloadingState') || downloadingState;
-    const fs = document.getElementById('finalTimerState') || finalTimerState;
-    const td = document.getElementById('timer') || timerDisplay;
-
-    // Show download text layouts
-    if (ps) ps.style.display = 'none';
-    if (ss) ss.style.display = 'block';
-    if (ac) ac.style.display = 'none';
-    if (ds) ds.style.display = 'block';
-    if (fs) fs.style.display = 'none';
-
-    logicalTimeLeft = 60;
-    if (td) td.innerText = logicalTimeLeft;
-
-    if (countdownInterval) clearInterval(countdownInterval);
-
-    countdownInterval = setInterval(() => {
-        logicalTimeLeft--;
-        if (td) td.innerText = logicalTimeLeft;
-        
-        if (logicalTimeLeft <= 0) {
-            clearInterval(countdownInterval);
-            enforceAbsoluteLockout();
-        }
-    }, 1000);
-}
-
-// Attach interactive layout handlers safely
-document.addEventListener('DOMContentLoaded', () => {
-    const ob = document.getElementById('openAppBtn') || openAppBtn;
-    const ib = document.getElementById('installBtn') || installBtn;
-
-    if (ob) {
-        ob.addEventListener('click', () => {
-            launchAppViaHref();
-        });
-    }
-
-    if (ib) {
-        ib.addEventListener('click', async () => {
-            if (!deferredPrompt) {
-                alert("⏳ Please make sure your internet connection is stable. If the prompt doesn't appear, try reloading the page.");
-                return;
-            }
-            
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            
-            if (outcome === 'accepted') {
-                deferredPrompt = null;
-                startInstallationTimer();
-            }
-        });
-    }
-});
-
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-});
-
-window.addEventListener('appinstalled', (event) => {
-    deferredPrompt = null;
-    if (!countdownInterval) {
-        startInstallationTimer();
-    }
-});
-
-// ==========================================
-// SERVICE WORKER REGISTRATION SETUP
-// ==========================================
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js') 
-            .then(registration => {
-                console.log('B.Ed Guru Service Worker registered successfully!', registration.scope);
-                runGatekeeperRouting();
-            })
-            .catch(error => {
-                console.error('Service Worker registration failed:', error);
-            });
     });
-}
+
+    }
+
+    /* ================= BUY BUTTON ================= */
+
+    function buyBook(name,author,price){
+
+    let user = JSON.parse(localStorage.getItem("user"));
+
+    let msg =
+    `📚 Book Purchase Request
+
+    Book: ${name}
+    Author: ${author}
+    Price: ₹${price}
+
+    Buyer: ${user?.name || "User"}
+
+    I want to buy this book.`;
+
+    let url = "https://wa.me/919655969516?text=" + encodeURIComponent(msg);
+
+    window.open(url);
+    }
+</script>
+<script>
+    function shareContent() {
+
+      const text = `
+
+    🎓 *தமிழ்நாட்டில் முதன்முறையாக!*
+
+    📚 B.Ed மாணவர்களுக்கு அனைத்து Study Materials ஒரே App-ல்!
+
+    ✅ Core Subject Books (Sem 1 & 2)
+    📄 Previous Year Questions (PYQ)
+    ⭐ Important Questions
+    📝 Lesson Plan Models
+    🔔 TNTEU Circulars
+    📱 தமிழ் & ஆங்கிலம் Medium Available
+    🔥 100% FREE
+    ⚠️ Limited Registration Only
+
+    👉 இப்போதே பதிவு செய்யுங்கள்:
+    *Download here:*
+    https://bedstudyapp.netlify.app/`;
+
+      // ✅ Mobile share (best)
+      if (navigator.share) {
+        navigator.share({
+          title: "B.Ed Study",
+          text: text,
+          url: "https://bedstudyapp.netlify.app/"
+        });
+      }
+      // ✅ Fallback (desktop)
+      else {
+        window.open(
+          "https://wa.me/?text=" + encodeURIComponent(text),
+          "_blank"
+        );
+      }
+    }
 </script>
 </body>
 </html>
